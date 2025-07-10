@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="./styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+</head>
+
+<body>
+    <h1 style="display: flex; justify-content: center; align-items: center; margin:30px;">All orders</h1>
+    <div id="ordenes"></div>
+    <div style="display: flex; justify-content: center; align-items: center" id="cargando">
+        <h3>Cargando...</h3>
+    </div>
+
+    <script>
+        const token = localStorage.getItem('token');
+        fetch('/api/orders', {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    window.location.href = 'login.html';
+                }
+                return response.json();
+            })
+            .then(result => {
+                const data = result.data
+                const count = result.counts
+                const pack = result.packs
+
+                document.getElementById("cargando").remove()
+                const ordenes = document.getElementById("ordenes")
+
+                const buttonFiltroFlex = document.createElement('button')
+                buttonFiltroFlex.textContent = "Flex"
+
+                const buttonFiltroCorreo = document.createElement('button')
+                buttonFiltroCorreo.textContent = "Correo"
+
+                const buttonFiltroTodas = document.createElement('button')
+                buttonFiltroTodas.textContent = "Todas"
+
+                const buttonsFiltros = document.createElement('div')
+
+                buttonsFiltros.appendChild(buttonFiltroFlex)
+                buttonsFiltros.appendChild(buttonFiltroCorreo)
+                buttonsFiltros.appendChild(buttonFiltroTodas)
+                buttonsFiltros.style.display = 'flex'
+                buttonsFiltros.style.justifyContent = 'center'
+                buttonsFiltros.style.margin = '30px'
+                ordenes.appendChild(buttonsFiltros)
+
+                //////////////////////////////// DIV CUADROS CANTIDADES
+
+                const divCorreo = document.createElement('div')
+
+                const divEtiquetaCorreo = document.createElement('div')
+                const divEtiquetaNombreCorreo = document.createElement('div')
+                const divEtiquetaNumeroCorreo = document.createElement('div')
+                divEtiquetaNombreCorreo.textContent = `Correo`
+                divEtiquetaNumeroCorreo.textContent = `${pack.correo || 0}`
+                divEtiquetaCorreo.appendChild(divEtiquetaNombreCorreo)
+                divEtiquetaCorreo.appendChild(divEtiquetaNumeroCorreo)
+                divEtiquetaNombreCorreo.classList.add('divResumenNombre', 'borderRight', 'borderLeft', 'colorNaranja')
+                divEtiquetaNumeroCorreo.classList.add('divResumenNumero')
+                divEtiquetaCorreo.classList.add('divResumen')
+
+                const divCantidadVariantesCorreo = document.createElement('div')
+
+                const divBeigeCorreo = document.createElement('div')
+                const divBeigeNombreCorreo = document.createElement('div')
+                const divBeigeNumeroCorreo = document.createElement('div')
+                divBeigeNombreCorreo.textContent = `Beige`
+                divBeigeNumeroCorreo.textContent = `${count.correo.Beige || 0}`
+                divBeigeCorreo.appendChild(divBeigeNombreCorreo)
+                divBeigeCorreo.appendChild(divBeigeNumeroCorreo)
+                divBeigeNombreCorreo.classList.add('divResumenNombre', "borderLeft", "solidDown", "colorBeige")
+                divBeigeNumeroCorreo.classList.add('divResumenNumero')
+
+                const divGrisOscuroCorreo = document.createElement('div')
+                const divGrisOscuroNombreCorreo = document.createElement('div')
+                const divGrisOscuroNumeroCorreo = document.createElement('div')
+                divGrisOscuroNombreCorreo.textContent = `Gris Oscuro`
+                divGrisOscuroNumeroCorreo.textContent = `${count.correo["Gris oscuro"] || 0}`
+                divGrisOscuroCorreo.appendChild(divGrisOscuroNombreCorreo)
+                divGrisOscuroCorreo.appendChild(divGrisOscuroNumeroCorreo)
+                divGrisOscuroNombreCorreo.classList.add('divResumenNombre', "solidDown", "colorGrisOscuro")
+                divGrisOscuroNumeroCorreo.classList.add('divResumenNumero')
+
+                const divgrisClaroCorreo = document.createElement('div')
+                const divGrisClaroNombreCorreo = document.createElement('div')
+                const divGrisClaroNumeroCorreo = document.createElement('div')
+                divGrisClaroNombreCorreo.textContent = `Gris Claro`
+                divGrisClaroNumeroCorreo.textContent = `${count.correo["Gris Claro"] || 0}`
+                divgrisClaroCorreo.appendChild(divGrisClaroNombreCorreo)
+                divgrisClaroCorreo.appendChild(divGrisClaroNumeroCorreo)
+                divGrisClaroNombreCorreo.classList.add('divResumenNombre', "solidDown", "colorGrisClaro")
+                divGrisClaroNumeroCorreo.classList.add('divResumenNumero')
+
+                const divNegroCorreo = document.createElement('div')
+                const divNegroNombreCorreo = document.createElement('div')
+                const divNegroNumeroCorreo = document.createElement('div')
+                divNegroNombreCorreo.textContent = `Negro`
+                divNegroNumeroCorreo.textContent = `${count.correo.Negro || 0}`
+                divNegroCorreo.appendChild(divNegroNombreCorreo)
+                divNegroCorreo.appendChild(divNegroNumeroCorreo)
+                divNegroNombreCorreo.classList.add('divResumenNombre', "solidDown", "colorNegro")
+                divNegroNumeroCorreo.classList.add('divResumenNumero')
+
+                const divBlancoCorreo = document.createElement('div')
+                const divBlancoNombreCorreo = document.createElement('div')
+                const divBlancoNumeroCorreo = document.createElement('div')
+                divBlancoNombreCorreo.textContent = `Blanco`
+                divBlancoNumeroCorreo.textContent = `${count.correo.Blanco || 0}`
+                divBlancoCorreo.appendChild(divBlancoNombreCorreo)
+                divBlancoCorreo.appendChild(divBlancoNumeroCorreo)
+                divBlancoNombreCorreo.classList.add('divResumenNombre', "borderRight", "solidDown", "colorBlanco")
+                divBlancoNumeroCorreo.classList.add('divResumenNumero')
+
+
+                const divFlex = document.createElement('div')
+
+                const divEtiquetaFlex = document.createElement('div')
+                const divEtiquetaNombreFlex = document.createElement('a')
+                const divEtiquetaNumeroFlex = document.createElement('div')
+                divEtiquetaNombreFlex.textContent = `Flex`
+                divEtiquetaNombreFlex.href = 'http://localhost:3000/flex.html'
+                divEtiquetaNumeroFlex.textContent = `${pack.flex || 0}`
+                divEtiquetaFlex.appendChild(divEtiquetaNombreFlex)
+                divEtiquetaFlex.appendChild(divEtiquetaNumeroFlex)
+                divEtiquetaNombreFlex.classList.add('divResumenNombre', 'borderRight', 'borderLeft', 'colorVerde')
+                divEtiquetaNumeroFlex.classList.add('divResumenNumero')
+                divEtiquetaFlex.classList.add('divResumen')
+
+                const divCantidadVariantesFlex = document.createElement('div')
+
+                const divBeigeFlex = document.createElement('div')
+                const divBeigeNombreFlex = document.createElement('div')
+                const divBeigeNumeroFlex = document.createElement('div')
+                divBeigeNombreFlex.textContent = `Beige`
+                divBeigeNumeroFlex.textContent = `${count.flex.Beige || 0}`
+                divBeigeFlex.appendChild(divBeigeNombreFlex)
+                divBeigeFlex.appendChild(divBeigeNumeroFlex)
+                divBeigeNombreFlex.classList.add('divResumenNombre', "borderLeft", "solidDown", 'colorBeige')
+                divBeigeNumeroFlex.classList.add('divResumenNumero')
+
+                const divGrisOscuroFlex = document.createElement('div')
+                const divGrisOscuroNombreFlex = document.createElement('div')
+                const divGrisOscuroNumeroFlex = document.createElement('div')
+                divGrisOscuroNombreFlex.textContent = `Gris Oscuro`
+                divGrisOscuroNumeroFlex.textContent = `${count.flex["Gris oscuro"] || 0}`
+                divGrisOscuroFlex.appendChild(divGrisOscuroNombreFlex)
+                divGrisOscuroFlex.appendChild(divGrisOscuroNumeroFlex)
+                divGrisOscuroNombreFlex.classList.add('divResumenNombre', "solidDown", "colorGrisOscuro")
+                divGrisOscuroNumeroFlex.classList.add('divResumenNumero')
+
+                const divgrisClaroFlex = document.createElement('div')
+                const divGrisClaroNombreFlex = document.createElement('div')
+                const divGrisClaroNumeroFlex = document.createElement('div')
+                divGrisClaroNombreFlex.textContent = `Gris Claro`
+                divGrisClaroNumeroFlex.textContent = `${count.flex["Gris Claro"] || 0}`
+                divgrisClaroFlex.appendChild(divGrisClaroNombreFlex)
+                divgrisClaroFlex.appendChild(divGrisClaroNumeroFlex)
+                divGrisClaroNombreFlex.classList.add('divResumenNombre', "solidDown", "colorGrisClaro")
+                divGrisClaroNumeroFlex.classList.add('divResumenNumero')
+
+                const divNegroFlex = document.createElement('div')
+                const divNegroNombreFlex = document.createElement('div')
+                const divNegroNumeroFlex = document.createElement('div')
+                divNegroNombreFlex.textContent = `Negro`
+                divNegroNumeroFlex.textContent = `${count.flex.Negro || 0}`
+                divNegroFlex.appendChild(divNegroNombreFlex)
+                divNegroFlex.appendChild(divNegroNumeroFlex)
+                divNegroNombreFlex.classList.add('divResumenNombre', "solidDown", "colorNegro")
+                divNegroNumeroFlex.classList.add('divResumenNumero')
+
+                const divBlancoFlex = document.createElement('div')
+                const divBlancoNombreFlex = document.createElement('div')
+                const divBlancoNumeroFlex = document.createElement('div')
+                divBlancoNombreFlex.textContent = `Blanco`
+                divBlancoNumeroFlex.textContent = `${count.flex.Blanco || 0}`
+                divBlancoFlex.appendChild(divBlancoNombreFlex)
+                divBlancoFlex.appendChild(divBlancoNumeroFlex)
+                divBlancoNombreFlex.classList.add('divResumenNombre', "solidDown", 'colorBlanco', "borderRight")
+                divBlancoNumeroFlex.classList.add('divResumenNumero')
+
+                const divPajaroFlex = document.createElement('div')
+                const divPajaroNombreFlex = document.createElement('div')
+                const divPajaroNumeroFlex = document.createElement('div')
+                divPajaroNombreFlex.textContent = `Pajaro`
+                divPajaroNumeroFlex.textContent = `${count.flex.null || 0}` //corregir api a pajaro
+                divPajaroFlex.appendChild(divPajaroNombreFlex)
+                divPajaroFlex.appendChild(divPajaroNumeroFlex)
+                divPajaroNombreFlex.classList.add('divResumenNombre', "solidDown", "colorPajaro", "borderRight", "borderLeft")
+                divPajaroNumeroFlex.classList.add('divResumenNumero')
+                divPajaroFlex.classList.add("divCantidadVariantes", "flexColumn")
+
+                const divPajaroCorreo = document.createElement('div')
+                const divPajaroNombreCorreo = document.createElement('div')
+                const divPajaroNumeroCorreo = document.createElement('div')
+                divPajaroNombreCorreo.textContent = `Pajaro`
+                divPajaroNumeroCorreo.textContent = `${count.correo.null || 0}` //corregir api a pajaro
+                divPajaroCorreo.appendChild(divPajaroNombreCorreo)
+                divPajaroCorreo.appendChild(divPajaroNumeroCorreo)
+                divPajaroNombreCorreo.classList.add('divResumenNombre', "solidDown", "colorPajaro", "borderRight", "borderLeft")
+                divPajaroNumeroCorreo.classList.add('divResumenNumero')
+                divPajaroCorreo.classList.add("divCantidadVariantes", "flexColumn")
+
+
+                divCantidadVariantesCorreo.appendChild(divBeigeCorreo)
+                divCantidadVariantesCorreo.appendChild(divGrisOscuroCorreo)
+                divCantidadVariantesCorreo.appendChild(divgrisClaroCorreo)
+                divCantidadVariantesCorreo.appendChild(divNegroCorreo)
+                divCantidadVariantesCorreo.appendChild(divBlancoCorreo)
+
+                divCorreo.appendChild(divEtiquetaCorreo)
+                divCorreo.appendChild(divCantidadVariantesCorreo)
+                divCorreo.appendChild(divPajaroCorreo)
+                divCantidadVariantesCorreo.classList.add("divCantidadVariantes", "flexRow")
+
+                divCantidadVariantesFlex.appendChild(divBeigeFlex)
+                divCantidadVariantesFlex.appendChild(divGrisOscuroFlex)
+                divCantidadVariantesFlex.appendChild(divgrisClaroFlex)
+                divCantidadVariantesFlex.appendChild(divNegroFlex)
+                divCantidadVariantesFlex.appendChild(divBlancoFlex)
+                divFlex.appendChild(divEtiquetaFlex)
+                divFlex.appendChild(divCantidadVariantesFlex)
+                divFlex.appendChild(divPajaroFlex)
+                divCantidadVariantesFlex.classList.add("divCantidadVariantes", "flexRow")
+
+                const divEnvios = document.createElement('div')
+
+                divEnvios.appendChild(divCorreo)
+                divEnvios.appendChild(divFlex)
+
+                divEnvios.classList.add("divEnvios")
+
+
+                divFlex.classList.add("divCounts")
+                divCorreo.classList.add("divCounts")
+                ordenes.appendChild(divEnvios)
+
+                /////////////// ICONO MAPA FLEX
+
+                const allCoordenadas = data.filter(element => (element.shipping_info.substatus === 'ready_to_print' || element.shipping_info.substatus === 'printed') && element.shipping_info.logistic_type === 'self_service').map((item) => (item.shipping_info.receiver_address.address_line + ',' + item.shipping_info.receiver_address.city.name))
+                const allCordenadasToString = allCoordenadas.join('/')
+
+                const allOrdersToMap = `https://www.google.com/maps/dir//${allCordenadasToString}/`
+                console.log(allOrdersToMap)
+
+                const mapa = document.createElement('a')
+                const iconMap = document.createElement('img')
+
+                mapa.style.margin = '20px'
+                mapa.classList.add('centrar')
+                mapa.href = allOrdersToMap
+                mapa.target = '_blank';
+                iconMap.style.border = '2px solid gray'
+                iconMap.style.borderRadius = '10px'
+                iconMap.style.padding = '5px';
+                iconMap.alt = "icono"
+                iconMap.width = "48"
+                iconMap.height = "48"
+                iconMap.src = 'https://cdn-icons-png.flaticon.com/256/854/854878.png'
+
+                mapa.appendChild(iconMap)
+
+                ordenes.appendChild(mapa)
+
+                /////////////////////                
+
+                data.forEach(element => {
+                    const bloquePadre = document.createElement('div')
+                    const bloqueSubPadre = document.createElement('div') //bloque donde estan data,envio,product juntos y se agrega descarga
+                    const bloqueData = document.createElement('div')
+                    const bloquePago = document.createElement('div')
+                    const bloqueEnvio = document.createElement('div')
+                    const bloqueProduct = document.createElement('div')
+                    const bloqueDescarga = document.createElement('div')
+                    const buttonDescarga = document.createElement('button')
+                    const OrderBloque = document.createElement('div')
+                    const OrderData = document.createElement('div')
+                    const ventaId = document.createElement('p')
+                    const orderId = document.createElement('p')
+                    const Client = document.createElement('p')
+                    const Seller = document.createElement('h2')
+                    const idShipping = document.createElement('p')
+                    const dateCreated = document.createElement('p')
+                    const dataStatus = document.createElement('p')
+                    const dataSubstatus = document.createElement('p')
+                    const ShippingType = document.createElement('h2')
+                    const ShippingMap = document.createElement('p')
+                    const ShippingComment = document.createElement('p')
+                    const ShippingLabelStatus = document.createElement('p')
+                    const ShippingLastTime = document.createElement('p')
+                    const totalPubli = document.createElement('p')
+                    const totalLiquidacion = document.createElement('p')
+                    const Pagoflex = document.createElement('p')
+                    const fechaLiquidacion = document.createElement('p')
+                    const link = document.createElement('a');
+                    const title = document.createElement('p')
+                    const titleResumen = document.createElement('h2')
+                    const orderResumen = document.createElement('p')
+                    const quantity = document.createElement('p')
+                    const color = document.createElement('p')
+                    const sector = document.createElement('p')
+                    const direccion = document.createElement('p')
+
+                    buttonFiltroCorreo.addEventListener('click', () => {
+                        if ((element.shipping_info.logistic_type === 'xd_drop_off' || element.shipping_info.logistic_type === 'drop_off')) {
+                            bloquePadre.style.display = 'block';
+                        } else {
+                            bloquePadre.style.display = 'none';
+                        }
+                    })
+
+                    buttonFiltroFlex.addEventListener('click', () => {
+                        if (element.shipping_info.logistic_type === 'self_service') {
+                            bloquePadre.style.display = 'block';
+                        } else {
+                            bloquePadre.style.display = 'none';
+                        }
+                    })
+
+                    buttonFiltroTodas.addEventListener('click', () => {
+                        bloquePadre.style.display = 'block';
+                    })
+
+
+                    var tipoEnvio;
+                    if (element.shipping_info.logistic_type === 'self_service') {
+                        tipoEnvio = 'FLEX'
+                        direccion.textContent = `Direccion: ${element.shipping_info.receiver_address.address_line},${element.shipping_info.receiver_address.city.name}`
+                        link.href = element.maps
+                        link.target = '_blank';
+                        link.textContent = "Ver direccion 📍"
+                    } else if (element.shipping_info.logistic_type === 'drop_off') {
+                        tipoEnvio = 'CORREO ARGENTINO'
+
+                    } else if (element.shipping_info.logistic_type === 'xd_drop_off') {
+                        tipoEnvio = 'PUNTO DE DESPACHO'
+                    } else {
+                        tipoEnvio = element.shipping_info.status
+                    }
+
+                    ventaId.textContent = `Venta: #${element.ventaid}`
+                    orderId.textContent = `orden: ${element.id}`
+                    Client.textContent = `Cliente: ${element.buyer.nickname}`
+                    Seller.textContent = `${element.seller.nickname}`
+                    idShipping.textContent = `SHIPPING ID: ${element.shipping.id}`
+                    dateCreated.textContent = `Fecha Venta: ${new Date(element.date_created).toLocaleString()}`
+                    dataStatus.textContent = `Status: ${element.shipping_info.status}`
+                    dataSubstatus.textContent = `Substatus: ${element.shipping_info.substatus}`
+                    ShippingLabelStatus.textContent = `Estado: ${element.shipping_info.statusLabel}`
+                    ShippingLastTime.textContent = `Despachar antes de: ${new Date(element.shipping_info.lastTimeToSend).toLocaleString()}`
+                    ShippingType.textContent = tipoEnvio
+                    sector.textContent = `Sector: ${element.shipping_info?.receiver_address?.state.name || 'No disponible'}`
+
+                    title.textContent = `${element.order_items[0].item.title}`
+
+                    const variantes = []
+                    element.orderResumen.forEach(detalle => {
+
+                        const divProduct = document.createElement('div')
+                        const quantity = document.createElement('p')
+                        const color = detalle.color || null
+                        var productBrev
+                        if (color === 'Gris Claro') {
+                            divProduct.classList.add("productGrisClaro", "colorGrisClaro")
+                            productBrev = "CL"
+                        } else if (color === 'Gris oscuro') {
+                            divProduct.classList.add("productGrisOscuro", "colorGrisOscuro")
+                            productBrev = "OS"
+                        } else if (color === 'Beige') {
+                            divProduct.classList.add("productBeige", "colorBeige")
+                            productBrev = "BG"
+                        } else if (color === 'Negro') {
+                            divProduct.classList.add("productNegro", "colorNegro")
+                            productBrev = "NG"
+                        } else if (color === 'Blanco') {
+                            divProduct.classList.add("productBlanco", "colorBlanco", "bordeCirculoProduct")
+                            productBrev = "BL"
+                        } else if (detalle.product === 'Pajaro') {
+                            divProduct.classList.add("productPajaro", "colorPajaro")
+                            productBrev = "PJ"
+                        } else {
+                            divProduct.classList.add("productSC")
+                        }
+
+                        orderResumen.innerHTML += `- ${detalle.product || title.textContent} ${detalle.color || ''} x${detalle.cantidad}<br>`
+
+                        variantes.push(`${productBrev} : ${detalle.cantidad}`)
+                        quantity.textContent = `x${detalle.cantidad}`
+
+                        var detalleProduct = `${detalle.product} ${detalle.color || ''}`
+                        if (variantes.length > 1) {
+                            titleResumen.textContent = `PACK`
+                        } else {
+                            titleResumen.textContent = `${detalle.product || title.textContent} ${detalle.color || ''}`
+                        }
+                        divProduct.appendChild(quantity)
+                        bloqueProduct.appendChild(divProduct)
+                    })
+
+                    buttonDescarga.textContent = '>'
+                    const variantesSTR = variantes.join(" | ")
+                    buttonDescarga.addEventListener("click", async () => {
+                        const bodyData = {
+                            usuario: element.seller.nickname,
+                            id: element.shipping.id,
+                            variantes: variantesSTR
+                        }
+                        try {
+                            const peticionEtiqueta = await axios.post('/etiqueta', bodyData)
+                            if (peticionEtiqueta.data.success) {
+                                alert("Etiqueta generada correctamente.");
+                            } else {
+                                alert("Error al generar la etiqueta.");
+                            }
+                        } catch (error) {
+                            console.error("Error al enviar solicitud al backend:", error);
+                        }
+                    })
+
+
+
+                    ShippingMap.appendChild(link)
+
+                    bloqueData.appendChild(titleResumen)
+                    bloqueData.appendChild(ventaId)
+                    bloqueData.appendChild(dateCreated)
+                    bloqueData.appendChild(Client)
+                    // bloqueData.appendChild(title)
+                    // bloqueData.appendChild(dataStatus)
+                    bloqueData.appendChild(orderId)
+                    bloqueData.appendChild(orderResumen)
+
+                    const paymentId = document.createElement('p')
+                    paymentId.innerHTML = `payments: `;
+                    element.paymentsOriginales.forEach(pays => {
+                        paymentId.innerHTML += `${pays} `;
+                    })
+
+                    bloquePago.appendChild(Seller)
+
+                    totalPubli.textContent = `Precio: $${element.pagos.totalPubli}`;
+                    bloquePago.appendChild(totalPubli)
+
+                    totalLiquidacion.textContent = `A liquidar: $${element.pagos.totalLiquidacion}`;
+                    bloquePago.appendChild(totalLiquidacion)
+
+                    Pagoflex.textContent = `Precio Flex: $${element.pagos.flex}`;
+
+
+                    fechaLiquidacion.textContent = `Fecha Liquidacion: ${new Date(element.pagos.fechaLiquidacion).toLocaleString()}`;
+                    bloquePago.appendChild(fechaLiquidacion)
+
+                    bloquePago.appendChild(paymentId)
+
+
+                    bloqueEnvio.appendChild(ShippingType)
+                    if (tipoEnvio === 'FLEX') {
+                        bloqueEnvio.appendChild(ShippingLastTime)
+                        bloqueEnvio.appendChild(sector)
+                        bloqueEnvio.appendChild(direccion)
+                        bloqueEnvio.appendChild(ShippingMap)
+                        bloqueEnvio.appendChild(Pagoflex)
+                        if (element.shipping_info.substatus) {
+                            bloqueEnvio.appendChild(dataSubstatus)
+                        }
+                    }
+                    bloqueEnvio.appendChild(idShipping)
+
+
+                    if (element.shipping_info.substatus === 'ready_to_print' || element.shipping_info.substatus === 'printed') {
+                        bloqueDescarga.appendChild(buttonDescarga)
+
+                    } else {
+                        if (element.shipping_info.status === 'delivered') {
+                            bloquePadre.classList.add("bloquePadreDelivered")
+                        } else if (element.shipping_info.status === 'cancelled') {
+                            bloquePadre.classList.add("bloquePadreCancelled")
+                        } else if (element.shipping_info.status === 'pending') {
+                            bloquePadre.classList.add("bloquePadrePending")
+                        } else {
+                            bloquePadre.classList.add("bloquePadreInComing")
+                        }
+                    }
+
+
+                    bloqueData.classList.add("bloqueData")
+                    bloquePago.classList.add("bloquePago")
+                    bloqueEnvio.classList.add("bloqueEnvio")
+                    bloqueProduct.classList.add("bloqueProduct")
+                    bloqueDescarga.classList.add("bloqueDescarga")
+
+                    if (element.shipping_info.logistic_type === 'self_service' && element.shipping_info.substatus === 'ready_to_print') {
+                        buttonDescarga.classList.add("buttonDescargaFlexRTP")
+                    } else if (element.shipping_info.logistic_type === 'self_service' && element.shipping_info.substatus === 'printed') {
+                        buttonDescarga.classList.add("buttonDescargaFlexPTD")
+                    } else if ((element.shipping_info.logistic_type === 'drop_off' || element.shipping_info.logistic_type === 'xd_drop_off') && element.shipping_info.substatus === 'ready_to_print') {
+                        buttonDescarga.classList.add("buttonDescargaCorreoRTP")
+                    } else if ((element.shipping_info.logistic_type === 'drop_off' || element.shipping_info.logistic_type === 'xd_drop_off') && element.shipping_info.substatus === 'printed') {
+                        buttonDescarga.classList.add("buttonDescargaCorreoPTD")
+                    }
+
+                    buttonDescarga.classList.add("buttonDescarga")
+                    bloquePadre.classList.add("bloquePadreStyle")
+
+                    OrderBloque.classList.add("OrderBloque")
+                    OrderData.appendChild(bloqueData)
+                    OrderData.appendChild(bloquePago)
+                    // OrderData.appendChild(bloqueProduct)
+                    OrderData.classList.add("orderData")
+                    OrderBloque.appendChild(OrderData)
+                    OrderBloque.appendChild(bloqueEnvio)
+                    OrderBloque.appendChild(bloqueProduct)
+
+                    bloqueSubPadre.appendChild(OrderBloque)
+                    bloqueSubPadre.appendChild(bloqueDescarga)
+                    bloqueSubPadre.classList.add("subBloque")
+                    bloquePadre.appendChild(bloqueSubPadre)
+                    ordenes.classList.add("orden")
+                    ordenes.appendChild(bloquePadre)
+                    console.dir(element, { depth: null })
+                });
+            })
+            .catch(error => {
+                const cargando = document.getElementById("cargando");
+                if (cargando) cargando.remove();
+                const ordenes = document.getElementById("ordenes")
+                const mesaggeError = document.createElement("p")
+                mesaggeError.innerHTML = `Error al cargar la pagina: ${error}`
+                ordenes.appendChild(mesaggeError)
+            })
+    </script>
+
+
+</body>
+
+</html>

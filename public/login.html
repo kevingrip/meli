@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login</title>
+</head>
+<body>
+  <h1>Iniciar sesión</h1>
+
+  <form id="loginForm">
+    <input type="email" id="email" placeholder="Email" required /><br><br>
+    <input type="password" id="password" placeholder="Contraseña" required /><br><br>
+    <button type="submit">Entrar</button>
+  </form>
+
+  <p id="mensaje"></p>
+
+  <script>
+    const form = document.getElementById('loginForm');
+    const mensaje = document.getElementById('mensaje');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      mensaje.textContent='Cargando'
+
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      try {
+        // Paso 1: login
+        const loginResponse = await fetch('http://localhost:3000/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password }),
+        });
+
+        const loginData = await loginResponse.json();
+
+        if (!loginResponse.ok) {
+          mensaje.textContent = loginData.error || 'Error en login';
+          mensaje.style.color = 'red';
+          return;
+        }
+
+        const token = loginData.token;
+        localStorage.setItem('token', token); // guardar token
+
+        // Paso 2: validar token accediendo a /api/orders
+        const validarResponse = await fetch('http://localhost:3000/api/orders', {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          }
+        });
+
+        if (validarResponse.ok) {
+          mensaje.textContent = "Login correcto, redirigiendo...";
+          mensaje.style.color = 'green';
+
+          // Paso 3: redirigir si el token es válido
+          setTimeout(() => {
+            window.location.href = 'index.html'; // o la página que quieras
+          }, 500);
+        } else {
+          mensaje.textContent = "Token inválido o expirado.";
+          mensaje.style.color = 'red';
+        }
+      } catch (error) {
+        console.error(error);
+        mensaje.textContent = "Error de red o del servidor.";
+        mensaje.style.color = 'red';
+      }
+    });
+  </script>
+</body>
+</html>

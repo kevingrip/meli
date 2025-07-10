@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="./styles.css">
+</head>
+<body>
+    <h1 style="display: flex; justify-content: center; align-items: center; margin:20px">Orders para imprimir</h1>
+    <div id="readytoprint"></div>
+
+    <script>
+        fetch('/print')
+            .then(response => response.json())
+            .then(data=>{
+                const ordenes = document.getElementById("readytoprint")                
+                data.forEach(element => {
+                    const bloquePadre = document.createElement('div')
+                    const bloqueData = document.createElement('div')
+                    const bloqueEnvio = document.createElement('div')
+                    const bloqueProduct = document.createElement('div')
+                    const bloqueDescarga = document.createElement('div')
+                    const buttonDescarga = document.createElement('button')
+                    const ventaId = document.createElement('p')
+                    const orderId = document.createElement('p')
+                    const Client = document.createElement('p')
+                    const Seller = document.createElement('h2')
+                    const idShipping = document.createElement('p')
+                    const dateCreated = document.createElement('p')
+                    const dataStatus = document.createElement('p')
+                    const dataSubstatus = document.createElement('p')
+                    const ShippingType = document.createElement('h2')
+                    const ShippingMap = document.createElement('p')
+                    const ShippingLabelStatus = document.createElement('p')
+                    const ShippingLastTime = document.createElement('p')
+                    const link = document.createElement('a');
+                    const title = document.createElement('p')
+                    const quantity = document.createElement('p')
+                    const color = document.createElement('p')
+                    const sector = document.createElement('p')
+                    const localidad = document.createElement('p')
+                    const direccion = document.createElement('p')
+
+                    // sector: ships.receiver_address.state.name,
+                    //         localidad:ships.receiver_address.city.name,
+                    //         direccion: ships.receiver_address.address_line,
+                    var tipoEnvio;
+                    if (element.shipping_info.logistic_type==='self_service'){
+                        tipoEnvio = 'FLEX'
+                        localidad.textContent = `Localidad: ${element.shipping_info.receiver_address.city.name}` 
+                        direccion.textContent = `Direccion: ${element.shipping_info.receiver_address.address_line}` 
+                        link.href=element.coordenadas
+                        link.textContent="Ver direccion 📍"
+                    }else if (element.shipping_info.logistic_type==='drop_off') {
+                        tipoEnvio = 'CORREO ARGENTINO'
+                        
+                    }else if (element.shipping_info.logistic_type==='xd_drop_off') {
+                        tipoEnvio = 'PUNTO DE DESPACHO'
+                    }
+
+                    ventaId.textContent = `ID: ${element.ventaid}` 
+                    //orderId.textContent = `orden: ${element.id}` 
+                    Client.textContent = `Cliente: ${element.buyer.nickname}` 
+                    Seller.textContent = `${element.seller.nickname}` 
+                    idShipping.textContent = `ID: ${element.shipping.id}` 
+                    dateCreated.textContent = `Fecha: ${new Date(element.date_created).toLocaleString()}` 
+                    dataStatus.textContent = `Status: ${element.shipping_info.status}` 
+                    dataSubstatus.textContent = `Substatus: ${element.shipping_info.substatus}` 
+                    ShippingLabelStatus.textContent = `Estado: ${element.shipping_info.statusLabel}` 
+                    ShippingLastTime.textContent = `Despachar antes de: ${new Date(element.shipping_info.lastTimeToSend).toLocaleString()}` 
+                    ShippingType.textContent = tipoEnvio
+                    sector.textContent = `Sector: ${element.shipping_info.receiver_address.state.name}` 
+
+                    element.orderItemNuevo.forEach(orderItem=>{
+
+                        const divProduct = document.createElement('div')
+                        const quantity = document.createElement('p')
+                        const color = orderItem.item.variation_attributes[0].value_name
+                        if (color === 'Gris Claro'){
+                            divProduct.classList.add("productGrisClaro")
+                        }else if (color === 'Gris oscuro'){
+                            divProduct.classList.add("productGrisOscuro")
+                        }else if (color === 'Beige'){
+                            divProduct.classList.add("productBeige")
+                        }else{
+                            divProduct.classList.add("productSC")
+                        }                        
+                        quantity.textContent = `x${orderItem.quantity}`
+                        divProduct.appendChild(quantity)
+                        bloqueProduct.appendChild(divProduct)
+                    })
+                    title.textContent = `${element.order_items[0].item.title}` 
+                    buttonDescarga.textContent='>'
+
+                    ShippingMap.appendChild(link)                    
+
+                    bloqueData.appendChild(Seller)
+                    bloqueData.appendChild(title)
+                    bloqueData.appendChild(ventaId)
+                    //bloqueData.appendChild(orderId)
+                    bloqueData.appendChild(Client)
+                    bloqueData.appendChild(dateCreated)
+                    bloqueData.appendChild(dataSubstatus)
+                    bloqueData.appendChild(dataStatus)
+
+                    bloqueEnvio.appendChild(ShippingType)     
+                    bloqueEnvio.appendChild(ShippingLastTime)
+                    bloqueEnvio.appendChild(idShipping)
+                    bloqueEnvio.appendChild(sector)     
+                    bloqueEnvio.appendChild(localidad)     
+                    bloqueEnvio.appendChild(direccion)                                        
+                    bloqueEnvio.appendChild(ShippingLabelStatus)
+                    bloqueEnvio.appendChild(ShippingMap)     
+
+                    bloqueDescarga.appendChild(buttonDescarga)
+                    if (element.shipping_info.logistic_type==='self_service'){
+                        bloquePadre.style.borderColor='green'
+                    }
+
+                    
+                    bloqueData.classList.add("bloqueData")
+                    bloqueEnvio.classList.add("bloqueEnvio")
+                    bloqueProduct.classList.add("bloqueProduct")
+                    bloqueDescarga.classList.add("bloqueDescarga")
+
+                    if (element.shipping_info.logistic_type==='self_service' && element.shipping_info.substatus==='ready_to_print'){
+                        buttonDescarga.classList.add("buttonDescargaFlexRTP")
+                    }else if (element.shipping_info.logistic_type==='self_service' && element.shipping_info.substatus==='printed'){
+                        buttonDescarga.classList.add("buttonDescargaFlexPTD")
+                    }else if ((element.shipping_info.logistic_type==='drop_off' || element.shipping_info.logistic_type==='xd_drop_off') && element.shipping_info.substatus==='ready_to_print'){
+                        buttonDescarga.classList.add("buttonDescargaCorreoRTP")
+                    }else if ((element.shipping_info.logistic_type==='drop_off' || element.shipping_info.logistic_type==='xd_drop_off') && element.shipping_info.substatus==='printed'){
+                        buttonDescarga.classList.add("buttonDescargaCorreoPTD")
+                    }
+
+                    buttonDescarga.classList.add("buttonDescarga")
+                    bloquePadre.classList.add("bloquePadreStyle")
+
+                    bloquePadre.appendChild(bloqueData)
+                    bloquePadre.appendChild(bloqueEnvio)
+                    bloquePadre.appendChild(bloqueProduct)
+                    bloquePadre.appendChild(bloqueDescarga)
+                    ordenes.classList.add("orden")
+                    ordenes.appendChild(bloquePadre)
+                    console.dir(element,{depth:null})
+                });
+            })
+            .catch (error => {
+                const ordenes = document.getElementById("readytoprint")
+                const mesaggeError = document.createElement("p")
+                mesaggeError.innerHTML=`Error al cargar la pagina: ${error}`
+                ordenes.appendChild(mesaggeError)
+            })
+    </script>
+    
+</body>
+</html>

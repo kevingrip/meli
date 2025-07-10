@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="./styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+</head>
+<body>
+    <h1 style="display: flex; justify-content: center; align-items: center; margin:20px">Orders Flex</h1>
+    <div id="ordersFlex"></div>
+
+    <script>
+        fetch('/flex')
+            .then(response => response.json())
+            .then(data=>{
+                const ordenes = document.getElementById("ordersFlex")                
+                data.forEach(element => {
+                    const bloquePadre = document.createElement('div')
+                    const bloqueData = document.createElement('div')
+                    const bloqueEnvio = document.createElement('div')
+                    const bloqueProduct = document.createElement('div')
+                    const bloqueDescarga = document.createElement('div')
+                    const buttonDescarga = document.createElement('button')
+                    const ventaId = document.createElement('p')
+                    const orderId = document.createElement('p')
+                    const Client = document.createElement('p')
+                    const Seller = document.createElement('h2')
+                    const Shipping = document.createElement('p')
+                    const dateCreated = document.createElement('p')
+                    const ShippingStatus = document.createElement('p')
+                    const ShippingSubstatus = document.createElement('p')
+                    const ShippingType = document.createElement('h2')
+                    const ShippingMap = document.createElement('p')
+                    const ShippingComment = document.createElement('p')
+                    const link = document.createElement('a');
+                    const title = document.createElement('p')
+                    const sector = document.createElement('p')
+                    const localidad = document.createElement('h3')
+                    const direccion = document.createElement('p')
+                    const divEnvio = document.createElement('div')
+                    const divData = document.createElement('div')
+
+                    // partido: ships.receiver_address.state.name,
+                    //         localidad:ships.receiver_address.city.name,
+                    //         direccion: ships.receiver_address.address_line,
+
+                    ventaId.textContent = `ventaID: ${element.ventaid}` 
+                    orderId.textContent = `orden: ${element.id}` 
+                    Client.textContent = `cliente: ${element.buyer.nickname}` 
+                    Seller.textContent = `${element.seller.nickname}` 
+                    Shipping.textContent = `envioId: ${element.shipping.id}` 
+                    dateCreated.textContent = `Fecha: ${element.date_created}` 
+                    ShippingStatus.textContent = `status: ${element.shipping_info.status}` 
+                    ShippingSubstatus.textContent = `Substatus: ${element.shipping_info.substatus}`
+                    ShippingType.textContent = `FLEX`  
+                    ShippingComment.textContent = `Comentarios: ${element.shipping_info.receiver_address.comment}` 
+                    sector.textContent = `Sector: ${element.shipping_info.receiver_address.state.name}` 
+                    localidad.textContent = `${element.shipping_info.receiver_address.city.name}` 
+                    direccion.textContent = `direccion: ${element.shipping_info.receiver_address.address_line}` 
+                    link.href=element.coordenadas
+                    link.textContent="Ver direccion 📍"
+
+                    const variantes = []
+                    element.orderItemNuevo.forEach(orderItem=>{                        
+
+                        const divProduct = document.createElement('div')
+                        const quantity = document.createElement('p')
+                        const color = orderItem.item.variation_attributes[0].value_name
+                        if (color === 'Gris Claro'){
+                            divProduct.classList.add("productGrisClaro")  
+                            var colorBrev="CL"                          
+                        }else if (color === 'Gris oscuro'){
+                            divProduct.classList.add("productGrisOscuro")
+                            colorBrev="OS"
+                        }else if (color === 'Beige'){
+                            divProduct.classList.add("productBeige")
+                            colorBrev="BG"
+                        }else{
+                            divProduct.classList.add("productSC")
+                        }               
+                        
+                        variantes.push(`${colorBrev} x${orderItem.quantity}`)                        
+                        quantity.textContent = `x${orderItem.quantity}`
+                        divProduct.appendChild(quantity)
+                        bloqueProduct.appendChild(divProduct)
+                    })
+                    title.textContent = `${element.order_items[0].item.title}` 
+                    //quantity.textContent = `quantity: ${element.order_items[0].quantity}` 
+                    //color.textContent = `color: ${element.order_items[0].item.variation_attributes[0].value_name}` 
+                    buttonDescarga.textContent='>'
+                    const variantesSTR = variantes.join(", ")
+                    buttonDescarga.addEventListener("click",async ()=>{
+                        const bodyData = {
+                            usuario: element.seller.nickname,
+                            id: element.shipping.id,
+                            variantes: variantesSTR
+                        }
+                        try {
+                            const peticionEtiqueta = await axios.post('/etiqueta',bodyData)
+                            if (peticionEtiqueta.data.success) {
+                                alert("Etiqueta generada correctamente.");
+                            } else {
+                                alert("Error al generar la etiqueta.");
+                            }
+                        } catch (error) {
+                            console.error("Error al enviar solicitud al backend:", error);
+                        }
+                    })
+
+                    ShippingMap.appendChild(link)                    
+                    
+                    divData.appendChild(Seller)
+                    divData.classList.add("divData")
+                    bloqueData.appendChild(divData)
+                    bloqueData.appendChild(title)
+                    //bloqueData.appendChild(orderId)
+                    bloqueData.appendChild(Client)
+                    bloqueData.appendChild(dateCreated)
+                    bloqueData.appendChild(ventaId)
+                    bloqueData.appendChild(ShippingStatus)
+
+                    divEnvio.classList.add("flexRow")
+                    localidad.classList.add("styleLocalidad")
+                    divEnvio.appendChild(ShippingType)
+                    divEnvio.appendChild(localidad)
+                    bloqueEnvio.appendChild(divEnvio) 
+                    bloqueEnvio.appendChild(direccion)
+                    bloqueEnvio.appendChild(ShippingComment)                           
+                    bloqueEnvio.appendChild(sector)     
+                    bloqueEnvio.appendChild(Shipping)
+                    bloqueEnvio.appendChild(ShippingSubstatus)                           
+                    bloqueEnvio.appendChild(ShippingMap)                    
+                    
+
+                    if (element.shipping_info.substatus==='ready_to_print' || element.shipping_info.substatus==='printed'){
+                        bloqueDescarga.appendChild(buttonDescarga)
+                    }else{
+                        if (element.shipping_info.status==='delivered'){
+                            bloquePadre.classList.add("bloquePadreDelivered")
+                        }else{
+                            bloquePadre.classList.add("bloquePadreInComing")
+                        }
+                    }
+
+                    
+                    bloqueData.classList.add("bloqueData")
+                    bloqueEnvio.classList.add("bloqueEnvio")
+                    bloqueProduct.classList.add("bloqueProduct")
+                    bloqueDescarga.classList.add("bloqueDescarga")                  
+
+                    if (element.shipping_info.substatus==="ready_to_print"){
+                        buttonDescarga.classList.add("buttonDescargaFlexRTP")
+                    }else if(element.shipping_info.substatus==="printed") {
+                        buttonDescarga.classList.add("buttonDescargaFlexPTD")
+                    }else if(element.shipping_info.status==="shipped") {
+                        buttonDescarga.classList.add("buttonDescargaFlexSPD")
+                    }else if(element.shipping_info.status==="delivered") {
+                        buttonDescarga.classList.add("buttonDescargaFlexPTD")
+                    }
+                    
+                    buttonDescarga.classList.add("buttonDescarga")
+                    bloquePadre.classList.add("bloquePadreStyle")
+
+                    bloquePadre.appendChild(bloqueData)
+                    bloquePadre.appendChild(bloqueEnvio)
+                    bloquePadre.appendChild(bloqueProduct)
+                    bloquePadre.appendChild(bloqueDescarga)
+                    ordenes.classList.add("orden")
+                    ordenes.appendChild(bloquePadre)
+                    console.dir(element,{depth:null})
+                    
+                });
+            })
+            .catch (error => {
+                const ordenes = document.getElementById("ordersFlex")
+                const mesaggeError = document.createElement("p")
+                mesaggeError.innerHTML=`Error al cargar la pagina: ${error}`
+                ordenes.appendChild(mesaggeError)
+            })
+    </script>
+    
+</body>
+</html>

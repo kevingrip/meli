@@ -10,10 +10,9 @@ dotenv.config();
 const fakeUser = {
     email: "admin@example.com",
     // Contraseña: "123456" hasheada con bcrypt
-    password: "$2b$10$HLOkpRBP8gBJGX0xvD0i2.Dw/riPjQvuE2.pp9h0xQdGhuTa2quny"
+    password: process.env.password
 };
 
-// const passwordPlano = "qwer1234";
 
 // bcrypt.hash(passwordPlano, 10).then(hash => {
 //   console.log("Hash generado:", hash);

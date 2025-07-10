@@ -4,7 +4,13 @@ import fs from 'fs'
 import os from 'os';
 import { refreshToken } from './config.js'
 import { PDFDocument, rgb } from 'pdf-lib';
+import mongoose from 'mongoose';
 
+const mongo_uri = process.env.MONGO_DB
+
+mongoose.connect(mongo_uri)
+    .then(() => console.log('Conectado a MongoDB'))
+    .catch(err => console.error('Error de conexión a MongoDB', err));
 
 const desktopPath = path.join(os.homedir(), 'Desktop', 'etiquetas');
 

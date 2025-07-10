@@ -1,14 +1,16 @@
 import axios from 'axios'
 import tokenModel from './model/token.model.js'
-import mongoose from 'mongoose';
 import dotenv from 'dotenv'
 dotenv.config();
 
-const mongo_uri = process.env.MONGO_DB
+// import mongoose from 'mongoose';
 
-mongoose.connect(mongo_uri)
-    .then(() => console.log('Conectado a MongoDB'))
-    .catch(err => console.error('Error de conexión a MongoDB', err));
+// const mongo_uri = process.env.MONGO_DB
+
+// mongoose.connect(mongo_uri)
+//     .then(() => console.log('Conectado a MongoDB'))
+//     .catch(err => console.error('Error de conexión a MongoDB', err));
+
 const urlToken = "https://api.mercadolibre.com/oauth/token"
 
 const postSeller1 = {

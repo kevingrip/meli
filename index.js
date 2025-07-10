@@ -7,6 +7,7 @@ import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 dotenv.config();
 
+
 const fakeUser = {
     email: "admin@example.com",
     // Contraseña: "123456" hasheada con bcrypt

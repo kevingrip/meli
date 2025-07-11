@@ -1,5 +1,5 @@
 import express from "express";
-import { getOrders, getOrdersToPrint,getOrdersFlex,getEtiqueta,getCountOrders,getCountPacks, combinarEtiquetas } from "./api.js";
+import { getOrders, getOrdersToPrint, getOrdersFlex, getEtiqueta, getCountOrders, getCountPacks, combinarEtiquetas } from "./api.js";
 import path from 'path';
 import { fileURLToPath } from 'url';
 import jwt from 'jsonwebtoken';
@@ -65,56 +65,66 @@ const verificarToken = (req, res, next) => {
     }
 };
 
-app.get('/api/orders',verificarToken, async(req,res)=>{
+app.get('/api/orders', verificarToken, async (req, res) => {
     try {
         const data = await getOrders()
         const counts = await getCountOrders(data)
         const packs = await getCountPacks(data)
-        res.json({data,counts,packs})
+        res.json({ data, counts, packs })
     } catch (error) {
         console.error(error)
     }
-    
+
 })
 
 
-app.get(('/print'), async(req,res)=>{
+app.get(('/print'), async (req, res) => {
     try {
         const dataToPrint = await getOrdersToPrint()
         console.log(dataToPrint)
         res.json(dataToPrint)
     } catch (error) {
         console.error(error)
-    }    
-})
-
-app.get(('/flex'), async(req,res)=>{
-    try {
-        const dataFlex = await getOrdersFlex()
-        const counts = await getCountOrders(dataFlex)
-        res.json({dataFlex,counts})
-    } catch (error) {
-        console.error(error)
-    }    
-})
-
-app.post(('/etiqueta'), async(req,res)=>{
-
-    const {usuario,id,variantes} = req.body
-    const etiquetaGenerada = await getEtiqueta(usuario,id,variantes)
-    if (etiquetaGenerada.success){
-        res.json({success:true})
-    }else{
-        res.status(500).json({ success: false, error: etiquetaGenerada.error });
     }
 })
 
-app.post(('/combinarEtiquetas'), async(req,res)=>{
+app.get(('/flex'), async (req, res) => {
+    try {
+        const dataFlex = await getOrdersFlex()
+        const counts = await getCountOrders(dataFlex)
+        res.json({ dataFlex, counts })
+    } catch (error) {
+        console.error(error)
+    }
+})
+
+app.post(('/etiqueta'), async (req, res) => {
+
+    const { usuario, id, variantes } = req.body
+    try {
+        const etiquetaGenerada = await getEtiqueta(usuario, id, variantes)
+        if (!etiquetaGenerada.success || !etiquetaGenerada.pdfBytes) {
+            throw new Error(etiquetaGenerada.error || 'PDF no generado');
+        }
+
+        // Devolver el PDF directamente para descarga
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `attachment; filename=${id}.pdf`);
+        res.send(etiquetaGenerada.pdfBytes);
+    } catch (error) {
+        console.error('Error al generar etiqueta:', error.message);
+        res.status(500).json({ success: false, error: error.message });
+    }
+
+
+})
+
+app.post(('/combinarEtiquetas'), async (req, res) => {
 
     await combinarEtiquetas()
 
 })
 
-app.listen(PORT,()=>{
+app.listen(PORT, () => {
     console.log(`Servidor levantado en el puerto http://192.168.0.8:${PORT} o http://localhost:${PORT}`)
 })

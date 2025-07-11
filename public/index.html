@@ -132,7 +132,7 @@
                 const divEtiquetaNombreFlex = document.createElement('a')
                 const divEtiquetaNumeroFlex = document.createElement('div')
 
-                                
+
                 divEtiquetaNombreFlex.textContent = `Flex`
                 divEtiquetaNumeroFlex.textContent = `${pack.flex || 0}`
                 divEtiquetaFlex.appendChild(divEtiquetaNombreFlex)
@@ -279,22 +279,22 @@
                 /////////////////////    
                 const divDescargaTodas = document.createElement('div')
                 const unirEtiquetas = document.createElement('button')
-                unirEtiquetas.textContent="Unir Etiquetas"
+                unirEtiquetas.textContent = "Unir Etiquetas"
                 divDescargaTodas.appendChild(unirEtiquetas)
                 divDescargaTodas.classList.add('centrar')
-                unirEtiquetas.addEventListener("click", async () => {                        
-                        try {
-                            const peticionUnirEtiqueta = await axios.post('/combinarEtiquetas')
-                            if (peticionUnirEtiqueta.data.success) {
-                                alert("Etiqueta unida correctamente.");
-                            } else {
-                                alert("Error al unir las etiqueta.");
-                            }
-                        } catch (error) {
-                            console.error("Error al enviar solicitud al backend:", error);
+                unirEtiquetas.addEventListener("click", async () => {
+                    try {
+                        const peticionUnirEtiqueta = await axios.post('/combinarEtiquetas')
+                        if (peticionUnirEtiqueta.data.success) {
+                            alert("Etiqueta unida correctamente.");
+                        } else {
+                            alert("Error al unir las etiqueta.");
                         }
-                    })
-                
+                    } catch (error) {
+                        console.error("Error al enviar solicitud al backend:", error);
+                    }
+                })
+
                 ordenes.appendChild(divDescargaTodas)
 
                 data.forEach(element => {
@@ -439,12 +439,26 @@
                             variantes: variantesSTR
                         }
                         try {
-                            const peticionEtiqueta = await axios.post('/etiqueta', bodyData)
-                            if (peticionEtiqueta.data.success) {
-                                alert("Etiqueta generada correctamente.");
-                            } else {
-                                alert("Error al generar la etiqueta.");
-                            }
+                            const peticionEtiqueta = await fetch('/etiqueta', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(bodyData)
+                            });
+
+                            if (!peticionEtiqueta.ok) throw new Error('Fallo la descarga del PDF');
+
+                            const blob = await peticionEtiqueta.blob();
+
+                            const url = window.URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.href = url;
+                            a.download = `${element.shipping.id}.pdf`; // nombre del archivo
+                            document.body.appendChild(a);
+                            a.click();
+                            a.remove();
+                            window.URL.revokeObjectURL(url);
                         } catch (error) {
                             console.error("Error al enviar solicitud al backend:", error);
                         }
@@ -489,7 +503,7 @@
                     bloqueEnvio.appendChild(ShippingType)
                     bloqueEnvio.appendChild(ShippingLastTime)
                     if (tipoEnvio === 'FLEX') {
-                        
+
                         bloqueEnvio.appendChild(sector)
                         bloqueEnvio.appendChild(direccion)
                         bloqueEnvio.appendChild(ShippingMap)

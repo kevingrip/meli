@@ -507,14 +507,9 @@ const getEtiqueta = async (nickname, shipping, variantes) => {
         const pdfBytes = await pdfDoc.save();
 
 
-        const filePath = path.join(desktopPath, `${shipping}.pdf`);
-        fs.writeFileSync(filePath, pdfBytes);
+        return { success: true, pdfBytes };
 
 
-        console.log(nickname, shipping, variantes)
-        console.log('Etiqueta guardada como etiqueta.pdf');
-
-        return { success: true };
     } catch (error) {
         console.error('Error al obtener o guardar la etiqueta:', error);
         return { success: false, error: error.message };

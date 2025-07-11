@@ -29,7 +29,7 @@
 
       try {
         // Paso 1: login
-        const loginResponse = await fetch('http://localhost:3000/api/login', {
+        const loginResponse = await fetch('/api/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password }),
@@ -47,7 +47,7 @@
         localStorage.setItem('token', token); // guardar token
 
         // Paso 2: validar token accediendo a /api/orders
-        const validarResponse = await fetch('http://localhost:3000/api/orders', {
+        const validarResponse = await fetch('/api/orders', {
           method: 'GET',
           headers: {
             Authorization: `Bearer ${token}`,

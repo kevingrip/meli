@@ -328,21 +328,15 @@ body{
 }
 
 @media screen and (max-width: 768px) {
+
+
     .OrderBloque{
         flex-direction: column;
-        flex:5
-    }
-    .bloqueData{
-        margin-left: 30px;
-        flex:8
-    }
-    .bloqueEnvio{
-        margin-left: 30px;
-    }
-    .orderData{
-        flex-direction: row;
+        text-align: center;
     }
 
+
+    .productPajaro,
     .productGrisClaro,
     .productGrisOscuro,
     .productBeige,
@@ -362,5 +356,31 @@ body{
     .buttonDescarga {
         height: 5vh;
     }
+
+    .divCounts{
+        margin: 10px;
+        flex-direction: column;
+    }
+
+
+
+    .divResumenNombre{
+    width: auto;
+    height: 30px;
+    padding: 10px 30px;
+    /* border-top-left-radius: 0.8vw;
+    border-top-right-radius: 0.8vw; */
+    display: flex;
+    justify-content: center;
+    }
+
+    .divResumenNumero{
+        padding: 10px 30px;
+        display: flex;
+        justify-content: center;
+    }
+
+    
+    
 }
 

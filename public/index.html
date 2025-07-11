@@ -467,7 +467,7 @@
                     element.paymentsOriginales.forEach(pays => {
                         paymentId.innerHTML += `${pays} `;
                     })
-
+                    bloquePago.classList.add("bloquePago")
                     bloquePago.appendChild(Seller)
 
                     totalPubli.textContent = `Precio: $${element.pagos.totalPubli}`;
@@ -551,6 +551,15 @@
                     ordenes.classList.add("orden")
                     ordenes.appendChild(bloquePadre)
                     console.dir(element, { depth: null })
+
+                    function eliminarBloquePagoSiEsPantallaChica() {
+                        if (window.matchMedia("(max-width: 768px)").matches) {
+                            const bloquesPago = document.querySelectorAll('.bloquePago');
+                            bloquesPago.forEach(div => div.remove());
+                        }
+                    }
+                    eliminarBloquePagoSiEsPantallaChica();
+
                 });
             })
             .catch(error => {

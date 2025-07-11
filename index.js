@@ -1,5 +1,5 @@
 import express from "express";
-import { getOrders, getOrdersToPrint, getOrdersFlex, getEtiqueta, getCountOrders, getCountPacks, combinarEtiquetas } from "./api.js";
+import { getOrders, getOrdersToPrint, getOrdersFlex, getEtiqueta, getCountOrders, getCountPacks } from "./api.js";
 import path from 'path';
 import { fileURLToPath } from 'url';
 import jwt from 'jsonwebtoken';
@@ -119,11 +119,7 @@ app.post(('/etiqueta'), async (req, res) => {
 
 })
 
-app.post(('/combinarEtiquetas'), async (req, res) => {
 
-    await combinarEtiquetas()
-
-})
 
 app.listen(PORT, () => {
     console.log(`Servidor levantado en el puerto http://192.168.0.8:${PORT} o http://localhost:${PORT}`)

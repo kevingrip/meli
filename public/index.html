@@ -278,23 +278,7 @@
 
                 /////////////////////    
                 const divDescargaTodas = document.createElement('div')
-                const unirEtiquetas = document.createElement('button')
-                unirEtiquetas.textContent = "Unir Etiquetas"
-                divDescargaTodas.appendChild(unirEtiquetas)
-                divDescargaTodas.classList.add('centrar')
-                unirEtiquetas.addEventListener("click", async () => {
-                    try {
-                        const peticionUnirEtiqueta = await axios.post('/combinarEtiquetas')
-                        if (peticionUnirEtiqueta.data.success) {
-                            alert("Etiqueta unida correctamente.");
-                        } else {
-                            alert("Error al unir las etiqueta.");
-                        }
-                    } catch (error) {
-                        console.error("Error al enviar solicitud al backend:", error);
-                    }
-                })
-
+                
                 ordenes.appendChild(divDescargaTodas)
 
                 data.forEach(element => {

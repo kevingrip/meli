@@ -516,39 +516,7 @@ const getEtiqueta = async (nickname, shipping, variantes) => {
     }
 }
 
-async function combinarEtiquetas() {
-    const pdfFiles = fs.readdirSync(desktopPath).filter(file => file.endsWith('.pdf'));
-
-    if (pdfFiles.length>1) {
-        const pdfDocFinal = await PDFDocument.create();
-
-        for (const file of pdfFiles) {
-            const filePath = path.join(desktopPath, file);
-            const pdfBytes = fs.readFileSync(filePath);
-            const pdfTemp = await PDFDocument.load(pdfBytes);
-            const copiedPages = await pdfDocFinal.copyPages(pdfTemp, pdfTemp.getPageIndices());
-
-            copiedPages.forEach((page) => {
-                pdfDocFinal.addPage(page);
-            });
-        }
-
-        const finalPdfBytes = await pdfDocFinal.save();
-        const outputPath = path.join(desktopPath, 'etiquetas-final.pdf');
-        fs.writeFileSync(outputPath, finalPdfBytes);
-
-        for (const file of pdfFiles) {
-            const filePath = path.join(desktopPath, file);
-            fs.unlinkSync(filePath); // Elimina el archivo
-        }
-
-        console.log('✅ PDF combinado guardado como etiquetas-final.pdf');
-    }else{
-        console.log('No hay pdf en la carpeta');
-    }
 
 
-}
 
-
-export { getOrders, getShipping, getOrdersToPrint, getOrdersUser, getEtiqueta, getOrdersFlex, getCountOrders, getCountPacks, combinarEtiquetas };
+export { getOrders, getShipping, getOrdersToPrint, getOrdersUser, getEtiqueta, getOrdersFlex, getCountOrders, getCountPacks };

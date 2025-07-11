@@ -334,7 +334,7 @@ body{
         flex-direction: column;
         text-align: center;
     }
-
+    
 
     .productPajaro,
     .productGrisClaro,
@@ -349,6 +349,8 @@ body{
         border-radius: 4.5vh;
         margin: 3vh;
     }
+
+    
     .subBloque {
         flex-direction: column;
     }
@@ -365,13 +367,19 @@ body{
 
 
     .divResumenNombre{
-    width: auto;
-    height: 30px;
-    padding: 10px 30px;
-    /* border-top-left-radius: 0.8vw;
-    border-top-right-radius: 0.8vw; */
+    flex-shrink: 1; /* permite encoger */
+    flex-grow: 0;
+    flex-basis: auto;
+    min-width: 0; /* MUY importante para que el contenido pueda reducirse */
+    width: auto; /* evita width fijo */
+    padding: 10px 10px;
+    box-sizing: border-box;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     display: flex;
     justify-content: center;
+    align-items: center;
     }
 
     .divResumenNumero{
@@ -380,7 +388,7 @@ body{
         justify-content: center;
     }
 
-    
+
     
 }
 

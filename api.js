@@ -7,13 +7,6 @@ import { PDFDocument, rgb } from 'pdf-lib';
 
 
 
-const isRender = process.env.RENDER === 'true'; // Render define esta variable
-const desktopPath = isRender
-  ? path.join(process.cwd(), 'etiquetas')
-  : path.join(os.homedir(), 'Desktop', 'etiquetas');
-
-
-
 const seller1 = 1005868067
 const seller2 = 2385461382
 
@@ -52,11 +45,6 @@ const headers2 = {
     Authorization: `Bearer ${access_token2}`
 }
 
-const checkFolderDownload = () => {
-    if (!fs.existsSync(desktopPath)) {
-        fs.mkdirSync(desktopPath, { recursive: true });
-    }
-}
 
 const createVentaId = (orders) => {
 
@@ -311,11 +299,20 @@ const getOrders = async () => {
         // const findByMPID = allOrdersFixed.filter(item => item.ventaid === 2000012002761540)
 
         // console.dir(findByMPID, { depth: null })
-        const filePathJson = path.join(desktopPath, 'ventas.txt')
-        const allOrdersForTxt = allOrdersFixed.filter(item => item.status === 'paid').sort((a, b) => new Date(a.date_created) - new Date(b.date_created));
-        const ventasTxt = allOrdersForTxt.map(order => `${order.payments[0].reason}\t${order.orderItemNuevo[0].item.id}\t${order.seller.nickname}\t#${order.ventaid}\t${new Date(order.date_created).toLocaleDateString()}\t\t${order.orderResumen.find(item => item.color === "Gris oscuro")?.cantidad || ""}\t${order.orderResumen.find(item => item.color === "Gris Claro")?.cantidad || ""}\t${order.orderResumen.find(item => item.color === "Beige")?.cantidad || ""}\t${order.orderResumen.find(item => item.color === "Negro")?.cantidad || ""}\t${order.orderResumen.find(item => item.color === "Blanco")?.cantidad || ""}\t${order.orderItemNuevo[0].item.id === 'MLA1500334145' ? (order.orderResumen[0]?.cantidad || "") : ""}\t${order.pagos.totalPubli}\t${order.pagos.totalLiquidacion}\t${order.shipping_info?.logistic_type === "self_service" ? order.shipping_info?.receiver_address?.state?.name === "Capital Federal" ? "-7000" : order.pagos.flex : ""}\t${["ready_to_ship", "handling", "pending"].includes(order.shipping_info?.status) ? "N" : "S"}\t${order.seller.nickname === "HUELLITAS3F" ? "C2" : ""}\t""\t${order.shipping_info?.logistic_type === "self_service" ? order.shipping_info?.receiver_address?.state?.name === "Capital Federal" ? "caba" : order.shipping_info?.receiver_address?.city?.name : ""}\t#${order.shippingId}\t#${order.payments[0].id}\t${order.pagos.totalNeto}\t${order.pagos.bonificacion}\t${order.pagos.fechaLiquidacion}`).join('\n');
-        const encabezado = `title\tmla\tseller\tventaid\tfechaventa\tcepillo\tgris oscuro\tgris claro\tbeige\tnegro\tblanco\tpajaro\tprecio\tliquidar\tflex\tarmado\tcuenta\tlimpio\tsector\tenvioid\tpaymentid\tp\tflex2\tfechaLiquidacion\n`
-        fs.writeFileSync(filePathJson, encabezado + ventasTxt, 'utf-8')
+
+        const isRender = process.env.RENDER === 'true';
+
+        if (!isRender) {
+            const desktopPath = path.join(os.homedir(), 'Desktop', 'etiquetas');
+            const filePathJson = path.join(desktopPath, 'ventas.txt')
+            const allOrdersForTxt = allOrdersFixed.filter(item => item.status === 'paid').sort((a, b) => new Date(a.date_created) - new Date(b.date_created));
+            const ventasTxt = allOrdersForTxt.map(order => `${order.payments[0].reason}\t${order.orderItemNuevo[0].item.id}\t${order.seller.nickname}\t#${order.ventaid}\t${new Date(order.date_created).toLocaleDateString()}\t\t${order.orderResumen.find(item => item.color === "Gris oscuro")?.cantidad || ""}\t${order.orderResumen.find(item => item.color === "Gris Claro")?.cantidad || ""}\t${order.orderResumen.find(item => item.color === "Beige")?.cantidad || ""}\t${order.orderResumen.find(item => item.color === "Negro")?.cantidad || ""}\t${order.orderResumen.find(item => item.color === "Blanco")?.cantidad || ""}\t${order.orderItemNuevo[0].item.id === 'MLA1500334145' ? (order.orderResumen[0]?.cantidad || "") : ""}\t${order.pagos.totalPubli}\t${order.pagos.totalLiquidacion}\t${order.shipping_info?.logistic_type === "self_service" ? order.shipping_info?.receiver_address?.state?.name === "Capital Federal" ? "-7000" : order.pagos.flex : ""}\t${["ready_to_ship", "handling", "pending"].includes(order.shipping_info?.status) ? "N" : "S"}\t${order.seller.nickname === "HUELLITAS3F" ? "C2" : ""}\t""\t${order.shipping_info?.logistic_type === "self_service" ? order.shipping_info?.receiver_address?.state?.name === "Capital Federal" ? "caba" : order.shipping_info?.receiver_address?.city?.name : ""}\t#${order.shippingId}\t#${order.payments[0].id}\t${order.pagos.totalNeto}\t${order.pagos.bonificacion}\t${order.pagos.fechaLiquidacion}`).join('\n');
+            const encabezado = `title\tmla\tseller\tventaid\tfechaventa\tcepillo\tgris oscuro\tgris claro\tbeige\tnegro\tblanco\tpajaro\tprecio\tliquidar\tflex\tarmado\tcuenta\tlimpio\tsector\tenvioid\tpaymentid\tp\tflex2\tfechaLiquidacion\n`
+            fs.writeFileSync(filePathJson, encabezado + ventasTxt, 'utf-8')
+
+        }
+
+
 
         //console.dir(allOrdersFixed,{depth:null}) //ver todas las ordenes como objetos
 
@@ -467,7 +464,6 @@ const getEtiqueta = async (nickname, shipping, variantes) => {
         const token = getToken(nickname)
         const etiqueta = await axios.get(url, { headers: token, responseType: 'arraybuffer' })
 
-        checkFolderDownload()
         console.log(variantes)
 
         const pdfDoc = await PDFDocument.load(etiqueta.data);

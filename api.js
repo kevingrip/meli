@@ -7,7 +7,11 @@ import { PDFDocument, rgb } from 'pdf-lib';
 
 
 
-const desktopPath = path.join(os.homedir(), 'Desktop', 'etiquetas');
+const isRender = process.env.RENDER === 'true'; // Render define esta variable
+const desktopPath = isRender
+  ? path.join(process.cwd(), 'etiquetas')
+  : path.join(os.homedir(), 'Desktop', 'etiquetas');
+
 
 
 const seller1 = 1005868067

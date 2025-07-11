@@ -28,6 +28,7 @@
             .then(response => {
                 if (!response.ok) {
                     window.location.href = 'login.html';
+                    throw new Error('__redirigir_login__');
                 }
                 return response.json();
             })
@@ -278,7 +279,7 @@
 
                 /////////////////////    
                 const divDescargaTodas = document.createElement('div')
-                
+
                 ordenes.appendChild(divDescargaTodas)
 
                 data.forEach(element => {
@@ -553,12 +554,13 @@
                 });
             })
             .catch(error => {
+                if (error.message === '__redirigir_login__') return; // No mostrar nada
                 const cargando = document.getElementById("cargando");
                 if (cargando) cargando.remove();
-                const ordenes = document.getElementById("ordenes")
-                const mesaggeError = document.createElement("p")
-                mesaggeError.innerHTML = `Error al cargar la pagina: ${error}`
-                ordenes.appendChild(mesaggeError)
+                const ordenes = document.getElementById("ordenes");
+                const mesaggeError = document.createElement("p");
+                mesaggeError.innerHTML = `Error al cargar la pagina: ${error}`;
+                ordenes.appendChild(mesaggeError);
             })
     </script>
 

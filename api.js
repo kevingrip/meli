@@ -4,13 +4,8 @@ import fs from 'fs'
 import os from 'os';
 import { refreshToken } from './config.js'
 import { PDFDocument, rgb } from 'pdf-lib';
-import mongoose from 'mongoose';
 
-const mongo_uri = process.env.MONGO_DB
 
-mongoose.connect(mongo_uri)
-    .then(() => console.log('Conectado a MongoDB'))
-    .catch(err => console.error('Error de conexión a MongoDB', err));
 
 const desktopPath = path.join(os.homedir(), 'Desktop', 'etiquetas');
 
@@ -23,12 +18,8 @@ const token = await refreshToken()
 const access_token1 = token[0]
 const access_token2 = token[1]
 
-// console.log(`Bearer ${access_token1}`)
-// console.log(`Bearer ${access_token2}`)
 
-export { access_token1, access_token2 }
-
-const cantidadStockPublicado = (mla) =>{
+const cantidadStockPublicado = (mla) => {
     return `https://api.mercadolibre.com/items/${mla}`
 }
 
@@ -93,31 +84,31 @@ const fixVentaId = (orders) => {
             var value;
             var type;
             const valueName = element.order_items?.[0]?.item?.variation_attributes?.[0]?.value_name;
-            if (valueName === "Beige" || element.order_items?.[0]?.item?.id === "MLA2097220908"  || element.order_items?.[0]?.item?.id === "MLA2152579766") {
+            if (valueName === "Beige" || element.order_items?.[0]?.item?.id === "MLA2097220908" || element.order_items?.[0]?.item?.id === "MLA2152579766") {
                 value = 'Beige'
                 type = 'Alfombra'
-            } else if (valueName === "Gris oscuro" || element.order_items?.[0]?.item?.id === "MLA2097220910"  || element.order_items?.[0]?.item?.id === "MLA2152488642") {
+            } else if (valueName === "Gris oscuro" || element.order_items?.[0]?.item?.id === "MLA2097220910" || element.order_items?.[0]?.item?.id === "MLA2152488642") {
                 value = 'Gris oscuro'
                 type = 'Alfombra'
             } else if (valueName === "Gris Claro" || element.order_items?.[0]?.item?.id === "MLA2097220912" || element.order_items?.[0]?.item?.id === "MLA2152475848") {
                 value = 'Gris Claro'
                 type = 'Alfombra'
-            } else if (valueName === "Negro" || element.order_items?.[0]?.item?.id === "MLA2104745370"  || element.order_items?.[0]?.item?.id === "MLA1508055601") {
+            } else if (valueName === "Negro" || element.order_items?.[0]?.item?.id === "MLA2104745370" || element.order_items?.[0]?.item?.id === "MLA1508055601") {
                 value = 'Negro'
                 type = 'Alfombra'
-            } else if (valueName === "Blanco" || element.order_items?.[0]?.item?.id === "MLA1507750191"  || element.order_items?.[0]?.item?.id === "MLA2153666050") {
+            } else if (valueName === "Blanco" || element.order_items?.[0]?.item?.id === "MLA1507750191" || element.order_items?.[0]?.item?.id === "MLA2153666050") {
                 value = 'Blanco'
                 type = 'Alfombra'
-            } else if (element.order_items?.[0]?.item?.id === "MLA1500334145"){
+            } else if (element.order_items?.[0]?.item?.id === "MLA1500334145") {
                 type = 'Pajaro'
                 value = null
             }
 
             var cantReal
-            if (["MLA2152475848","MLA2152488642","MLA2152579766","MLA2153666050","MLA1508055601"].includes(element.order_items?.[0]?.item?.id)){
-                cantReal=2*element.order_items[0].quantity
-            }else{
-                cantReal=element.order_items[0].quantity
+            if (["MLA2152475848", "MLA2152488642", "MLA2152579766", "MLA2153666050", "MLA1508055601"].includes(element.order_items?.[0]?.item?.id)) {
+                cantReal = 2 * element.order_items[0].quantity
+            } else {
+                cantReal = element.order_items[0].quantity
             }
 
             element.orderItemNuevo.push(element.order_items[0])
@@ -136,31 +127,31 @@ const fixVentaId = (orders) => {
                     ventas.paymentsOriginales.push(...paymentsApproved)
                     ventas.orderItemNuevo.push(element.order_items[0])
                     const valueName = element.order_items?.[0]?.item?.variation_attributes?.[0]?.value_name;
-                    if (valueName === "Beige" || element.order_items?.[0]?.item?.id === "MLA2097220908"  || element.order_items?.[0]?.item?.id === "MLA2152579766") {
+                    if (valueName === "Beige" || element.order_items?.[0]?.item?.id === "MLA2097220908" || element.order_items?.[0]?.item?.id === "MLA2152579766") {
                         value = 'Beige'
                         type = 'Alfombra'
-                    } else if (valueName === "Gris oscuro" || element.order_items?.[0]?.item?.id === "MLA2097220910"  || element.order_items?.[0]?.item?.id === "MLA2152488642") {
+                    } else if (valueName === "Gris oscuro" || element.order_items?.[0]?.item?.id === "MLA2097220910" || element.order_items?.[0]?.item?.id === "MLA2152488642") {
                         value = 'Gris oscuro'
                         type = 'Alfombra'
                     } else if (valueName === "Gris Claro" || element.order_items?.[0]?.item?.id === "MLA2097220912" || element.order_items?.[0]?.item?.id === "MLA2152475848") {
                         value = 'Gris Claro'
                         type = 'Alfombra'
-                    } else if (valueName === "Negro" || element.order_items?.[0]?.item?.id === "MLA2104745370"  || element.order_items?.[0]?.item?.id === "MLA1508055601") {
+                    } else if (valueName === "Negro" || element.order_items?.[0]?.item?.id === "MLA2104745370" || element.order_items?.[0]?.item?.id === "MLA1508055601") {
                         value = 'Negro'
                         type = 'Alfombra'
-                    } else if (valueName === "Blanco" || element.order_items?.[0]?.item?.id === "MLA1507750191"  || element.order_items?.[0]?.item?.id === "MLA2153666050") {
+                    } else if (valueName === "Blanco" || element.order_items?.[0]?.item?.id === "MLA1507750191" || element.order_items?.[0]?.item?.id === "MLA2153666050") {
                         value = 'Blanco'
                         type = 'Alfombra'
-                    } else if (element.order_items?.[0]?.item?.id === "MLA1500334145"){
+                    } else if (element.order_items?.[0]?.item?.id === "MLA1500334145") {
                         type = 'Pajaro'
                         value = null
                     }
 
                     var cantReal
-                    if (["MLA2152475848","MLA2152488642","MLA2152579766","MLA2153666050","MLA1508055601"].includes(element.order_items?.[0]?.item?.id)){
-                        cantReal=2*element.order_items[0].quantity
-                    }else{
-                        cantReal=element.order_items[0].quantity
+                    if (["MLA2152475848", "MLA2152488642", "MLA2152579766", "MLA2153666050", "MLA1508055601"].includes(element.order_items?.[0]?.item?.id)) {
+                        cantReal = 2 * element.order_items[0].quantity
+                    } else {
+                        cantReal = element.order_items[0].quantity
                     }
                     ventas.orderResumen.push({
                         product: type,
@@ -211,7 +202,7 @@ const getShippingCost = async (payment_id, token) => {
     }
 }
 
-const getStockMeli = async() =>{
+const getStockMeli = async () => {
     try {
         const stock = await axios.get(cantidadStockPublicado("MLA2006797664"), { headers: headers1 })
         console.log(stock.data.available_quantity)
@@ -317,10 +308,10 @@ const getOrders = async () => {
 
         // console.dir(findByMPID, { depth: null })
         const filePathJson = path.join(desktopPath, 'ventas.txt')
-        const allOrdersForTxt = allOrdersFixed.filter(item => item.status === 'paid').sort((a,b) => new Date(a.date_created) - new Date(b.date_created));
+        const allOrdersForTxt = allOrdersFixed.filter(item => item.status === 'paid').sort((a, b) => new Date(a.date_created) - new Date(b.date_created));
         const ventasTxt = allOrdersForTxt.map(order => `${order.payments[0].reason}\t${order.orderItemNuevo[0].item.id}\t${order.seller.nickname}\t#${order.ventaid}\t${new Date(order.date_created).toLocaleDateString()}\t\t${order.orderResumen.find(item => item.color === "Gris oscuro")?.cantidad || ""}\t${order.orderResumen.find(item => item.color === "Gris Claro")?.cantidad || ""}\t${order.orderResumen.find(item => item.color === "Beige")?.cantidad || ""}\t${order.orderResumen.find(item => item.color === "Negro")?.cantidad || ""}\t${order.orderResumen.find(item => item.color === "Blanco")?.cantidad || ""}\t${order.orderItemNuevo[0].item.id === 'MLA1500334145' ? (order.orderResumen[0]?.cantidad || "") : ""}\t${order.pagos.totalPubli}\t${order.pagos.totalLiquidacion}\t${order.shipping_info?.logistic_type === "self_service" ? order.shipping_info?.receiver_address?.state?.name === "Capital Federal" ? "-7000" : order.pagos.flex : ""}\t${["ready_to_ship", "handling", "pending"].includes(order.shipping_info?.status) ? "N" : "S"}\t${order.seller.nickname === "HUELLITAS3F" ? "C2" : ""}\t""\t${order.shipping_info?.logistic_type === "self_service" ? order.shipping_info?.receiver_address?.state?.name === "Capital Federal" ? "caba" : order.shipping_info?.receiver_address?.city?.name : ""}\t#${order.shippingId}\t#${order.payments[0].id}\t${order.pagos.totalNeto}\t${order.pagos.bonificacion}\t${order.pagos.fechaLiquidacion}`).join('\n');
         const encabezado = `title\tmla\tseller\tventaid\tfechaventa\tcepillo\tgris oscuro\tgris claro\tbeige\tnegro\tblanco\tpajaro\tprecio\tliquidar\tflex\tarmado\tcuenta\tlimpio\tsector\tenvioid\tpaymentid\tp\tflex2\tfechaLiquidacion\n`
-        fs.writeFileSync(filePathJson, encabezado+ventasTxt, 'utf-8')
+        fs.writeFileSync(filePathJson, encabezado + ventasTxt, 'utf-8')
 
         //console.dir(allOrdersFixed,{depth:null}) //ver todas las ordenes como objetos
 
@@ -526,4 +517,39 @@ const getEtiqueta = async (nickname, shipping, variantes) => {
     }
 }
 
-export { getOrders, getShipping, getOrdersToPrint, getOrdersUser, getEtiqueta, getOrdersFlex, getCountOrders, getCountPacks };
+async function combinarEtiquetas() {
+    const pdfFiles = fs.readdirSync(desktopPath).filter(file => file.endsWith('.pdf'));
+
+    if (pdfFiles.length>1) {
+        const pdfDocFinal = await PDFDocument.create();
+
+        for (const file of pdfFiles) {
+            const filePath = path.join(desktopPath, file);
+            const pdfBytes = fs.readFileSync(filePath);
+            const pdfTemp = await PDFDocument.load(pdfBytes);
+            const copiedPages = await pdfDocFinal.copyPages(pdfTemp, pdfTemp.getPageIndices());
+
+            copiedPages.forEach((page) => {
+                pdfDocFinal.addPage(page);
+            });
+        }
+
+        const finalPdfBytes = await pdfDocFinal.save();
+        const outputPath = path.join(desktopPath, 'etiquetas-final.pdf');
+        fs.writeFileSync(outputPath, finalPdfBytes);
+
+        for (const file of pdfFiles) {
+            const filePath = path.join(desktopPath, file);
+            fs.unlinkSync(filePath); // Elimina el archivo
+        }
+
+        console.log('✅ PDF combinado guardado como etiquetas-final.pdf');
+    }else{
+        console.log('No hay pdf en la carpeta');
+    }
+
+
+}
+
+
+export { getOrders, getShipping, getOrdersToPrint, getOrdersUser, getEtiqueta, getOrdersFlex, getCountOrders, getCountPacks, combinarEtiquetas };

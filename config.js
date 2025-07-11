@@ -54,36 +54,46 @@ const createTokens = async () => {
 
 const refreshToken = async () => {
     try {
-        const cantDocument = await tokenModel.countDocuments()
-        const segundosActual = Math.floor(Date.now() / 1000);
-        var tokens;
-
-        if (cantDocument > 0) {
-            const getToken = await tokenModel.find()
-            tokens = getToken[0]
-            const segundosExpira = tokens.expires_in
-            // console.log("segundos actual:", segundosActual)
-            // console.log("segundos expira:", segundosExpira)
-            console.log("tiempo restantes token:", ((21000 - (segundosActual - segundosExpira))/60/60).toFixed(2),"hs")
-            if (segundosActual - segundosExpira > 21000) {
-                await tokenModel.deleteMany({});
-                tokens = await createTokens()
-                console.log("Tiempo excedido: Nuevo token creado")
-            }else{
-                console.log("Token en tiempo correcto: No se crea nuevo Token")
-                // console.log(tokens)
-            }
-            
-        } else {
-            console.log("Nuevo token creado desde cero")
-            tokens = await createTokens()
-            // console.log(tokens)
-        }
-
-        return [tokens.access_token_c1, tokens.access_token_c2]
+        const token1 = await axios.post(urlToken, null, postSeller1)
+        const token2 = await axios.post(urlToken, null, postSeller2)
+        // console.log(token1.data.access_token)
+        return [token1.data.access_token, token2.data.access_token]
     } catch (error) {
-        console.error(error.message)
+        
     }
+    // try {
+    //     const cantDocument = await tokenModel.countDocuments()
+    //     const segundosActual = Math.floor(Date.now() / 1000);
+    //     var tokens;
+
+    //     if (cantDocument > 0) {
+    //         const getToken = await tokenModel.find()
+    //         tokens = getToken[0]
+    //         const segundosExpira = tokens.expires_in
+    //         // console.log("segundos actual:", segundosActual)
+    //         // console.log("segundos expira:", segundosExpira)
+    //         console.log("tiempo restantes token:", ((21000 - (segundosActual - segundosExpira))/60/60).toFixed(2),"hs")
+    //         if (segundosActual - segundosExpira > 21000) {
+    //             await tokenModel.deleteMany({});
+    //             tokens = await createTokens()
+    //             console.log("Tiempo excedido: Nuevo token creado")
+    //         }else{
+    //             console.log("Token en tiempo correcto: No se crea nuevo Token")
+    //             // console.log(tokens)
+    //         }
+            
+    //     } else {
+    //         console.log("Nuevo token creado desde cero")
+    //         tokens = await createTokens()
+    //         // console.log(tokens)
+    //     }
+
+    //     return [tokens.access_token_c1, tokens.access_token_c2]
+    // } catch (error) {
+    //     console.error(error.message)
+    // }
 }
 
 export { refreshToken }
+
+/////// HACER QUE EN API NO SE EJECUTE REFRESH TOKEN, SINO QUE LO LEA DE MONGODB, Y QUE REFRESH TOKEN SE EJECUTE EN INDEX

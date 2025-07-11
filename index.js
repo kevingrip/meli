@@ -1,5 +1,5 @@
 import express from "express";
-import { getOrders, getOrdersToPrint,getOrdersFlex,getEtiqueta,getCountOrders,getCountPacks } from "./api.js";
+import { getOrders, getOrdersToPrint,getOrdersFlex,getEtiqueta,getCountOrders,getCountPacks, combinarEtiquetas } from "./api.js";
 import path from 'path';
 import { fileURLToPath } from 'url';
 import jwt from 'jsonwebtoken';
@@ -43,7 +43,7 @@ app.post('/api/login', async (req, res) => {
         return res.status(401).json({ error: "Contraseña incorrecta" });
     }
 
-    const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '20s' });
+    const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '10m' });
 
     res.json({ token });
 });
@@ -107,6 +107,12 @@ app.post(('/etiqueta'), async(req,res)=>{
     }else{
         res.status(500).json({ success: false, error: etiquetaGenerada.error });
     }
+})
+
+app.post(('/combinarEtiquetas'), async(req,res)=>{
+
+    await combinarEtiquetas()
+
 })
 
 app.listen(PORT,()=>{

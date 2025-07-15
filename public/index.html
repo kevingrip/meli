@@ -391,11 +391,13 @@
                         bloquePadre.style.display = 'block';
                     })
 
-
+                    const address = element.shipping_info.receiver_address.address_line
+                    const localidad = element.shipping_info.receiver_address.city.name
+                    
                     var tipoEnvio;
                     if (element.shipping_info.logistic_type === 'self_service') {
                         tipoEnvio = 'FLEX'
-                        direccion.textContent = `Direccion: ${element.shipping_info.receiver_address.address_line},${element.shipping_info.receiver_address.city.name}`
+                        direccion.textContent = `Direccion: ${address},${localidad}`
                         link.href = element.maps
                         link.target = '_blank';
                         link.textContent = "Ver direccion 📍"
@@ -433,26 +435,19 @@
 
                         const divProduct = document.createElement('div')
                         const quantity = document.createElement('p')
-                        const color = detalle.variante || null
-                        var productBrev
-                        if (color === 'Gris Claro') {
+                        const productBrev = detalle.abreviado || null
+                        if (productBrev === 'CL') {
                             divProduct.classList.add("productGrisClaro", "colorGrisClaro")
-                            productBrev = "CL"
-                        } else if (color === 'Gris oscuro') {
+                        } else if (productBrev === 'OS') {
                             divProduct.classList.add("productGrisOscuro", "colorGrisOscuro")
-                            productBrev = "OS"
-                        } else if (color === 'Beige') {
+                        } else if (productBrev === 'BG') {
                             divProduct.classList.add("productBeige", "colorBeige")
-                            productBrev = "BG"
-                        } else if (color === 'Negro') {
+                        } else if (productBrev === 'NG') {
                             divProduct.classList.add("productNegro", "colorNegro")
-                            productBrev = "NG"
-                        } else if (color === 'Blanco') {
+                        } else if (productBrev === 'BL') {
                             divProduct.classList.add("productBlanco", "colorBlanco", "bordeCirculoProduct")
-                            productBrev = "BL"
-                        } else if (detalle.tipo === 'Juguete') {
+                        } else if (productBrev === 'PJ') {
                             divProduct.classList.add("productPajaro", "colorPajaro")
-                            productBrev = "PJ"
                         } else {
                             divProduct.classList.add("productSC")
                         }
@@ -502,7 +497,7 @@
                             const url = window.URL.createObjectURL(blob);
                             const a = document.createElement('a');
                             a.href = url;
-                            a.download = `${fechaEtiqueta}-${element.ventaid}${tipoEnvio==="FLEX"?'-'+ubicacion:''}-${tipoEnvio==="FLEX"?'FL':'CA'}.pdf`; // nombre del archivo
+                            a.download = `${fechaEtiqueta}-${tipoEnvio==="FLEX"?'FLEX':'CORREO'}${tipoEnvio==="FLEX"?': '+localidad:''}-${element.ventaid}.pdf`; // nombre del archivo
                             document.body.appendChild(a);
                             a.click();
                             a.remove();

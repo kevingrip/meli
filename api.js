@@ -106,7 +106,7 @@ const variantes = (valueName,mla) => {
         brev = 'COPAM'
 
     }
-    return {type,valueVariante}
+    return {type,valueVariante,brev}
 }
 
 const fixVentaId = (orders) => {
@@ -127,7 +127,7 @@ const fixVentaId = (orders) => {
             const valueName = element.order_items?.[0]?.item?.variation_attributes?.[0]?.value_name;
             var mla_id = element.order_items?.[0]?.item?.id
             
-            var { type, valueVariante } = variantes(valueName,mla_id);
+            var { type, valueVariante,brev } = variantes(valueName,mla_id);
 
             var cantReal
             if (["MLA2152475848", "MLA2152488642", "MLA2152579766", "MLA2153666050", "MLA1508055601"].includes(mla_id)) {
@@ -140,7 +140,8 @@ const fixVentaId = (orders) => {
             element.orderResumen.push({
                 tipo: type,
                 variante: valueVariante,
-                cantidad: cantReal
+                cantidad: cantReal,
+                abreviado: brev
             })
 
             allVentas.push(element)
@@ -152,7 +153,7 @@ const fixVentaId = (orders) => {
                     ventas.paymentsOriginales.push(...paymentsApproved)
                     ventas.orderItemNuevo.push(element.order_items[0])
                     const valueName = element.order_items?.[0]?.item?.variation_attributes?.[0]?.value_name;
-                    var { type, valueVariante } = variantes(valueName,mla_id);
+                    var { type, valueVariante,brev } = variantes(valueName,mla_id);
 
                     var cantReal
                     if (["MLA2152475848", "MLA2152488642", "MLA2152579766", "MLA2153666050", "MLA1508055601"].includes(mla_id)) {
@@ -163,9 +164,9 @@ const fixVentaId = (orders) => {
                     ventas.orderResumen.push({
                         tipo: type,
                         variante: valueVariante,
-                        cantidad: cantReal
+                        cantidad: cantReal,
+                        abreviado: brev
                     })
-
                 }
             })
         }

@@ -1,5 +1,5 @@
 import express from "express";
-import { getOrders, getOrdersToPrint, getOrdersFlex, getEtiqueta, getCountOrders, getCountPacks } from "./api.js";
+import { getOrders, getOrdersToPrint, getOrdersFlex, getEtiqueta, getCountOrders, getCountEtiquetas } from "./api.js";
 import path from 'path';
 import { fileURLToPath } from 'url';
 import jwt from 'jsonwebtoken';
@@ -28,7 +28,7 @@ const __dirname = path.dirname(__filename);
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json())
 
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 3500
 
 // Ruta de login
 app.post('/api/login', async (req, res) => {
@@ -43,7 +43,7 @@ app.post('/api/login', async (req, res) => {
         return res.status(401).json({ error: "Contraseña incorrecta" });
     }
 
-    const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '10m' });
+    const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '30m' });
 
     res.json({ token });
 });
@@ -69,7 +69,7 @@ app.get('/api/orders', verificarToken, async (req, res) => {
     try {
         const data = await getOrders()
         const counts = await getCountOrders(data)
-        const packs = await getCountPacks(data)
+        const packs = await getCountEtiquetas(data)
         res.json({ data, counts, packs })
     } catch (error) {
         console.error(error)

@@ -12,6 +12,11 @@
 
 }
 
+.divEtiquetaCantidad{
+    width: 100%;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.742);
+}
+
 .bloquePadreDelivered{
     background-color: #67ff2b3d;
 }
@@ -288,6 +293,7 @@ body{
     display: flex;
     flex-direction: column;
     gap: 6vh;
+    min-width: 770px;
 }
 
 .divCantidadVariantes{

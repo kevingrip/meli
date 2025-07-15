@@ -59,195 +59,245 @@
                 buttonsFiltros.style.margin = '30px'
                 ordenes.appendChild(buttonsFiltros)
 
+                
+
                 //////////////////////////////// DIV CUADROS CANTIDADES
-
-                const divCorreo = document.createElement('div')
-
-                const divEtiquetaCorreo = document.createElement('div')
-                const divEtiquetaNombreCorreo = document.createElement('div')
-                const divEtiquetaNumeroCorreo = document.createElement('div')
-                divEtiquetaNombreCorreo.textContent = `Correo`
-                divEtiquetaNumeroCorreo.textContent = `${pack.correo || 0}`
-                divEtiquetaCorreo.appendChild(divEtiquetaNombreCorreo)
-                divEtiquetaCorreo.appendChild(divEtiquetaNumeroCorreo)
-                divEtiquetaNombreCorreo.classList.add('divResumenNombre', 'borderRight', 'borderLeft', 'colorNaranja')
-                divEtiquetaNumeroCorreo.classList.add('divResumenNumero')
-                divEtiquetaCorreo.classList.add('divResumen')
-
-                const divCantidadVariantesCorreo = document.createElement('div')
-
-                const divBeigeCorreo = document.createElement('div')
-                const divBeigeNombreCorreo = document.createElement('div')
-                const divBeigeNumeroCorreo = document.createElement('div')
-                divBeigeNombreCorreo.textContent = `Beige`
-                divBeigeNumeroCorreo.textContent = `${count.correo.Beige || 0}`
-                divBeigeCorreo.appendChild(divBeigeNombreCorreo)
-                divBeigeCorreo.appendChild(divBeigeNumeroCorreo)
-                divBeigeNombreCorreo.classList.add('divResumenNombre', "borderLeft", "solidDown", "colorBeige")
-                divBeigeNumeroCorreo.classList.add('divResumenNumero')
-
-                const divGrisOscuroCorreo = document.createElement('div')
-                const divGrisOscuroNombreCorreo = document.createElement('div')
-                const divGrisOscuroNumeroCorreo = document.createElement('div')
-                divGrisOscuroNombreCorreo.textContent = `Gris Oscuro`
-                divGrisOscuroNumeroCorreo.textContent = `${count.correo["Gris oscuro"] || 0}`
-                divGrisOscuroCorreo.appendChild(divGrisOscuroNombreCorreo)
-                divGrisOscuroCorreo.appendChild(divGrisOscuroNumeroCorreo)
-                divGrisOscuroNombreCorreo.classList.add('divResumenNombre', "solidDown", "colorGrisOscuro")
-                divGrisOscuroNumeroCorreo.classList.add('divResumenNumero')
-
-                const divgrisClaroCorreo = document.createElement('div')
-                const divGrisClaroNombreCorreo = document.createElement('div')
-                const divGrisClaroNumeroCorreo = document.createElement('div')
-                divGrisClaroNombreCorreo.textContent = `Gris Claro`
-                divGrisClaroNumeroCorreo.textContent = `${count.correo["Gris Claro"] || 0}`
-                divgrisClaroCorreo.appendChild(divGrisClaroNombreCorreo)
-                divgrisClaroCorreo.appendChild(divGrisClaroNumeroCorreo)
-                divGrisClaroNombreCorreo.classList.add('divResumenNombre', "solidDown", "colorGrisClaro")
-                divGrisClaroNumeroCorreo.classList.add('divResumenNumero')
-
-                const divNegroCorreo = document.createElement('div')
-                const divNegroNombreCorreo = document.createElement('div')
-                const divNegroNumeroCorreo = document.createElement('div')
-                divNegroNombreCorreo.textContent = `Negro`
-                divNegroNumeroCorreo.textContent = `${count.correo.Negro || 0}`
-                divNegroCorreo.appendChild(divNegroNombreCorreo)
-                divNegroCorreo.appendChild(divNegroNumeroCorreo)
-                divNegroNombreCorreo.classList.add('divResumenNombre', "solidDown", "colorNegro")
-                divNegroNumeroCorreo.classList.add('divResumenNumero')
-
-                const divBlancoCorreo = document.createElement('div')
-                const divBlancoNombreCorreo = document.createElement('div')
-                const divBlancoNumeroCorreo = document.createElement('div')
-                divBlancoNombreCorreo.textContent = `Blanco`
-                divBlancoNumeroCorreo.textContent = `${count.correo.Blanco || 0}`
-                divBlancoCorreo.appendChild(divBlancoNombreCorreo)
-                divBlancoCorreo.appendChild(divBlancoNumeroCorreo)
-                divBlancoNombreCorreo.classList.add('divResumenNombre', "borderRight", "solidDown", "colorBlanco")
-                divBlancoNumeroCorreo.classList.add('divResumenNumero')
-
-
-                const divFlex = document.createElement('div')
-
-                const divEtiquetaFlex = document.createElement('div')
-                const divEtiquetaNombreFlex = document.createElement('a')
-                const divEtiquetaNumeroFlex = document.createElement('div')
-
-
-                divEtiquetaNombreFlex.textContent = `Flex`
-                divEtiquetaNumeroFlex.textContent = `${pack.flex || 0}`
-                divEtiquetaFlex.appendChild(divEtiquetaNombreFlex)
-                divEtiquetaFlex.appendChild(divEtiquetaNumeroFlex)
-                divEtiquetaNombreFlex.classList.add('divResumenNombre', 'borderRight', 'borderLeft', 'colorVerde')
-                divEtiquetaNumeroFlex.classList.add('divResumenNumero')
-                divEtiquetaFlex.classList.add('divResumen')
-
-                const divCantidadVariantesFlex = document.createElement('div')
-
-                const divBeigeFlex = document.createElement('div')
-                const divBeigeNombreFlex = document.createElement('div')
-                const divBeigeNumeroFlex = document.createElement('div')
-                divBeigeNombreFlex.textContent = `Beige`
-                divBeigeNumeroFlex.textContent = `${count.flex.Beige || 0}`
-                divBeigeFlex.appendChild(divBeigeNombreFlex)
-                divBeigeFlex.appendChild(divBeigeNumeroFlex)
-                divBeigeNombreFlex.classList.add('divResumenNombre', "borderLeft", "solidDown", 'colorBeige')
-                divBeigeNumeroFlex.classList.add('divResumenNumero')
-
-                const divGrisOscuroFlex = document.createElement('div')
-                const divGrisOscuroNombreFlex = document.createElement('div')
-                const divGrisOscuroNumeroFlex = document.createElement('div')
-                divGrisOscuroNombreFlex.textContent = `Gris Oscuro`
-                divGrisOscuroNumeroFlex.textContent = `${count.flex["Gris oscuro"] || 0}`
-                divGrisOscuroFlex.appendChild(divGrisOscuroNombreFlex)
-                divGrisOscuroFlex.appendChild(divGrisOscuroNumeroFlex)
-                divGrisOscuroNombreFlex.classList.add('divResumenNombre', "solidDown", "colorGrisOscuro")
-                divGrisOscuroNumeroFlex.classList.add('divResumenNumero')
-
-                const divgrisClaroFlex = document.createElement('div')
-                const divGrisClaroNombreFlex = document.createElement('div')
-                const divGrisClaroNumeroFlex = document.createElement('div')
-                divGrisClaroNombreFlex.textContent = `Gris Claro`
-                divGrisClaroNumeroFlex.textContent = `${count.flex["Gris Claro"] || 0}`
-                divgrisClaroFlex.appendChild(divGrisClaroNombreFlex)
-                divgrisClaroFlex.appendChild(divGrisClaroNumeroFlex)
-                divGrisClaroNombreFlex.classList.add('divResumenNombre', "solidDown", "colorGrisClaro")
-                divGrisClaroNumeroFlex.classList.add('divResumenNumero')
-
-                const divNegroFlex = document.createElement('div')
-                const divNegroNombreFlex = document.createElement('div')
-                const divNegroNumeroFlex = document.createElement('div')
-                divNegroNombreFlex.textContent = `Negro`
-                divNegroNumeroFlex.textContent = `${count.flex.Negro || 0}`
-                divNegroFlex.appendChild(divNegroNombreFlex)
-                divNegroFlex.appendChild(divNegroNumeroFlex)
-                divNegroNombreFlex.classList.add('divResumenNombre', "solidDown", "colorNegro")
-                divNegroNumeroFlex.classList.add('divResumenNumero')
-
-                const divBlancoFlex = document.createElement('div')
-                const divBlancoNombreFlex = document.createElement('div')
-                const divBlancoNumeroFlex = document.createElement('div')
-                divBlancoNombreFlex.textContent = `Blanco`
-                divBlancoNumeroFlex.textContent = `${count.flex.Blanco || 0}`
-                divBlancoFlex.appendChild(divBlancoNombreFlex)
-                divBlancoFlex.appendChild(divBlancoNumeroFlex)
-                divBlancoNombreFlex.classList.add('divResumenNombre', "solidDown", 'colorBlanco', "borderRight")
-                divBlancoNumeroFlex.classList.add('divResumenNumero')
-
-                const divPajaroFlex = document.createElement('div')
-                const divPajaroNombreFlex = document.createElement('div')
-                const divPajaroNumeroFlex = document.createElement('div')
-                divPajaroNombreFlex.textContent = `Pajaro`
-                divPajaroNumeroFlex.textContent = `${count.flex.null || 0}` //corregir api a pajaro
-                divPajaroFlex.appendChild(divPajaroNombreFlex)
-                divPajaroFlex.appendChild(divPajaroNumeroFlex)
-                divPajaroNombreFlex.classList.add('divResumenNombre', "solidDown", "colorPajaro", "borderRight", "borderLeft")
-                divPajaroNumeroFlex.classList.add('divResumenNumero')
-                divPajaroFlex.classList.add("divCantidadVariantes", "flexColumn")
-
-                const divPajaroCorreo = document.createElement('div')
-                const divPajaroNombreCorreo = document.createElement('div')
-                const divPajaroNumeroCorreo = document.createElement('div')
-                divPajaroNombreCorreo.textContent = `Pajaro`
-                divPajaroNumeroCorreo.textContent = `${count.correo.null || 0}` //corregir api a pajaro
-                divPajaroCorreo.appendChild(divPajaroNombreCorreo)
-                divPajaroCorreo.appendChild(divPajaroNumeroCorreo)
-                divPajaroNombreCorreo.classList.add('divResumenNombre', "solidDown", "colorPajaro", "borderRight", "borderLeft")
-                divPajaroNumeroCorreo.classList.add('divResumenNumero')
-                divPajaroCorreo.classList.add("divCantidadVariantes", "flexColumn")
-
-
-                divCantidadVariantesCorreo.appendChild(divBeigeCorreo)
-                divCantidadVariantesCorreo.appendChild(divGrisOscuroCorreo)
-                divCantidadVariantesCorreo.appendChild(divgrisClaroCorreo)
-                divCantidadVariantesCorreo.appendChild(divNegroCorreo)
-                divCantidadVariantesCorreo.appendChild(divBlancoCorreo)
-
-                divCorreo.appendChild(divEtiquetaCorreo)
-                divCorreo.appendChild(divCantidadVariantesCorreo)
-                divCorreo.appendChild(divPajaroCorreo)
-                divCantidadVariantesCorreo.classList.add("divCantidadVariantes", "flexRow")
-
-                divCantidadVariantesFlex.appendChild(divBeigeFlex)
-                divCantidadVariantesFlex.appendChild(divGrisOscuroFlex)
-                divCantidadVariantesFlex.appendChild(divgrisClaroFlex)
-                divCantidadVariantesFlex.appendChild(divNegroFlex)
-                divCantidadVariantesFlex.appendChild(divBlancoFlex)
-                divFlex.appendChild(divEtiquetaFlex)
-                divFlex.appendChild(divCantidadVariantesFlex)
-                divFlex.appendChild(divPajaroFlex)
-                divCantidadVariantesFlex.classList.add("divCantidadVariantes", "flexRow")
 
                 const divEnvios = document.createElement('div')
 
-                divEnvios.appendChild(divCorreo)
-                divEnvios.appendChild(divFlex)
-
                 divEnvios.classList.add("divEnvios")
 
+                let divFlex, divCorreo;
 
-                divFlex.classList.add("divCounts")
-                divCorreo.classList.add("divCounts")
+                const crearDivCorreo = () => {
+                    divCorreo = document.createElement('div')
+
+                    const divEtiquetaCorreo = document.createElement('div')
+                    const divEtiquetaNombreCorreo = document.createElement('div')
+                    const divEtiquetaNumeroCorreo = document.createElement('div')
+                    const divEtiquetaNumeroCorreoTotal = document.createElement('div')
+                    const divEtiquetaNumeroCorreoToPrint = document.createElement('div')
+                    divEtiquetaNumeroCorreo.style.display='flex'
+                    divEtiquetaNumeroCorreoTotal.classList.add('divEtiquetaCantidad')
+                    divEtiquetaNumeroCorreoToPrint.classList.add('divEtiquetaCantidad')
+                    divEtiquetaNombreCorreo.textContent = `Correo`
+                    divEtiquetaNumeroCorreoTotal.textContent = `${pack.correo || 0}`
+                    divEtiquetaNumeroCorreoToPrint.textContent = `${pack.toPrintCorreo || 0}`
+                    divEtiquetaCorreo.appendChild(divEtiquetaNombreCorreo)
+                    divEtiquetaNumeroCorreo.appendChild(divEtiquetaNumeroCorreoTotal)
+                    divEtiquetaNumeroCorreo.appendChild(divEtiquetaNumeroCorreoToPrint)
+                    divEtiquetaCorreo.appendChild(divEtiquetaNumeroCorreo)
+                    divEtiquetaNombreCorreo.classList.add('divResumenNombre', 'borderRight', 'borderLeft', 'colorNaranja')
+                    divEtiquetaNumeroCorreoTotal.classList.add('divResumenNumero')
+                    divEtiquetaNumeroCorreoToPrint.classList.add('divResumenNumero')
+                    divEtiquetaCorreo.classList.add('divResumen')
+
+                    const divCantidadVariantesCorreo = document.createElement('div')
+
+                    const divBeigeCorreo = document.createElement('div')
+                    const divBeigeNombreCorreo = document.createElement('div')
+                    const divBeigeNumeroCorreo = document.createElement('div')
+                    divBeigeNombreCorreo.textContent = `Beige`
+                    divBeigeNumeroCorreo.textContent = `${count.correo.Beige || 0}`
+                    divBeigeCorreo.appendChild(divBeigeNombreCorreo)
+                    divBeigeCorreo.appendChild(divBeigeNumeroCorreo)
+                    divBeigeNombreCorreo.classList.add('divResumenNombre', "borderLeft", "solidDown", "colorBeige")
+                    divBeigeNumeroCorreo.classList.add('divResumenNumero')
+
+                    const divGrisOscuroCorreo = document.createElement('div')
+                    const divGrisOscuroNombreCorreo = document.createElement('div')
+                    const divGrisOscuroNumeroCorreo = document.createElement('div')
+                    divGrisOscuroNombreCorreo.textContent = `Gris Oscuro`
+                    divGrisOscuroNumeroCorreo.textContent = `${count.correo["Gris oscuro"] || 0}`
+                    divGrisOscuroCorreo.appendChild(divGrisOscuroNombreCorreo)
+                    divGrisOscuroCorreo.appendChild(divGrisOscuroNumeroCorreo)
+                    divGrisOscuroNombreCorreo.classList.add('divResumenNombre', "solidDown", "colorGrisOscuro")
+                    divGrisOscuroNumeroCorreo.classList.add('divResumenNumero')
+
+                    const divgrisClaroCorreo = document.createElement('div')
+                    const divGrisClaroNombreCorreo = document.createElement('div')
+                    const divGrisClaroNumeroCorreo = document.createElement('div')
+                    divGrisClaroNombreCorreo.textContent = `Gris Claro`
+                    divGrisClaroNumeroCorreo.textContent = `${count.correo["Gris Claro"] || 0}`
+                    divgrisClaroCorreo.appendChild(divGrisClaroNombreCorreo)
+                    divgrisClaroCorreo.appendChild(divGrisClaroNumeroCorreo)
+                    divGrisClaroNombreCorreo.classList.add('divResumenNombre', "solidDown", "colorGrisClaro")
+                    divGrisClaroNumeroCorreo.classList.add('divResumenNumero')
+
+                    const divNegroCorreo = document.createElement('div')
+                    const divNegroNombreCorreo = document.createElement('div')
+                    const divNegroNumeroCorreo = document.createElement('div')
+                    divNegroNombreCorreo.textContent = `Negro`
+                    divNegroNumeroCorreo.textContent = `${count.correo.Negro || 0}`
+                    divNegroCorreo.appendChild(divNegroNombreCorreo)
+                    divNegroCorreo.appendChild(divNegroNumeroCorreo)
+                    divNegroNombreCorreo.classList.add('divResumenNombre', "solidDown", "colorNegro")
+                    divNegroNumeroCorreo.classList.add('divResumenNumero')
+
+                    const divBlancoCorreo = document.createElement('div')
+                    const divBlancoNombreCorreo = document.createElement('div')
+                    const divBlancoNumeroCorreo = document.createElement('div')
+                    divBlancoNombreCorreo.textContent = `Blanco`
+                    divBlancoNumeroCorreo.textContent = `${count.correo.Blanco || 0}`
+                    divBlancoCorreo.appendChild(divBlancoNombreCorreo)
+                    divBlancoCorreo.appendChild(divBlancoNumeroCorreo)
+                    divBlancoNombreCorreo.classList.add('divResumenNombre', "borderRight", "solidDown", "colorBlanco")
+                    divBlancoNumeroCorreo.classList.add('divResumenNumero')
+
+                    const divPajaroCorreo = document.createElement('div')
+                    const divPajaroNombreCorreo = document.createElement('div')
+                    const divPajaroNumeroCorreo = document.createElement('div')
+                    divPajaroNombreCorreo.textContent = `Pajaro`
+                    divPajaroNumeroCorreo.textContent = `${count.correo.null || 0}` //corregir api a pajaro
+                    divPajaroCorreo.appendChild(divPajaroNombreCorreo)
+                    divPajaroCorreo.appendChild(divPajaroNumeroCorreo)
+                    divPajaroNombreCorreo.classList.add('divResumenNombre', "solidDown", "colorPajaro", "borderRight", "borderLeft")
+                    divPajaroNumeroCorreo.classList.add('divResumenNumero')
+                    divPajaroCorreo.classList.add("divCantidadVariantes", "flexColumn")
+
+
+                    divCantidadVariantesCorreo.appendChild(divBeigeCorreo)
+                    divCantidadVariantesCorreo.appendChild(divGrisOscuroCorreo)
+                    divCantidadVariantesCorreo.appendChild(divgrisClaroCorreo)
+                    divCantidadVariantesCorreo.appendChild(divNegroCorreo)
+                    divCantidadVariantesCorreo.appendChild(divBlancoCorreo)
+
+                    divCorreo.appendChild(divEtiquetaCorreo)
+                    divCorreo.appendChild(divCantidadVariantesCorreo)
+                    divCorreo.appendChild(divPajaroCorreo)
+                    divCorreo.classList.add("divCounts")
+                    divCantidadVariantesCorreo.classList.add("divCantidadVariantes", "flexRow")
+                    divEnvios.appendChild(divCorreo)
+
+                }
+
+                const crearDivFlex = () => {
+                    divFlex = document.createElement('div')
+
+                    const divEtiquetaFlex = document.createElement('div')
+                    const divEtiquetaNombreFlex = document.createElement('div')
+                    const divEtiquetaNumeroFlex = document.createElement('div')
+                    const divEtiquetaNumeroFlexTotal = document.createElement('div')
+                    const divEtiquetaNumeroFlexToPrint = document.createElement('div')
+                    divEtiquetaNumeroFlex.style.display='flex'
+                    divEtiquetaNumeroFlexTotal.classList.add('divEtiquetaCantidad')
+                    divEtiquetaNumeroFlexToPrint.classList.add('divEtiquetaCantidad')
+                    divEtiquetaNombreFlex.textContent = `Flex`
+                    divEtiquetaNumeroFlexTotal.textContent = `${pack.flex || 0}`
+                    divEtiquetaNumeroFlexToPrint.textContent = `${pack.toPrintFlex || 0}`
+                    divEtiquetaFlex.appendChild(divEtiquetaNombreFlex)
+                    divEtiquetaNumeroFlex.appendChild(divEtiquetaNumeroFlexTotal)
+                    divEtiquetaNumeroFlex.appendChild(divEtiquetaNumeroFlexToPrint)
+                    divEtiquetaFlex.appendChild(divEtiquetaNumeroFlex)
+                    divEtiquetaNombreFlex.classList.add('divResumenNombre', 'borderRight', 'borderLeft', 'colorVerde')
+                    divEtiquetaNumeroFlexTotal.classList.add('divResumenNumero')
+                    divEtiquetaNumeroFlexToPrint.classList.add('divResumenNumero')
+                    divEtiquetaFlex.classList.add('divResumen')
+
+                    
+                    
+                    const divCantidadVariantesFlex = document.createElement('div')
+
+                    const divBeigeFlex = document.createElement('div')
+                    const divBeigeNombreFlex = document.createElement('div')
+                    const divBeigeNumeroFlex = document.createElement('div')
+                    divBeigeNombreFlex.textContent = `Beige`
+                    divBeigeNumeroFlex.textContent = `${count.flex.Beige || 0}`
+                    divBeigeFlex.appendChild(divBeigeNombreFlex)
+                    divBeigeFlex.appendChild(divBeigeNumeroFlex)
+                    divBeigeNombreFlex.classList.add('divResumenNombre', "borderLeft", "solidDown", 'colorBeige')
+                    divBeigeNumeroFlex.classList.add('divResumenNumero')
+
+                    const divGrisOscuroFlex = document.createElement('div')
+                    const divGrisOscuroNombreFlex = document.createElement('div')
+                    const divGrisOscuroNumeroFlex = document.createElement('div')
+                    divGrisOscuroNombreFlex.textContent = `Gris Oscuro`
+                    divGrisOscuroNumeroFlex.textContent = `${count.flex["Gris oscuro"] || 0}`
+                    divGrisOscuroFlex.appendChild(divGrisOscuroNombreFlex)
+                    divGrisOscuroFlex.appendChild(divGrisOscuroNumeroFlex)
+                    divGrisOscuroNombreFlex.classList.add('divResumenNombre', "solidDown", "colorGrisOscuro")
+                    divGrisOscuroNumeroFlex.classList.add('divResumenNumero')
+
+                    const divgrisClaroFlex = document.createElement('div')
+                    const divGrisClaroNombreFlex = document.createElement('div')
+                    const divGrisClaroNumeroFlex = document.createElement('div')
+                    divGrisClaroNombreFlex.textContent = `Gris Claro`
+                    divGrisClaroNumeroFlex.textContent = `${count.flex["Gris Claro"] || 0}`
+                    divgrisClaroFlex.appendChild(divGrisClaroNombreFlex)
+                    divgrisClaroFlex.appendChild(divGrisClaroNumeroFlex)
+                    divGrisClaroNombreFlex.classList.add('divResumenNombre', "solidDown", "colorGrisClaro")
+                    divGrisClaroNumeroFlex.classList.add('divResumenNumero')
+
+                    const divNegroFlex = document.createElement('div')
+                    const divNegroNombreFlex = document.createElement('div')
+                    const divNegroNumeroFlex = document.createElement('div')
+                    divNegroNombreFlex.textContent = `Negro`
+                    divNegroNumeroFlex.textContent = `${count.flex.Negro || 0}`
+                    divNegroFlex.appendChild(divNegroNombreFlex)
+                    divNegroFlex.appendChild(divNegroNumeroFlex)
+                    divNegroNombreFlex.classList.add('divResumenNombre', "solidDown", "colorNegro")
+                    divNegroNumeroFlex.classList.add('divResumenNumero')
+
+                    const divBlancoFlex = document.createElement('div')
+                    const divBlancoNombreFlex = document.createElement('div')
+                    const divBlancoNumeroFlex = document.createElement('div')
+                    divBlancoNombreFlex.textContent = `Blanco`
+                    divBlancoNumeroFlex.textContent = `${count.flex.Blanco || 0}`
+                    divBlancoFlex.appendChild(divBlancoNombreFlex)
+                    divBlancoFlex.appendChild(divBlancoNumeroFlex)
+                    divBlancoNombreFlex.classList.add('divResumenNombre', "solidDown", 'colorBlanco', "borderRight")
+                    divBlancoNumeroFlex.classList.add('divResumenNumero')
+
+                    const divPajaroFlex = document.createElement('div')
+                    const divPajaroNombreFlex = document.createElement('div')
+                    const divPajaroNumeroFlex = document.createElement('div')
+                    divPajaroNombreFlex.textContent = `Pajaro`
+                    divPajaroNumeroFlex.textContent = `${count.flex.null || 0}` //corregir api a pajaro
+                    divPajaroFlex.appendChild(divPajaroNombreFlex)
+                    divPajaroFlex.appendChild(divPajaroNumeroFlex)
+                    divPajaroNombreFlex.classList.add('divResumenNombre', "solidDown", "colorPajaro", "borderRight", "borderLeft")
+                    divPajaroNumeroFlex.classList.add('divResumenNumero')
+                    divPajaroFlex.classList.add("divCantidadVariantes", "flexColumn")
+
+
+
+                    divCantidadVariantesFlex.appendChild(divBeigeFlex)
+                    divCantidadVariantesFlex.appendChild(divGrisOscuroFlex)
+                    divCantidadVariantesFlex.appendChild(divgrisClaroFlex)
+                    divCantidadVariantesFlex.appendChild(divNegroFlex)
+                    divCantidadVariantesFlex.appendChild(divBlancoFlex)
+                    divFlex.appendChild(divEtiquetaFlex)
+                    divFlex.appendChild(divCantidadVariantesFlex)
+                    divFlex.appendChild(divPajaroFlex)
+                    divFlex.classList.add("divCounts")
+
+                    divCantidadVariantesFlex.classList.add("divCantidadVariantes", "flexRow")
+                    divEnvios.appendChild(divFlex)
+
+                }
+
+                crearDivFlex()
+                crearDivCorreo()
+
+                buttonFiltroFlex.addEventListener('click', () => {
+                    divCorreo.remove()
+                    divFlex.remove()
+                    crearDivFlex()
+                })
+
+                buttonFiltroCorreo.addEventListener('click', () => {
+                    divFlex.remove()
+                    divCorreo.remove()
+                    crearDivCorreo()
+                })
+
+                buttonFiltroTodas.addEventListener('click', () => {
+                    divCorreo.remove()
+                    divFlex.remove()
+                    crearDivFlex()
+                    crearDivCorreo()
+                })
+
                 ordenes.appendChild(divEnvios)
 
                 /////////////// ICONO MAPA FLEX
@@ -281,6 +331,8 @@
                 const divDescargaTodas = document.createElement('div')
 
                 ordenes.appendChild(divDescargaTodas)
+
+
 
                 data.forEach(element => {
                     const bloquePadre = document.createElement('div')
@@ -356,6 +408,9 @@
                         tipoEnvio = element.shipping_info.status
                     }
 
+                    let fecha = new Date(element.date_created)
+                    let fechaEtiqueta = fecha.getFullYear()+String(fecha.getMonth() + 1).padStart(2, '0')+String(fecha.getDate()).padStart(2, '0')
+
                     ventaId.textContent = `Venta: #${element.ventaid}`
                     orderId.textContent = `orden: ${element.id}`
                     Client.textContent = `Cliente: ${element.buyer.nickname}`
@@ -368,6 +423,8 @@
                     ShippingLastTime.textContent = `Despachar antes de: ${new Date(element.shipping_info.lastTimeToSend).toLocaleString()}`
                     ShippingType.textContent = tipoEnvio
                     sector.textContent = `Sector: ${element.shipping_info?.receiver_address?.state.name || 'No disponible'}`
+
+                    const ubicacion = element.shipping_info?.receiver_address?.state.name
 
                     title.textContent = `${element.order_items[0].item.title}`
 
@@ -418,6 +475,12 @@
                     buttonDescarga.textContent = '>'
                     const variantesSTR = variantes.join(" | ")
                     buttonDescarga.addEventListener("click", async () => {
+
+                        if (element.shipping_info.logistic_type === 'self_service' && element.shipping_info.substatus === 'ready_to_print')
+                            buttonDescarga.classList.toggle("buttonDescargaFlexPTD")
+                        if ((element.shipping_info.logistic_type === 'drop_off' || element.shipping_info.logistic_type === 'xd_drop_off') && element.shipping_info.substatus === 'ready_to_print') 
+                            buttonDescarga.classList.toggle("buttonDescargaCorreoPTD")
+                        
                         const bodyData = {
                             usuario: element.seller.nickname,
                             id: element.shipping.id,
@@ -439,7 +502,7 @@
                             const url = window.URL.createObjectURL(blob);
                             const a = document.createElement('a');
                             a.href = url;
-                            a.download = `${element.shipping.id}.pdf`; // nombre del archivo
+                            a.download = `${fechaEtiqueta}-${element.ventaid}${tipoEnvio==="FLEX"?'-'+ubicacion:''}-${tipoEnvio==="FLEX"?'FL':'CA'}.pdf`; // nombre del archivo
                             document.body.appendChild(a);
                             a.click();
                             a.remove();
@@ -453,7 +516,7 @@
 
                     ShippingMap.appendChild(link)
 
-                    bloqueData.appendChild(titleResumen)
+                    bloqueData.appendChild(Seller)
                     bloqueData.appendChild(ventaId)
                     bloqueData.appendChild(dateCreated)
                     bloqueData.appendChild(Client)
@@ -468,7 +531,7 @@
                         paymentId.innerHTML += `${pays} `;
                     })
                     bloquePago.classList.add("bloquePago")
-                    bloquePago.appendChild(Seller)
+                    bloquePago.appendChild(titleResumen)
 
                     totalPubli.textContent = `Precio: $${element.pagos.totalPubli}`;
                     bloquePago.appendChild(totalPubli)
@@ -530,7 +593,7 @@
                         buttonDescarga.classList.add("buttonDescargaCorreoRTP")
                     } else if ((element.shipping_info.logistic_type === 'drop_off' || element.shipping_info.logistic_type === 'xd_drop_off') && element.shipping_info.substatus === 'printed') {
                         buttonDescarga.classList.add("buttonDescargaCorreoPTD")
-                    }
+                    }                    
 
                     buttonDescarga.classList.add("buttonDescarga")
                     bloquePadre.classList.add("bloquePadreStyle")

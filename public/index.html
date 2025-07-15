@@ -433,7 +433,7 @@
 
                         const divProduct = document.createElement('div')
                         const quantity = document.createElement('p')
-                        const color = detalle.color || null
+                        const color = detalle.variante || null
                         var productBrev
                         if (color === 'Gris Claro') {
                             divProduct.classList.add("productGrisClaro", "colorGrisClaro")
@@ -450,23 +450,23 @@
                         } else if (color === 'Blanco') {
                             divProduct.classList.add("productBlanco", "colorBlanco", "bordeCirculoProduct")
                             productBrev = "BL"
-                        } else if (detalle.product === 'Pajaro') {
+                        } else if (detalle.tipo === 'Juguete') {
                             divProduct.classList.add("productPajaro", "colorPajaro")
                             productBrev = "PJ"
                         } else {
                             divProduct.classList.add("productSC")
                         }
 
-                        orderResumen.innerHTML += `- ${detalle.product || title.textContent} ${detalle.color || ''} x${detalle.cantidad}<br>`
+                        orderResumen.innerHTML += `- ${detalle.tipo || title.textContent} ${detalle.variante || ''} x${detalle.cantidad}<br>`
 
                         variantes.push(`${productBrev} : ${detalle.cantidad}`)
                         quantity.textContent = `x${detalle.cantidad}`
 
-                        var detalleProduct = `${detalle.product} ${detalle.color || ''}`
+                        var detalleProduct = `${detalle.tipo} ${detalle.variante || ''}`
                         if (variantes.length > 1) {
                             titleResumen.textContent = `PACK`
                         } else {
-                            titleResumen.textContent = `${detalle.product || title.textContent} ${detalle.color || ''}`
+                            titleResumen.textContent = `${detalle.tipo || title.textContent} ${detalle.variante || ''}`
                         }
                         divProduct.appendChild(quantity)
                         bloqueProduct.appendChild(divProduct)

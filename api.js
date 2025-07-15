@@ -61,29 +61,52 @@ const createVentaId = (orders) => {
 
 const variantes = (valueName,mla) => {
     let type;
-    let value;
+    let valueVariante;
+    let brev;
     
 
-    if (valueName === "Beige" || mla === "MLA2097220908" || mla === "MLA2152579766") {
-        value = 'Beige'
+    if (valueName === "Beige" || ["MLA2097220908","MLA2152579766"].includes(mla)) {
+        valueVariante = 'Beige'
         type = 'Alfombra'
-    } else if (valueName === "Gris oscuro" || mla === "MLA2097220910" || mla === "MLA2152488642") {
-        value = 'Gris oscuro'
+        brev = 'BG'
+
+    } else if (valueName === "Gris oscuro" || ["MLA2097220910","MLA2152488642"].includes(mla)) {
+        valueVariante = 'Gris oscuro'
         type = 'Alfombra'
-    } else if (valueName === "Gris Claro" || mla === "MLA2097220912" || mla === "MLA2152475848") {
-        value = 'Gris Claro'
+        brev = 'OS'
+
+    } else if (valueName === "Gris Claro" || ["MLA2097220912","MLA2152475848"].includes(mla)) {
+        valueVariante = 'Gris Claro'
         type = 'Alfombra'
-    } else if (valueName === "Negro" || mla === "MLA2104745370" || mla === "MLA1508055601") {
-        value = 'Negro'
+        brev = 'CL'
+
+    } else if (valueName === "Negro" || ["MLA2104745370","MLA1508055601"].includes(mla)) {
+        valueVariante = 'Negro'
         type = 'Alfombra'
-    } else if (valueName === "Blanco" || mla === "MLA1507750191" || mla === "MLA2153666050") {
-        value = 'Blanco'
+        brev = 'NG'
+
+    } else if (valueName === "Blanco" || ["MLA1507750191","MLA2153666050"].includes(mla)) {
+        valueVariante = 'Blanco'
         type = 'Alfombra'
-    } else if (mla === "MLA1500334145") {
-        type = 'Pajaro'
-        value = null
+        brev = 'BL'
+
+    } else if (["MLA1500334145"].includes(mla)) {
+        valueVariante = 'Pajaro'
+        type = 'Juguete'
+        brev = 'PJ'
+
+    } else if (["MLA1241847466","MLA1287984004"].includes(mla)) {
+        valueVariante = 'Mundial Qatar'
+        type = 'Album'
+        brev = 'MQAT'
+
+    } else if (["MLA1413919557"].includes(mla)) {
+        valueVariante = 'Copa America'
+        type = 'Album'
+        brev = 'COPAM'
+
     }
-    return {type,value}
+    return {type,valueVariante}
 }
 
 const fixVentaId = (orders) => {
@@ -102,21 +125,21 @@ const fixVentaId = (orders) => {
             element.paymentsOriginales.push(...paymentsApproved)
             
             const valueName = element.order_items?.[0]?.item?.variation_attributes?.[0]?.value_name;
-            const mla_id = element.order_items?.[0]?.item?.id
+            var mla_id = element.order_items?.[0]?.item?.id
             
-            var { type, value } = variantes(valueName,mla_id);
+            var { type, valueVariante } = variantes(valueName,mla_id);
 
             var cantReal
-            if (["MLA2152475848", "MLA2152488642", "MLA2152579766", "MLA2153666050", "MLA1508055601"].includes(element.order_items?.[0]?.item?.id)) {
+            if (["MLA2152475848", "MLA2152488642", "MLA2152579766", "MLA2153666050", "MLA1508055601"].includes(mla_id)) {
                 cantReal = 2 * element.order_items[0].quantity
             } else {
                 cantReal = element.order_items[0].quantity
             }
-
+            
             element.orderItemNuevo.push(element.order_items[0])
             element.orderResumen.push({
-                product: type,
-                color: value,
+                tipo: type,
+                variante: valueVariante,
                 cantidad: cantReal
             })
 
@@ -129,35 +152,17 @@ const fixVentaId = (orders) => {
                     ventas.paymentsOriginales.push(...paymentsApproved)
                     ventas.orderItemNuevo.push(element.order_items[0])
                     const valueName = element.order_items?.[0]?.item?.variation_attributes?.[0]?.value_name;
-                    if (valueName === "Beige" || element.order_items?.[0]?.item?.id === "MLA2097220908" || element.order_items?.[0]?.item?.id === "MLA2152579766") {
-                        value = 'Beige'
-                        type = 'Alfombra'
-                    } else if (valueName === "Gris oscuro" || element.order_items?.[0]?.item?.id === "MLA2097220910" || element.order_items?.[0]?.item?.id === "MLA2152488642") {
-                        value = 'Gris oscuro'
-                        type = 'Alfombra'
-                    } else if (valueName === "Gris Claro" || element.order_items?.[0]?.item?.id === "MLA2097220912" || element.order_items?.[0]?.item?.id === "MLA2152475848") {
-                        value = 'Gris Claro'
-                        type = 'Alfombra'
-                    } else if (valueName === "Negro" || element.order_items?.[0]?.item?.id === "MLA2104745370" || element.order_items?.[0]?.item?.id === "MLA1508055601") {
-                        value = 'Negro'
-                        type = 'Alfombra'
-                    } else if (valueName === "Blanco" || element.order_items?.[0]?.item?.id === "MLA1507750191" || element.order_items?.[0]?.item?.id === "MLA2153666050") {
-                        value = 'Blanco'
-                        type = 'Alfombra'
-                    } else if (element.order_items?.[0]?.item?.id === "MLA1500334145") {
-                        type = 'Pajaro'
-                        value = null
-                    }
+                    var { type, valueVariante } = variantes(valueName,mla_id);
 
                     var cantReal
-                    if (["MLA2152475848", "MLA2152488642", "MLA2152579766", "MLA2153666050", "MLA1508055601"].includes(element.order_items?.[0]?.item?.id)) {
+                    if (["MLA2152475848", "MLA2152488642", "MLA2152579766", "MLA2153666050", "MLA1508055601"].includes(mla_id)) {
                         cantReal = 2 * element.order_items[0].quantity
                     } else {
                         cantReal = element.order_items[0].quantity
                     }
                     ventas.orderResumen.push({
-                        product: type,
-                        color: value,
+                        tipo: type,
+                        variante: valueVariante,
                         cantidad: cantReal
                     })
 

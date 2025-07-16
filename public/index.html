@@ -614,16 +614,7 @@
                     function eliminarBloquePagoSiEsPantallaChica() {
                         if (window.matchMedia("(max-width: 768px)").matches) {
                             const bloquesPago = document.querySelectorAll('.bloquePago');
-                            divBeigeNombreCorreo.textContent = `BG`
-                            divGrisClaroNombreCorreo.textContent = `GC`
-                            divGrisOscuroNombreCorreo.textContent = `GO`
-                            divNegroNombreCorreo.textContent = `NG`
-                            divBlancoNombreCorreo.textContent = `BL`
-                            divBeigeNombreFlex.textContent = `BG`
-                            divGrisClaroNombreFlex.textContent = `GC`
-                            divGrisOscuroNombreFlex.textContent = `GO`
-                            divNegroNombreFlex.textContent = `NG`
-                            divBlancoNombreFlex.textContent = `BL`
+                            
                             bloquesPago.forEach(div => div.remove());
                         }
                     }

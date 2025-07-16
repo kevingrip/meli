@@ -293,7 +293,6 @@ body{
     display: flex;
     flex-direction: column;
     gap: 6vh;
-    min-width: 770px;
 }
 
 .divCantidadVariantes{

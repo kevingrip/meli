@@ -1,17 +1,22 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Login</title>
+  <link rel="stylesheet" type="text/css" href="./styles.css">
 </head>
+
 <body style="display:flex;flex-direction:column;align-items: center;">
   <h1>Iniciar sesión</h1>
 
   <form id="loginForm">
-    <input type="email" id="email" placeholder="Email" required /><br><br>
+    <input type="string" id="user" placeholder="Usuario" required /><br><br>
     <input type="password" id="password" placeholder="Contraseña" required /><br><br>
-    <button type="submit">Entrar</button>
+    <div class="centrar">
+      <button type="submit">Entrar</button>
+    </div>
   </form>
 
   <p id="mensaje"></p>
@@ -22,9 +27,8 @@
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      mensaje.textContent='Cargando'
 
-      const email = document.getElementById('email').value;
+      const user = document.getElementById('user').value;
       const password = document.getElementById('password').value;
 
       try {
@@ -32,7 +36,7 @@
         const loginResponse = await fetch('/api/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password }),
+          body: JSON.stringify({ user, password }),
         });
 
         const loginData = await loginResponse.json();
@@ -44,28 +48,27 @@
         }
 
         const token = loginData.token;
-        localStorage.setItem('token', token); // guardar token
+        localStorage.setItem('token', token); // guardar token       
 
-        // Paso 2: validar token accediendo a /api/orders
-        const validarResponse = await fetch('/api/orders', {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${token}`,
+
+
+        // Paso 3: redirigir si el token es válido
+        mensaje.textContent = "Login correcto, redirigiendo...";
+        mensaje.style.color = 'green';
+
+        setTimeout(() => {
+          if (user != 'admin') {
+            window.location.href = 'inicio.html';
+          } else {
+            window.location.href = 'index.html';
           }
+        }, 1000);
+
+        window.addEventListener('pageshow', () => {
+          document.getElementById('loginForm').reset();
+          mensaje.textContent = '';
         });
 
-        if (validarResponse.ok) {
-          mensaje.textContent = "Login correcto, redirigiendo...";
-          mensaje.style.color = 'green';
-
-          // Paso 3: redirigir si el token es válido
-          setTimeout(() => {
-            window.location.href = 'index.html'; // o la página que quieras
-          }, 500);
-        } else {
-          mensaje.textContent = "Token inválido o expirado.";
-          mensaje.style.color = 'red';
-        }
       } catch (error) {
         console.error(error);
         mensaje.textContent = "Error de red o del servidor.";
@@ -74,4 +77,5 @@
     });
   </script>
 </body>
+
 </html>

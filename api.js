@@ -22,7 +22,7 @@ const cantidadStockPublicado = (mla) => {
 
 const url = (seller) => {
     return `https://api.mercadolibre.com/orders/search?seller=${seller}&sort=date_desc&limit=50`
-    //return `https://api.mercadolibre.com/orders/search?seller=${seller}&sort=date_desc&limit=50&order.date_created.from=2025-05-20T00:00:00Z&order.date_created.to=2025-06-08T00:00:00Z`
+    // return `https://api.mercadolibre.com/orders/search?seller=${seller}&sort=date_desc&limit=50&order.date_created.from=2025-06-28T00:00:00Z&order.date_created.to=2025-07-10T00:00:00Z`
 }
 
 const shippingRoute = (shipment_id) => {
@@ -98,12 +98,12 @@ const variantes = (valueName,mla) => {
     } else if (["MLA1241847466","MLA1287984004"].includes(mla)) {
         valueVariante = 'Mundial Qatar'
         type = 'Panini'
-        brev = 'MQAT'
+        brev = 'MQ'
 
     } else if (["MLA1413919557"].includes(mla)) {
         valueVariante = 'Copa America'
         type = 'Panini'
-        brev = 'COPAM'
+        brev = 'AM'
 
     }
     return {type,valueVariante,brev}
@@ -125,7 +125,7 @@ const fixVentaId = (orders) => {
             element.paymentsOriginales.push(...paymentsApproved)
             
             const valueName = element.order_items?.[0]?.item?.variation_attributes?.[0]?.value_name;
-            var mla_id = element.order_items?.[0]?.item?.id
+            const mla_id = element.order_items?.[0]?.item?.id
             
             var { type, valueVariante,brev } = variantes(valueName,mla_id);
 
@@ -153,6 +153,7 @@ const fixVentaId = (orders) => {
                     ventas.paymentsOriginales.push(...paymentsApproved)
                     ventas.orderItemNuevo.push(element.order_items[0])
                     const valueName = element.order_items?.[0]?.item?.variation_attributes?.[0]?.value_name;
+                    const mla_id = element.order_items?.[0]?.item?.id
                     var { type, valueVariante,brev } = variantes(valueName,mla_id);
 
                     var cantReal
@@ -219,15 +220,18 @@ const getStockMeli = async () => {
     }
 }
 
-const getOrders = async () => {
+const getOrders = async (alfombra) => {
     try {
         await getStockMeli()
         const ordersSeller1 = await axios.get(url(seller1), { headers: headers1 })
         const ordersSeller2 = await axios.get(url(seller2), { headers: headers2 })
         const allOrders = [...ordersSeller1.data.results, ...ordersSeller2.data.results]
         const ventaid = createVentaId(allOrders)
-        const allOrdersFixed = fixVentaId(ventaid)
-        // const allOrdersFixed = fixVentaId(ventaid).filter(venta => venta.ventaid===2000012002761540)
+        let allOrdersFixed = fixVentaId(ventaid)
+        if (alfombra){
+            allOrdersFixed=allOrdersFixed.filter(element => element.orderResumen.some(resumen => ["Alfombra", "Juguete"].includes(resumen.tipo))) //some para recorrer array
+        }
+        // const allOrdersFixed = fixVentaId(ventaid).filter(venta => venta.ventaid===2000008517676881)
         await Promise.all(
             allOrdersFixed.map(async (orden) => {
                 orden.shippingId = orden.shipping.id
@@ -312,7 +316,7 @@ const getOrders = async () => {
             })
         );
         // const findByMPID = allOrdersFixed.filter(item => item.payments[0].id === 115626115802)
-        // const findByMPID = allOrdersFixed.filter(item => item.ventaid === 2000012002761540)
+        // const findByMPID = allOrdersFixed.filter(item => item.ventaid === 2000008529112811)
 
         // console.dir(findByMPID, { depth: null })
 
@@ -402,28 +406,28 @@ const getCountOrders = async (data) => {
         ))
         const resumen = { flex: {}, correo: {}, otros: {} }
         dataVariantes.forEach((item) => {
-            item.resumen.forEach((variante) => {
+            item.resumen.forEach((element) => {
 
-                const color = variante.color
-                const cantidad = variante.cantidad
+                const variante = element.variante
+                const cantidad = element.cantidad
                 if (item.envio === 'self_service') {
 
-                    if (!resumen.flex[color]) {
-                        resumen.flex[color] = cantidad;
+                    if (!resumen.flex[variante]) {
+                        resumen.flex[variante] = cantidad;
                     } else {
-                        resumen.flex[color] += cantidad;
+                        resumen.flex[variante] += cantidad;
                     }
                 } else if (['xd_drop_off', 'drop_off'].includes(item.envio)) {
-                    if (!resumen.correo[color]) {
-                        resumen.correo[color] = cantidad;
+                    if (!resumen.correo[variante]) {
+                        resumen.correo[variante] = cantidad;
                     } else {
-                        resumen.correo[color] += cantidad;
+                        resumen.correo[variante] += cantidad;
                     }
                 } else {
-                    if (!resumen.otros[color]) {
-                        resumen.otros[color] = cantidad;
+                    if (!resumen.otros[variante]) {
+                        resumen.otros[variante] = cantidad;
                     } else {
-                        resumen.otros[color] += cantidad;
+                        resumen.otros[variante] += cantidad;
                     }
                 }
 

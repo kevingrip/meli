@@ -8,13 +8,19 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 
-const fakeUser = {
-    email: "admin@example.com",
+const adminUser = {
+    user: "admin",
     // Contraseña: "123456" hasheada con bcrypt
     password: process.env.password
 };
 
+const juanUser = {
+    user: "juancruz",
+    // Contraseña: "123456" hasheada con bcrypt
+    password: process.env.passwordJuan
+};
 
+// const passwordPlano='juanakd'
 // bcrypt.hash(passwordPlano, 10).then(hash => {
 //   console.log("Hash generado:", hash);
 // });
@@ -32,21 +38,34 @@ const PORT = process.env.PORT || 3500
 
 // Ruta de login
 app.post('/api/login', async (req, res) => {
-    const { email, password } = req.body;
+    const { user, password } = req.body;
 
-    if (email !== fakeUser.email) {
-        return res.status(401).json({ error: "Email incorrecto" });
+    const checkUser = () =>{
+        if (adminUser.user==user){
+            return adminUser
+        }
+        if (juanUser.user==user){
+            return juanUser
+        }
+        return null
     }
 
-    const isValid = await bcrypt.compare(password, fakeUser.password);
+    const usuario = checkUser()
+
+    if (!usuario || usuario.user!==user) {
+        return res.status(401).json({ error: "Usuario incorrecto" });
+    }
+
+    const isValid = await bcrypt.compare(password, usuario.password);
     if (!isValid) {
         return res.status(401).json({ error: "Contraseña incorrecta" });
     }
 
-    const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '30m' });
-
+    const token = jwt.sign({ user }, process.env.JWT_SECRET, { expiresIn: '10m' }); //si corregimos el tiempo de expiracion aca, lo hacemos tambien en settimeout de index e inicio 
+    
     res.json({ token });
 });
+
 //////
 
 const verificarToken = (req, res, next) => {
@@ -65,6 +84,8 @@ const verificarToken = (req, res, next) => {
     }
 };
 
+/////
+
 app.get('/api/orders', verificarToken, async (req, res) => {
     try {
         const data = await getOrders()
@@ -74,29 +95,19 @@ app.get('/api/orders', verificarToken, async (req, res) => {
     } catch (error) {
         console.error(error)
     }
-
 })
 
-
-app.get(('/print'), async (req, res) => {
+app.get('/api/alf', verificarToken, async (req, res) => {
     try {
-        const dataToPrint = await getOrdersToPrint()
-        console.log(dataToPrint)
-        res.json(dataToPrint)
+        const data = await getOrders(true)
+        const counts = await getCountOrders(data)
+        const packs = await getCountEtiquetas(data)
+        res.json({ data, counts, packs })
     } catch (error) {
         console.error(error)
     }
 })
 
-app.get(('/flex'), async (req, res) => {
-    try {
-        const dataFlex = await getOrdersFlex()
-        const counts = await getCountOrders(dataFlex)
-        res.json({ dataFlex, counts })
-    } catch (error) {
-        console.error(error)
-    }
-})
 
 app.post(('/etiqueta'), async (req, res) => {
 

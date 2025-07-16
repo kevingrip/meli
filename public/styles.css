@@ -1,156 +1,166 @@
-.bloquePadreStyle{
+.bloquePadreStyle {
     display: flex;
     flex-direction: row;
     list-style-type: none;
     /* border: 2px solid black; */
     background-color: white;
     border-radius: 10px;
-    align-items: stretch;    /* height: 30vh; */
+    align-items: stretch;
+    /* height: 30vh; */
     width: 100%;
     margin: 20px;
-    box-shadow: 0 0 5px rgba(0,0,0,0.5); /* sombra para el bloque */
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    /* sombra para el bloque */
 
 }
 
-.divEtiquetaCantidad{
+.divEtiquetaCantidad {
     width: 100%;
-    box-shadow: 0 0 2px rgba(0, 0, 0, 0.742);
 }
 
-.bloquePadreDelivered{
+.sombraBordeDer{
+    box-shadow: 1px 0 1px rgba(0, 0, 0, 0.3);
+}
+
+.bloquePadreDelivered {
     background-color: #67ff2b3d;
 }
 
-.bloquePadreInComing{
+.bloquePadreInComing {
     background-color: #dbff393d;
 }
 
-.bloquePadreCancelled{
+.bloquePadreCancelled {
     background-color: #ff39393d;
 }
 
-.bloquePadrePending{
+.bloquePadrePending {
     background-color: #ff39ff3d;
 }
 
-body{
+body {
     background: #f9f9f9;
     font-family: sans-serif;
 }
 
-.orden{
+.orden {
     padding-right: 30px;
 }
 
-.bloqueData, .bloqueEnvio, .bloqueProduct, .bloqueDescarga {
+.bloqueData,
+.bloqueEnvio,
+.bloqueProduct,
+.bloqueDescarga {
     box-sizing: border-box;
 }
 
 .bloqueEnvio {
-    flex:3
+    flex: 3
 }
+
 .bloquePago {
-    flex:3
+    flex: 3
 }
-.bloqueProduct { 
+
+.bloqueProduct {
     display: flex;
-    flex:2;
+    flex: 2;
     flex-direction: column;
     align-items: center;
     justify-content: center;
- }
+}
 
-.bloqueData{
+.bloqueData {
     display: flex;
     flex-direction: column;
-    flex:3;
+    flex: 3;
     margin-left: 10px;
 }
 
-.buttonDescargaFlexRTP{
+.buttonDescargaFlexRTP {
     background-color: rgb(64, 255, 47);
     height: 100%;
     width: 100%;
-    border:0px;
+    border: 0px;
     border-end-end-radius: 10px;
     border-top-right-radius: 10px;
 }
 
-.buttonDescargaFlexRTP:hover{
+.buttonDescargaFlexRTP:hover {
     background-color: rgb(126, 255, 115);
 }
 
-.buttonDescargaFlexPTD{
+.buttonDescargaFlexPTD {
     background-color: rgba(184, 249, 177, 0.449);
     height: 100%;
     width: 100%;
-    border:0px;
+    border: 0px;
     border-end-end-radius: 10px;
     border-top-right-radius: 10px;
 }
 
-.buttonDescargaFlexPTD:hover{
+.buttonDescargaFlexPTD:hover {
     background-color: rgb(139, 217, 132);
 }
 
-.buttonDescargaFlexDLV{
+.buttonDescargaFlexDLV {
     background-color: rgba(255, 158, 200, 0.711);
     height: 100%;
     width: 100%;
-    border:0px;
+    border: 0px;
     border-end-end-radius: 10px;
     border-top-right-radius: 10px;
 }
 
-.buttonDescargaFlexDLV:hover{
+.buttonDescargaFlexDLV:hover {
     background-color: rgba(255, 32, 129, 0.479);
 }
 
-.buttonDescargaFlexSPD{
+.buttonDescargaFlexSPD {
     background-color: rgba(252, 255, 158, 0.711);
     height: 100%;
     width: 100%;
-    border:0px;
+    border: 0px;
     border-end-end-radius: 10px;
     border-top-right-radius: 10px;
 }
 
-.buttonDescargaFlexSPD:hover{
+.buttonDescargaFlexSPD:hover {
     background-color: rgb(250, 255, 109);
 }
 
 
-.buttonDescargaCorreoRTP{
+.buttonDescargaCorreoRTP {
     background-color: rgb(254, 126, 7);
-    height: 100%;    
+    height: 100%;
     width: 100%;
-    border:0px;
+    border: 0px;
     border-end-end-radius: 10px;
     border-top-right-radius: 10px;
 }
 
-.buttonDescargaCorreoRTP:hover{
+.buttonDescargaCorreoRTP:hover {
     background-color: rgba(254, 126, 7, 0.736);
 }
 
-.buttonDescargaCorreoPTD:hover{
+.buttonDescargaCorreoPTD:hover {
     background-color: rgba(254, 126, 7, 0.912)
 }
 
-.buttonDescargaCorreoPTD{
+.buttonDescargaCorreoPTD {
     background-color: rgb(251, 176, 106);
     height: 100%;
     width: 100%;
-    border:0px;
+    border: 0px;
     border-end-end-radius: 10px;
     border-top-right-radius: 10px;
 }
 
-.buttonDescargado{
+.buttonDescargado {
     background-color: rgb(255, 123, 183);
     height: 100%;
     width: 100%;
-    border:0px;
+    border: 0px;
     border-end-end-radius: 10px;
     border-top-right-radius: 10px;
 }
@@ -159,13 +169,14 @@ body{
     background-color: rgb(255, 151, 95);
 } */
 
-.productPajaro,
-.productGrisClaro,
-.productGrisOscuro,
-.productBeige,
-.productNegro,
-.productBlanco,
-.productSC{
+.bolaPajaro,
+.bolaGrisClaro,
+.bolaGrisOscuro,
+.bolaBeige,
+.bolaNegro,
+.bolaBlanco,
+.bolaFigu,
+.bolaSC {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -177,156 +188,166 @@ body{
     margin: 3vh;
 }
 
-
-.colorPajaro{
-    background-color: #e3268b;
+.bolaFigu{
+    border: 2px solid red;
 }
 
 
-.colorBeige{
+.colorPajaro {
+    background-color: #e326ad;
+}
+
+.colorFigu {
+    background-color: #e32626;
+    color: white;
+}
+
+.colorBeige {
     background-color: #e6cf5c;
 }
-.colorGrisOscuro{
+
+.colorGrisOscuro {
     background-color: rgb(104, 99, 99);
     color: white;
 }
-.colorNegro{
+
+.colorNegro {
     background-color: black;
     color: white;
 }
-.colorBlanco{
+
+.colorBlanco {
     background-color: white;
 }
 
-.bordeCirculoProduct{
+.bordeCirculoProduct {
     border: 2px solid black;
 }
 
-.borderLeft{
-    border-top-left-radius: 0.8vw;
+.borderLeft {
+    border-top-left-radius: 9px;
 }
 
-.borderRight{
-    border-top-right-radius: 0.8vw;
+.borderRight {
+    border-top-right-radius: 9px;
 }
 
-.solidDown{
+.solidDown {
     border-bottom: 2px solid black;
 }
 
-.colorNaranja{
+.colorNaranja {
     background-color: rgb(237, 101, 34);
     color: black;
 }
-.colorVerde{
+
+.colorVerde {
     background-color: rgb(64, 255, 47);
     color: black;
 }
 
-.colorGrisClaro{
+.colorGrisClaro {
     background-color: rgb(191, 191, 191);
 }
 
-.productSC{
+.bolaSC {
     border-radius: 1px solid black;
 }
 
-.OrderBloque{
+.OrderBloque {
     display: flex;
     flex-direction: row;
     flex: 9.5
 }
 
-.bloqueDescarga { 
-    flex:0.5
+.bloqueDescarga {
+    flex: 0.5
 }
 
 
-.flexRow{
+.flexRow {
     display: flex;
     flex-direction: row;
-    align-items:first baseline;
+    align-items: first baseline;
 }
 
-.divData{
+.divData {
     display: flex;
 }
 
-.styleLocalidad{
+.styleLocalidad {
     display: flex;
     align-items: center;
     margin-left: 15px;
 }
-.subBloque{
+
+.subBloque {
     display: flex;
     flex-direction: row;
     width: 100%;
 }
 
-.orderData{
+.orderData {
     display: flex;
     flex-direction: row;
-    flex:6;    
+    flex: 6;
 }
 
-.divCounts{
+.divCounts {
     display: flex;
     flex-direction: row;
     justify-content: space-around;
 }
 
-.divTitle{
+.divTitle {
     display: flex;
     align-items: center;
     margin: 2rem;
     justify-content: center;
 }
 
-.divResumen{
+
+.divEnvios {
+    display: flex;
+    flex-direction: column;
+    gap: 6vh;
+}
+
+.divBordeProductInd {
+    display: flex;
+    border: solid 2px;
+    border-top-right-radius: 0.8vw;
+    border-top-left-radius: 0.8vw;
+}
+
+.displayRow {
+    flex-direction: row;
+}
+
+.displayColumn {
+    flex-direction: column;
+}
+
+.divResumen {
     display: flex;
     flex-direction: column;
     border: solid black;
     border-radius: 1vw;
 }
 
-.divEnvios{
-    display: flex;
-    flex-direction: column;
-    gap: 6vh;
-}
-
-.divCantidadVariantes{
-    display: flex;
-    border: solid 2px;
-    border-top-right-radius: 0.8vw;
-    border-top-left-radius: 0.8vw;
-
-}
-
-.flexRow{
-    flex-direction: row;
-}
-
-.flexColumn{
-    flex-direction: column;
-}
-
-.divResumenNombre{
-    width: 100px;
-    padding: 10px 30px;
-    /* border-top-left-radius: 0.8vw;
-    border-top-right-radius: 0.8vw; */
-    display: flex;
-    justify-content: center;
-}
-
-.divResumenNumero{
+.divNombreResumen {
     padding: 10px 30px;
     display: flex;
     justify-content: center;
 }
 
-.centrar{
+.divNumeroResumen {
+    padding: 10px 30px;
+    display: flex;
+    justify-content: center;
+}
+
+.centrar {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -335,19 +356,20 @@ body{
 @media screen and (max-width: 768px) {
 
 
-    .OrderBloque{
+    .OrderBloque {
         flex-direction: column;
         text-align: center;
     }
-    
 
-    .productPajaro,
-    .productGrisClaro,
-    .productGrisOscuro,
-    .productBeige,
-    .productNegro,
-    .productBlanco,
-    .productSC{
+
+    .bolaPajaro,
+    .bolaGrisClaro,
+    .bolaGrisOscuro,
+    .bolaBeige,
+    .bolaNegro,
+    .bolaBlanco,
+    .bolaFigu,
+    .bolaSC {
         font-size: 2vh;
         width: 7vh;
         height: 7vh;
@@ -355,7 +377,7 @@ body{
         margin: 3vh;
     }
 
-    
+
     .subBloque {
         flex-direction: column;
     }
@@ -364,36 +386,38 @@ body{
         height: 5vh;
     }
 
-    .divCounts{
-        margin: 10px;
+    .divCounts {
+        margin: 20px;
         flex-direction: column;
     }
 
 
 
-    .divResumenNombre{
-    flex-shrink: 1; /* permite encoger */
-    flex-grow: 0;
-    flex-basis: auto;
-    min-width: 0; /* MUY importante para que el contenido pueda reducirse */
-    width: auto; /* evita width fijo */
-    padding: 10px 10px;
-    box-sizing: border-box;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    .divNombreResumen {
+        display: flex;
+        padding: 0;
+        height: 50%;
+        align-items: center;
+        text-align: center;
+        box-sizing: border-box;
+
     }
 
-    .divResumenNumero{
-        padding: 10px 30px;
+    .divNumeroResumen {
         display: flex;
         justify-content: center;
     }
 
+    .divResumen {
+        width: 100%;
+    }
 
-    
+    .divBordeProductInd {
+        width: 100%;
+    }
+
+    .displayColumn {
+        width: 100%;
+    }
+
 }
-

@@ -18,14 +18,9 @@
     </div>
 
     <script>
-
-        setTimeout(() => {
-          window.location.href = 'login.html';
-        }, 600000); //10 min
-
         const token = localStorage.getItem('token');
         console.log(token)
-        fetch('/api/orders', {
+        fetch('/api/alf', {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -134,7 +129,7 @@
                         createDivProduct(window.matchMedia("(max-width: 768px)").matches ? "BG" : "Beige", count.correo.Beige, "colorBeige", "borderLeft")
                     )
                     divCantidadVariantes.appendChild(
-                        createDivProduct(window.matchMedia("(max-width: 768px)").matches ? "OS" : "Gris Oscuro", count.correo["Gris oscuro"], "colorGrisOscuro")
+                        createDivProduct(window.matchMedia("(max-width: 768px)").matches ? "OS" : "Gris Oscuro", count.correo["Gris Oscuro"], "colorGrisOscuro")
                     )
                     divCantidadVariantes.appendChild(
                         createDivProduct(window.matchMedia("(max-width: 768px)").matches ? "CL" : "Gris Claro", count.correo["Gris Claro"], "colorGrisClaro")
@@ -175,7 +170,7 @@
                         createDivProduct(window.matchMedia("(max-width: 768px)").matches ? "BG" : "Beige", count.flex.Beige, "colorBeige", "borderLeft")
                     )
                     divCantidadVariantes.appendChild(
-                        createDivProduct(window.matchMedia("(max-width: 768px)").matches ? "OS" : "Gris Oscuro", count.flex["Gris oscuro"], "colorGrisOscuro")
+                        createDivProduct(window.matchMedia("(max-width: 768px)").matches ? "OS" : "Gris Oscuro", count.flex["Gris Oscuro"], "colorGrisOscuro")
                     )
                     divCantidadVariantes.appendChild(
                         createDivProduct(window.matchMedia("(max-width: 768px)").matches ? "CL" : "Gris Claro", count.flex["Gris Claro"], "colorGrisClaro")

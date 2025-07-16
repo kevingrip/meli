@@ -391,8 +391,9 @@
                         bloquePadre.style.display = 'block';
                     })
 
-                    const address = element.shipping_info.receiver_address.address_line
-                    const localidad = element.shipping_info.receiver_address.city.name
+                    const address = element.shipping_info?.receiver_address?.address_line || "Dirección no disponible";
+                    const localidad = element.shipping_info?.receiver_address?.city?.name || "Localidad no disponible";
+
                     
                     var tipoEnvio;
                     if (element.shipping_info.logistic_type === 'self_service') {

@@ -18,6 +18,11 @@
     </div>
 
     <script>
+
+        setTimeout(() => {
+          window.location.href = 'login.html';
+        }, 300000);
+        
         const token = localStorage.getItem('token');
         console.log(token)
         fetch('/api/alf', {

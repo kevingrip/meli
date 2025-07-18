@@ -59,33 +59,33 @@ const createVentaId = (orders) => {
     return orders
 }
 
-const variantes = (valueName,mla) => {
+const variantes = (valueName, mla) => {
     let type;
     let valueVariante;
     let brev;
-    
 
-    if (valueName === "Beige" || ["MLA2097220908","MLA2152579766"].includes(mla)) {
+
+    if (valueName === "Beige" || ["MLA2097220908", "MLA2152579766"].includes(mla)) {
         valueVariante = 'Beige'
         type = 'Alfombra'
         brev = 'BG'
 
-    } else if (valueName === "Gris oscuro" || ["MLA2097220910","MLA2152488642"].includes(mla)) {
+    } else if (valueName === "Gris oscuro" || ["MLA2097220910", "MLA2152488642"].includes(mla)) {
         valueVariante = 'Gris oscuro'
         type = 'Alfombra'
         brev = 'OS'
 
-    } else if (valueName === "Gris Claro" || ["MLA2097220912","MLA2152475848"].includes(mla)) {
+    } else if (valueName === "Gris Claro" || ["MLA2097220912", "MLA2152475848"].includes(mla)) {
         valueVariante = 'Gris Claro'
         type = 'Alfombra'
         brev = 'CL'
 
-    } else if (valueName === "Negro" || ["MLA2104745370","MLA1508055601"].includes(mla)) {
+    } else if (valueName === "Negro" || ["MLA2104745370", "MLA1508055601"].includes(mla)) {
         valueVariante = 'Negro'
         type = 'Alfombra'
         brev = 'NG'
 
-    } else if (valueName === "Blanco" || ["MLA1507750191","MLA2153666050"].includes(mla)) {
+    } else if (valueName === "Blanco" || ["MLA1507750191", "MLA2153666050"].includes(mla)) {
         valueVariante = 'Blanco'
         type = 'Alfombra'
         brev = 'BL'
@@ -95,7 +95,7 @@ const variantes = (valueName,mla) => {
         type = 'Juguete'
         brev = 'PJ'
 
-    } else if (["MLA1241847466","MLA1287984004"].includes(mla)) {
+    } else if (["MLA1241847466", "MLA1287984004"].includes(mla)) {
         valueVariante = 'Mundial Qatar'
         type = 'Panini'
         brev = 'MQ'
@@ -106,7 +106,7 @@ const variantes = (valueName,mla) => {
         brev = 'AM'
 
     }
-    return {type,valueVariante,brev}
+    return { type, valueVariante, brev }
 }
 
 const fixVentaId = (orders) => {
@@ -123,11 +123,11 @@ const fixVentaId = (orders) => {
             const paymentsApproved = element.payments.filter(payment => payment.status === "approved").map(order => order.id)
             element.ordersOriginales.push(element.id)
             element.paymentsOriginales.push(...paymentsApproved)
-            
+
             const valueName = element.order_items?.[0]?.item?.variation_attributes?.[0]?.value_name;
             const mla_id = element.order_items?.[0]?.item?.id
-            
-            var { type, valueVariante,brev } = variantes(valueName,mla_id);
+
+            var { type, valueVariante, brev } = variantes(valueName, mla_id);
 
             var cantReal
             if (["MLA2152475848", "MLA2152488642", "MLA2152579766", "MLA2153666050", "MLA1508055601"].includes(mla_id)) {
@@ -135,7 +135,7 @@ const fixVentaId = (orders) => {
             } else {
                 cantReal = element.order_items[0].quantity
             }
-            
+
             element.orderItemNuevo.push(element.order_items[0])
             element.orderResumen.push({
                 tipo: type,
@@ -154,7 +154,7 @@ const fixVentaId = (orders) => {
                     ventas.orderItemNuevo.push(element.order_items[0])
                     const valueName = element.order_items?.[0]?.item?.variation_attributes?.[0]?.value_name;
                     const mla_id = element.order_items?.[0]?.item?.id
-                    var { type, valueVariante,brev } = variantes(valueName,mla_id);
+                    var { type, valueVariante, brev } = variantes(valueName, mla_id);
 
                     var cantReal
                     if (["MLA2152475848", "MLA2152488642", "MLA2152579766", "MLA2153666050", "MLA1508055601"].includes(mla_id)) {
@@ -213,10 +213,39 @@ const getShippingCost = async (payment_id, token) => {
 
 const getStockMeli = async () => {
     try {
-        const stock = await axios.get(cantidadStockPublicado("MLA2006797664"), { headers: headers1 })
-        console.log(stock.data.available_quantity)
+
+        const variantesC2 = [
+            { mla: "MLA2097220908", color: "Beige" },
+            { mla: "MLA2097220912", color: "Gris Claro" },
+            { mla: "MLA2097220910", color: "Gris Oscuro" },
+            { mla: "MLA1507750191", color: "Blanco" },
+            { mla: "MLA2104745370", color: "Negro" },
+            { mla: "MLA1500334145", color: "Juguete" }
+        ]
+
+        let resumenStockC2=[];
+
+        for (const variantes of variantesC2) {
+            const getStockC2 = await axios.get(cantidadStockPublicado(variantes.mla), { headers: headers2 })
+            resumenStockC2.push({ value: variantes.color, cantidad: getStockC2.data.available_quantity })       
+        }
+
+        console.log(resumenStockC2)
+
+        // console.dir(stock,{depth:null})
+
+        const stockC1 = await axios.get(cantidadStockPublicado("MLA2006797664"), { headers: headers1 })
+
+        const resumenStockC1 = stockC1.data.variations.map(variacion => {
+            const value = variacion.attribute_combinations.map(items => items.value_name)
+            const cantidad = variacion.available_quantity
+            return { value, cantidad }
+        })
+
+        console.dir(resumenStockC1, { depth: null })
+
     } catch (error) {
-        console.error("error")
+        console.error(error.message)
     }
 }
 
@@ -228,8 +257,8 @@ const getOrders = async (alfombra) => {
         const allOrders = [...ordersSeller1.data.results, ...ordersSeller2.data.results]
         const ventaid = createVentaId(allOrders)
         let allOrdersFixed = fixVentaId(ventaid)
-        if (alfombra){
-            allOrdersFixed=allOrdersFixed.filter(element => element.orderResumen.some(resumen => ["Alfombra", "Juguete"].includes(resumen.tipo))) //some para recorrer array
+        if (alfombra) {
+            allOrdersFixed = allOrdersFixed.filter(element => element.orderResumen.some(resumen => ["Alfombra", "Juguete"].includes(resumen.tipo))) //some para recorrer array
         }
         // const allOrdersFixed = fixVentaId(ventaid).filter(venta => venta.ventaid===2000008517676881)
         await Promise.all(
@@ -327,7 +356,7 @@ const getOrders = async (alfombra) => {
             const desktopPath = path.join(os.homedir(), 'Desktop', 'etiquetas');
             const filePathJson = path.join(desktopPath, 'ventas.txt')
             const allOrdersForTxt = allOrdersFixed.filter(item => item.status === 'paid').sort((a, b) => new Date(a.date_created) - new Date(b.date_created));
-            const ventasTxt = allOrdersForTxt.map(order => `${order.payments[0].reason}\t${order.orderItemNuevo[0].item.id}\t${order.seller.nickname}\t#${order.ventaid}\t${new Date(order.date_created).toLocaleDateString()}\t\t${order.orderResumen.find(item => item.abreviado === "OS")?.cantidad || ""}\t${order.orderResumen.find(item => item.abreviado === "CL")?.cantidad || ""}\t${order.orderResumen.find(item => item.abreviado === "BG")?.cantidad || ""}\t${order.orderResumen.find(item => item.abreviado === "NG")?.cantidad || ""}\t${order.orderResumen.find(item => item.abreviado === "BL")?.cantidad || ""}\t${order.orderResumen.find(item => item.abreviado === "PJ")?.cantidad || ""}\t${order.pagos.totalPubli}\t${order.pagos.totalLiquidacion}\t${order.shipping_info?.logistic_type === "self_service" ? order.shipping_info?.receiver_address?.state?.name === "Capital Federal" ? "-7000" : order.pagos.flex : ""}\t${["ready_to_ship", "handling", "pending"].includes(order.shipping_info?.status) ? "N" : "S"}\t${order.seller.nickname === "HUELLITAS3F" ? "C2" : ""}\t""\t${order.shipping_info?.logistic_type === "self_service" ? order.shipping_info?.receiver_address?.state?.name === "Capital Federal" ? "caba" : order.shipping_info?.receiver_address?.city?.name : ""}\t#${order.shippingId}\t#${order.payments[0].id}\t${order.pagos.totalNeto}\t${order.pagos.bonificacion}\t${order.pagos.fechaLiquidacion}\t${order.orderResumen[0].tipo||null}`).join('\n');
+            const ventasTxt = allOrdersForTxt.map(order => `${order.payments[0].reason}\t${order.orderItemNuevo[0].item.id}\t${order.seller.nickname}\t#${order.ventaid}\t${new Date(order.date_created).toLocaleDateString()}\t\t${order.orderResumen.find(item => item.abreviado === "OS")?.cantidad || ""}\t${order.orderResumen.find(item => item.abreviado === "CL")?.cantidad || ""}\t${order.orderResumen.find(item => item.abreviado === "BG")?.cantidad || ""}\t${order.orderResumen.find(item => item.abreviado === "NG")?.cantidad || ""}\t${order.orderResumen.find(item => item.abreviado === "BL")?.cantidad || ""}\t${order.orderResumen.find(item => item.abreviado === "PJ")?.cantidad || ""}\t${order.pagos.totalPubli}\t${order.pagos.totalLiquidacion}\t${order.shipping_info?.logistic_type === "self_service" ? order.shipping_info?.receiver_address?.state?.name === "Capital Federal" ? "-7000" : order.pagos.flex : ""}\t${["ready_to_ship", "handling", "pending"].includes(order.shipping_info?.status) ? "N" : "S"}\t${order.seller.nickname === "HUELLITAS3F" ? "C2" : ""}\t""\t${order.shipping_info?.logistic_type === "self_service" ? order.shipping_info?.receiver_address?.state?.name === "Capital Federal" ? "caba" : order.shipping_info?.receiver_address?.city?.name : ""}\t#${order.shippingId}\t#${order.payments[0].id}\t${order.pagos.totalNeto}\t${order.pagos.bonificacion}\t${order.pagos.fechaLiquidacion}\t${order.orderResumen[0].tipo || null}`).join('\n');
             const encabezado = `title\tmla\tseller\tventaid\tfechaventa\tcepillo\tgris oscuro\tgris claro\tbeige\tnegro\tblanco\tpajaro\tprecio\tliquidar\tflex\tarmado\tcuenta\tlimpio\tsector\tenvioid\tpaymentid\tp\tflex2\tfechaLiquidacion\ttipo\n`
             try {
                 fs.writeFileSync(filePathJson, encabezado + ventasTxt, 'utf-8')

@@ -38,7 +38,9 @@ const PORT = process.env.PORT || 3500
 
 // Ruta de login
 app.post('/api/login', async (req, res) => {
-    const { user, password } = req.body;
+    let { user, password } = req.body;
+
+    user = user.toLowerCase();
 
     const checkUser = () =>{
         if (adminUser.user==user){
@@ -73,7 +75,7 @@ const verificarToken = (req, res, next) => {
     if (!authHeader) return res.status(401).json({ error: "Token requerido" });
 
     const token = authHeader.split(" ")[1];
-    console.log("Token extraído:", token);
+    // console.log("Token extraído:", token);
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);

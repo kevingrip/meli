@@ -79,37 +79,35 @@
                 var cantStockC1 = stock.resumenStockC1.reduce(((obj, item) => { obj[item.value] = item.cantidad; return obj; }), {})
                 var cantStockC2 = stock.resumenStockC2.reduce(((obj, item) => { obj[item.value] = item.cantidad; return obj; }), {})
 
-                let divCorreo, divFlex;
-
-                ({ divCorreo, divFlex } = createDivs());
 
                 const divStock = crearDivStock(cantStockC1, cantStockC2)
-                const divVentaCorreo = crearDivVentas(divCorreo, "Correo", pack.correo, pack.toPrintCorreo, "colorNaranja", cantVentaCorreo)
-                const divVentaFlex = crearDivVentas(divFlex, "Flex", pack.flex, pack.toPrintFlex, "colorVerde", cantVentaFlex)
+                let  divVentaCorreo = crearDivVentas("Correo", pack.correo, pack.toPrintCorreo, "colorNaranja", cantVentaCorreo)
+                let  divVentaFlex = crearDivVentas("Flex", pack.flex, pack.toPrintFlex, "colorVerde", cantVentaFlex)
                 divEnvios.appendChild(divStock)
                 divEnvios.appendChild(divVentaCorreo)
                 divEnvios.appendChild(divVentaFlex)
 
                 buttonFiltroFlex.addEventListener('click', () => {
-                    divCorreo.remove()
-                    divFlex.remove()
-                ({ divCorreo, divFlex } = createDivs());
-                    crearDivVentas(divFlex, "Flex", pack.flex, pack.toPrintFlex, "colorVerde", cantVentaFlex)
+                    divVentaCorreo.remove()
+                    divVentaFlex.remove()
+                    divVentaFlex = crearDivVentas("Flex", pack.flex, pack.toPrintFlex, "colorVerde", cantVentaFlex)
+                    divEnvios.appendChild(divVentaFlex)
                 })
 
                 buttonFiltroCorreo.addEventListener('click', () => {
-                    divFlex.remove()
-                    divCorreo.remove()
-                ({ divCorreo, divFlex } = createDivs());
-                    crearDivVentas(divCorreo, "Correo", pack.correo, pack.toPrintCorreo, "colorNaranja", cantVentaCorreo)
+                    divVentaCorreo.remove()
+                    divVentaFlex.remove()
+                    divVentaCorreo = crearDivVentas("Correo", pack.correo, pack.toPrintCorreo, "colorNaranja", cantVentaCorreo)
+                    divEnvios.appendChild(divVentaCorreo)
                 })
 
                 buttonFiltroTodas.addEventListener('click', () => {
-                    divCorreo.remove()
-                    divFlex.remove()
-                ({ divCorreo, divFlex } = createDivs());
-                    crearDivVentas(divFlex, "Flex", pack.flex, pack.toPrintFlex, "colorVerde", cantVentaFlex)
-                    crearDivVentas(divCorreo, "Correo", pack.correo, pack.toPrintCorreo, "colorNaranja", cantVentaCorreo)
+                    divVentaCorreo.remove()
+                    divVentaFlex.remove()
+                    divVentaFlex = crearDivVentas("Flex", pack.flex, pack.toPrintFlex, "colorVerde", cantVentaFlex)
+                    divEnvios.appendChild(divVentaFlex)
+                    divVentaCorreo = crearDivVentas("Correo", pack.correo, pack.toPrintCorreo, "colorNaranja", cantVentaCorreo)
+                    divEnvios.appendChild(divVentaCorreo)
                 })
 
                 ordenes.appendChild(divEnvios)

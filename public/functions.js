@@ -67,7 +67,9 @@ export const crearDivStock = (C1, C2) => {
 }
 
 
-export const crearDivVentas = (div, tipo, cant1, cant2, color, cantidad) => {
+export const crearDivVentas = (tipo, cant1, cant2, color, cantidad) => {
+
+    const div = document.createElement('div');
 
     const divEtiquetaCorreo = createDivCountDoble(tipo, cant1, cant2, color, 'borderRight', 'borderLeft')
     divEtiquetaCorreo.style.border = 'solid black'

@@ -74,8 +74,6 @@
 
                 divEnvios.classList.add("divEnvios")
 
-                var cantFiguCorreo = (count.correo["Mundial Qatar"] || 0) + (count.correo["Copa America"] || 0)
-                var cantFiguFlex = (count.flex["Mundial Qatar"] || 0) + (count.flex["Copa America"] || 0)
                 var cantVentaCorreo = count.correo
                 var cantVentaFlex = count.flex
                 var cantStockC1 = stock.resumenStockC1.reduce(((obj, item) => { obj[item.value] = item.cantidad; return obj; }), {})

@@ -96,11 +96,12 @@ export const crearDivVentas = (div, tipo, cant1, cant2, color, cantidad) => {
     div.appendChild(
         createDivProduct(window.matchMedia("(max-width: 768px)").matches ? "PJ" : "Pajaro", cantidad.Pajaro, "colorPajaro", "borderLeft", "borderRight", "divBordeProductInd")
     )
-    // if (cantFiguCorreo > 0 && cantFiguFlex > 0) {
-    //     div.appendChild(
-    //         createDivProduct(window.matchMedia("(max-width: 768px)").matches ? "FG" : "Figu", cantFiguCorreo, "colorFigu", "borderLeft", "borderRight", "divBordeProductInd")
-    //     )
-    // }
+    if (cantidad["Mundial Qatar"] > 0 || cantidad["Copa America"] > 0) {
+        let cantFigu = (cantidad["Mundial Qatar"] || 0) + (cantidad["Copa America"] || 0)
+        div.appendChild(            
+            createDivProduct(window.matchMedia("(max-width: 768px)").matches ? "FG" : "Figu", cantFigu, "colorFigu", "borderLeft", "borderRight", "divBordeProductInd")
+        )
+    }
 
     div.classList.add("divCounts")
     divCantidadVariantes.classList.add("divBordeProductInd", "displayRow")

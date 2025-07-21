@@ -230,19 +230,21 @@ const getStockMeli = async () => {
             resumenStockC2.push({ value: variantes.color, cantidad: getStockC2.data.available_quantity })       
         }
 
-        console.log(resumenStockC2)
-
-        // console.dir(stock,{depth:null})
-
         const stockC1 = await axios.get(cantidadStockPublicado("MLA2006797664"), { headers: headers1 })
 
         const resumenStockC1 = stockC1.data.variations.map(variacion => {
-            const value = variacion.attribute_combinations.map(items => items.value_name)
+            const value = variacion.attribute_combinations.map(items => items.value_name).join(" | ");
             const cantidad = variacion.available_quantity
             return { value, cantidad }
         })
+        
+        const resumenStock = {
+            resumenStockC1,
+            resumenStockC2
+        }
 
-        console.dir(resumenStockC1, { depth: null })
+        return resumenStock
+
 
     } catch (error) {
         console.error(error.message)
@@ -251,7 +253,6 @@ const getStockMeli = async () => {
 
 const getOrders = async (alfombra) => {
     try {
-        await getStockMeli()
         const ordersSeller1 = await axios.get(url(seller1), { headers: headers1 })
         const ordersSeller2 = await axios.get(url(seller2), { headers: headers2 })
         const allOrders = [...ordersSeller1.data.results, ...ordersSeller2.data.results]
@@ -576,4 +577,4 @@ const getEtiqueta = async (nickname, shipping, variantes) => {
 
 
 
-export { getOrders, getShipping, getOrdersToPrint, getOrdersUser, getEtiqueta, getOrdersFlex, getCountOrders, getCountEtiquetas };
+export { getOrders, getShipping, getStockMeli, getOrdersUser, getEtiqueta, getOrdersFlex, getCountOrders, getCountEtiquetas };

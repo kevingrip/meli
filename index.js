@@ -1,5 +1,5 @@
 import express from "express";
-import { getOrders, getOrdersToPrint, getOrdersFlex, getEtiqueta, getCountOrders, getCountEtiquetas } from "./api.js";
+import { getOrders, getStockMeli, getOrdersFlex, getEtiqueta, getCountOrders, getCountEtiquetas } from "./api.js";
 import path from 'path';
 import { fileURLToPath } from 'url';
 import jwt from 'jsonwebtoken';
@@ -90,10 +90,11 @@ const verificarToken = (req, res, next) => {
 
 app.get('/api/orders', verificarToken, async (req, res) => {
     try {
+        const stock = await getStockMeli()
         const data = await getOrders()
         const counts = await getCountOrders(data)
         const packs = await getCountEtiquetas(data)
-        res.json({ data, counts, packs })
+        res.json({ stock, data, counts, packs })
     } catch (error) {
         console.error(error)
     }

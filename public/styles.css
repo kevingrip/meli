@@ -330,10 +330,13 @@ body {
 
 .divResumen {
     display: flex;
-    flex-direction: column;
-    border: solid black;
-    border-radius: 1vw;
+    flex-direction: column; 
 }
+
+.solidDer{
+    border-right: 3px solid black;
+}
+
 
 .divNombreResumen {
     padding: 10px 30px;

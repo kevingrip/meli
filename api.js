@@ -237,6 +237,16 @@ const getStockMeli = async () => {
             const cantidad = variacion.available_quantity
             return { value, cantidad }
         })
+
+        // const stockFigu = await axios.get(cantidadStockPublicado("MLA1241847466"), { headers: headers1 })
+
+        // const resumenStockFigu = stockFigu.data.variations.map(variacion => {
+        //     const value = variacion.attribute_combinations.map(items => items.value_name).join(" | ");
+        //     const cantidad = variacion.available_quantity
+        //     return { value, cantidad }
+        // })
+
+        // console.log(resumenStockFigu)
         
         const resumenStock = {
             resumenStockC1,

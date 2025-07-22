@@ -55,7 +55,10 @@ export const crearDivStock = (C1, C2) => {
         createDivCountDoble(window.matchMedia("(max-width: 768px)").matches ? "NG" : "Negro", C1.Negro, C2.Negro, "colorNegro", null, null, "solidDer")
     )
     divCantidadVariantes.appendChild(
-        createDivCountDoble(window.matchMedia("(max-width: 768px)").matches ? "BL" : "Blanco", C1.Blanco, C2.Blanco, "colorBlanco", null, "borderRight", null)
+        createDivCountDoble(window.matchMedia("(max-width: 768px)").matches ? "BL" : "Blanco", C1.Blanco, C2.Blanco, "colorBlanco", null, null, "solidDer")
+    )
+    divCantidadVariantes.appendChild(
+        createDivCountDoble(window.matchMedia("(max-width: 768px)").matches ? "PJ" : "Pajaro", 0, C2.Juguete, "colorPajaro", null, "borderRight", null)
     )
     divCantidadVariantes.style.border = 'solid black'
 
@@ -63,7 +66,7 @@ export const crearDivStock = (C1, C2) => {
 
     divStock.classList.add("divCounts")
     divCantidadVariantes.classList.add("divBordeProductInd", "displayRow")
-    return divStock    
+    return divStock
 }
 
 

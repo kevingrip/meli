@@ -337,6 +337,8 @@
                         bloqueProduct.appendChild(divProduct)
                     })
 
+                    let envioGuardado = null;
+
                     fetch(`api/mongo/${element.ventaid}`)
                         .then(res => res.json())
                         .then(data => {
@@ -347,6 +349,7 @@
                                 const dataEnvio = document.createElement('p')
                                 dataEnvio.textContent = data[0].envio
                                 label.appendChild(dataEnvio)
+                                envioGuardado = data[0].envio
                             }
                         })
 
@@ -416,7 +419,7 @@
                     const variantesSTR = variantes.join(" | ")
                     buttonDescarga.addEventListener("click", async () => {
                         
-                        if (seleccionado != 'Elegir' && seleccionado != null) {
+                        if ((seleccionado != 'Elegir' && seleccionado != null) || envioGuardado !=null) {
                             if (element.shipping_info.logistic_type === 'self_service' && element.shipping_info.substatus === 'ready_to_print')
                                 buttonDescarga.classList.toggle("buttonDescargaFlexPTD")
                             if ((element.shipping_info.logistic_type === 'drop_off' || element.shipping_info.logistic_type === 'xd_drop_off') && element.shipping_info.substatus === 'ready_to_print')

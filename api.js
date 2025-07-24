@@ -4,45 +4,46 @@ import fs from 'fs'
 import os from 'os';
 import { refreshToken } from './config.js'
 import { PDFDocument, rgb } from 'pdf-lib';
+import dotenv from 'dotenv'
+dotenv.config();
+import { ordersRoute, cantidadStockPublicado, shippingRoute, paymentRoute, costShippingRoute } from './routes.js';
 
 
-
-const seller1 = 1005868067
-const seller2 = 2385461382
 
 const token = await refreshToken()
 
 const access_token1 = token[0]
 const access_token2 = token[1]
 
-
-const cantidadStockPublicado = (mla) => {
-    return `https://api.mercadolibre.com/items/${mla}`
+const seller = {
+    c1: process.env.sellerC1,
+    c2: process.env.sellerC2
 }
 
-const url = (seller) => {
-    return `https://api.mercadolibre.com/orders/search?seller=${seller}&sort=date_desc&limit=50`
-    // return `https://api.mercadolibre.com/orders/search?seller=${seller}&sort=date_desc&limit=50&order.date_created.from=2025-06-28T00:00:00Z&order.date_created.to=2025-07-10T00:00:00Z`
+
+const headers = {
+    c1: {
+        Authorization: `Bearer ${access_token1}`
+    },
+    c2: {
+        Authorization: `Bearer ${access_token2}`
+    }
 }
 
-const shippingRoute = (shipment_id) => {
-    return `https://api.mercadolibre.com/shipments/${shipment_id}`
+const getToken = (nickname) => {
+    if (nickname === 'F3FG') {
+        return headers.c1
+    } else if (nickname === 'HUELLITAS3F') {
+        return headers.c2
+    }
 }
 
-const paymentRoute = (payment_id) => {
-    return `https://api.mercadopago.com/v1/payments/${payment_id}`
-}
-
-const costShippingRoute = (shipping_id) => {
-    return `https://api.mercadolibre.com/shipments/${shipping_id}/costs`
-}
-
-const headers1 = {
-    Authorization: `Bearer ${access_token1}`
-}
-
-const headers2 = {
-    Authorization: `Bearer ${access_token2}`
+const getSeller = (nickname) => {
+    if (nickname === 'F3FG') {
+        return seller.c1
+    } else if (nickname === 'HUELLITAS3F') {
+        return seller.c2
+    }
 }
 
 
@@ -176,22 +177,7 @@ const fixVentaId = (orders) => {
     return allVentas
 }
 
-const getToken = (nickname) => {
-    if (nickname === 'F3FG') {
-        return headers1
-    } else if (nickname === 'HUELLITAS3F') {
-        return headers2
-    }
-}
-
-const getSeller = (nickname) => {
-    if (nickname === 'F3FG') {
-        return 1005868067
-    } else if (nickname === 'HUELLITAS3F') {
-        return 2385461382
-    }
-}
-
+//////////////////
 
 const getPayment = async (payment_id, token) => {
     try {
@@ -223,14 +209,14 @@ const getStockMeli = async () => {
             { mla: "MLA1500334145", color: "Juguete" }
         ]
 
-        let resumenStockC2=[];
+        let resumenStockC2 = [];
 
         for (const variantes of variantesC2) {
-            const getStockC2 = await axios.get(cantidadStockPublicado(variantes.mla), { headers: headers2 })
-            resumenStockC2.push({ value: variantes.color, cantidad: getStockC2.data.available_quantity })       
+            const getStockC2 = await axios.get(cantidadStockPublicado(variantes.mla), { headers: headers.c2 })
+            resumenStockC2.push({ value: variantes.color, cantidad: getStockC2.data.available_quantity })
         }
 
-        const stockC1 = await axios.get(cantidadStockPublicado("MLA2006797664"), { headers: headers1 })
+        const stockC1 = await axios.get(cantidadStockPublicado("MLA2006797664"), { headers: headers.c1 })
 
         const resumenStockC1 = stockC1.data.variations.map(variacion => {
             const value = variacion.attribute_combinations.map(items => items.value_name).join(" | ");
@@ -238,7 +224,7 @@ const getStockMeli = async () => {
             return { value, cantidad }
         })
 
-        // const stockFigu = await axios.get(cantidadStockPublicado("MLA1241847466"), { headers: headers1 })
+        // const stockFigu = await axios.get(cantidadStockPublicado("MLA1241847466"), { headers: headers.c1 })
 
         // const resumenStockFigu = stockFigu.data.variations.map(variacion => {
         //     const value = variacion.attribute_combinations.map(items => items.value_name).join(" | ");
@@ -247,7 +233,7 @@ const getStockMeli = async () => {
         // })
 
         // console.log(resumenStockFigu)
-        
+
         const resumenStock = {
             resumenStockC1,
             resumenStockC2
@@ -263,9 +249,9 @@ const getStockMeli = async () => {
 
 const getOrders = async (alfombra) => {
     try {
-        const ordersSeller1 = await axios.get(url(seller1), { headers: headers1 })
-        const ordersSeller2 = await axios.get(url(seller2), { headers: headers2 })
-        const allOrders = [...ordersSeller1.data.results, ...ordersSeller2.data.results]
+        const ordersSellerC1 = await axios.get(ordersRoute(seller.c1), { headers: headers.c1 })
+        const ordersSellerC2 = await axios.get(ordersRoute(seller.c2), { headers: headers.c2 })
+        const allOrders = [...ordersSellerC1.data.results, ...ordersSellerC2.data.results]
         const ventaid = createVentaId(allOrders)
         let allOrdersFixed = fixVentaId(ventaid)
         if (alfombra) {
@@ -385,7 +371,7 @@ const getOrders = async (alfombra) => {
         const ordersToPrint = allOrdersFixed.filter(orders => orders.shippingId != null && orders.shipping_info.substatus === "ready_to_print").sort((b, a) => new Date(a.date_created) - new Date(b.date_created));
         const ordersPrinted = allOrdersFixed.filter(orders => orders.shippingId != null && orders.shipping_info.substatus === "printed")
         const ordersInComming = allOrdersFixed.filter(orders => orders.shippingId != null && orders.shipping_info.substatus != "ready_to_print" && orders.shipping_info.substatus != "printed" && orders.shipping_info.status != "delivered" && orders.shipping_info.status != "pending" && orders.shipping_info.status != "cancelled")
-        const ordersDelivered = allOrdersFixed.filter(orders => orders.shippingId != null && orders.shipping_info.status == "delivered")
+        const ordersDelivered = allOrdersFixed.filter(orders => orders.shippingId != null && orders.shipping_info.status == "delivered").sort((b, a) => new Date(a.date_created) - new Date(b.date_created));
         const ordersPending = allOrdersFixed.filter(orders => orders.shippingId != null && orders.shipping_info.status == "pending")
         //const ordersShippingNull = allOrdersFixed.filter(orders => orders.shippingId===null)
         const allOrdersOrdered = [...ordersToPrint, ...ordersPrinted, ...ordersPending, ...ordersInComming, ...ordersCancelled, ...ordersDelivered]
@@ -490,7 +476,7 @@ const getOrdersUser = async (nickname) => {
         const token = getToken(nickname)
         console.log(user)
         console.log(token)
-        const orders = await axios.get(url(user), { headers: token })
+        const orders = await axios.get(ordersRoute(user), { headers: token })
         console.log(orders)
     } catch (error) {
         console.error(error.message)
@@ -509,16 +495,6 @@ const getShipping = async (id, token) => {
     }
 }
 
-const getOrdersToPrint = async () => {
-    try {
-        const fullOrders = await getOrders()
-        const ordersToPrint = fullOrders.filter(orders => orders.shipping_info.substatus === "ready_to_print")
-
-        return ordersToPrint
-    } catch (error) {
-        console.log(error.message)
-    }
-}
 
 const getOrdersFlex = async () => {
     try {

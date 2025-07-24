@@ -4,27 +4,27 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import flexModel from "./model/flex.model.js";
 dotenv.config();
 
+mongoose.connect(process.env.MONGO_URI)
+    .then(() => console.log('🔗 Conexión a MongoDB exitosa'))
+    .catch(err => console.error('❌ Error al conectar a MongoDB:', err));
 
-const adminUser = {
-    user: "admin",
-    // Contraseña: "123456" hasheada con bcrypt
-    password: process.env.password
-};
 
-const juanUser = {
-    user: "juancruz",
-    // Contraseña: "123456" hasheada con bcrypt
-    password: process.env.passwordJuan
-};
+const users = [
+    { user: "admin", password: process.env.password },
+    { user: "juancruz", password: process.env.passwordJuan },
+    { user: "jose", password: process.env.password }
+]
+
 
 // const passwordPlano='juanakd'
 // bcrypt.hash(passwordPlano, 10).then(hash => {
 //   console.log("Hash generado:", hash);
 // });
-
 
 
 const app = express()
@@ -42,19 +42,18 @@ app.post('/api/login', async (req, res) => {
 
     user = user.toLowerCase();
 
-    const checkUser = () =>{
-        if (adminUser.user==user){
-            return adminUser
-        }
-        if (juanUser.user==user){
-            return juanUser
+    const checkUser = () => {
+        const findUser = users.find(usuario => usuario.user === user)
+
+        if (findUser) {
+            return findUser
         }
         return null
     }
 
     const usuario = checkUser()
 
-    if (!usuario || usuario.user!==user) {
+    if (!usuario || usuario.user !== user) {
         return res.status(401).json({ error: "Usuario incorrecto" });
     }
 
@@ -63,19 +62,21 @@ app.post('/api/login', async (req, res) => {
         return res.status(401).json({ error: "Contraseña incorrecta" });
     }
 
-    const token = jwt.sign({ user }, process.env.JWT_SECRET, { expiresIn: '10m' }); //si corregimos el tiempo de expiracion aca, lo hacemos tambien en settimeout de index e inicio 
-    
+    const token = jwt.sign({ user }, process.env.JWT_SECRET, { expiresIn: '15m' }); //si corregimos el tiempo de expiracion aca, lo hacemos tambien en settimeout de index e inicio 
+
     res.json({ token });
 });
 
 //////
 
 const verificarToken = (req, res, next) => {
+
     const authHeader = req.headers.authorization;
-    if (!authHeader) return res.status(401).json({ error: "Token requerido" });
+
+    if (!authHeader)
+        return res.status(401).json({ error: "Token requerido" });
 
     const token = authHeader.split(" ")[1];
-    // console.log("Token extraído:", token);
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -111,10 +112,22 @@ app.get('/api/alf', verificarToken, async (req, res) => {
     }
 })
 
+app.get('/api/log', verificarToken, async (req, res) => {
+    try {
+        const data = await getOrdersFlex()
+        const counts = await getCountOrders(data)
+        const packs = await getCountEtiquetas(data)
+        res.json({ data, counts, packs })
+    } catch (error) {
+        console.error(error)
+    }
+})
+
 
 app.post(('/etiqueta'), async (req, res) => {
 
     const { usuario, id, variantes } = req.body
+
     try {
         const etiquetaGenerada = await getEtiqueta(usuario, id, variantes)
         if (!etiquetaGenerada.success || !etiquetaGenerada.pdfBytes) {
@@ -129,10 +142,81 @@ app.post(('/etiqueta'), async (req, res) => {
         console.error('Error al generar etiqueta:', error.message);
         res.status(500).json({ success: false, error: error.message });
     }
+})
 
+app.post(('/mongo'), async (req, res) => {
+    const bodyMongo = req.body || {};
+    const { seller, ventaid, shipping, fechaVenta, fechaEntrega, mes, producto, zona, envio, precio, pago } = bodyMongo
+
+    const datosFlex = {
+        seller,
+        ventaid,
+        shipping,
+        fechaVenta,
+        fechaEntrega,
+        mes,
+        producto,
+        zona,
+        envio,
+        precio,
+        pago
+    };
+
+    try {
+        if (seller && ventaid && shipping) {
+        const nuevoEnvio = new flexModel(datosFlex);
+        await nuevoEnvio.save();
+        console.log('✅ FLEX guardado en MongoDB');
+        return res.status(200).json({ success: true, message: "Guardado correctamente" });
+
+    } else {
+        console.log('❌ Datos incompletos, no se guarda en MongoDB');
+        return res.status(400).json({ success: false, message: "Datos incompletos" });
+
+    }
+    } catch (error) {
+        console.error('❌ Error al guardar en MongoDB:', error.message);
+        return res.status(500).json({ success: false, message: "Error interno al guardar en MongoDB" });
+        
+    }
+
+    
 
 })
 
+app.get('/api/mongo/:ventaid', async (req, res) => {
+    try {
+        const data = await flexModel.find({ ventaid: req.params.ventaid })
+        res.json(data)
+    } catch (error) {
+        console.error('Error al obtener datos de MongoDB:', error);
+    }
+})
+
+app.get('/api/mongo/env/:envio', async (req, res) => {
+    try {
+        const envioParam = req.params.envio;
+        let filtro = {};
+
+        if (envioParam && envioParam !== 'null' && envioParam !== 'TODAS') {
+            filtro = { envio: envioParam };
+        }
+        const data = await flexModel.find(filtro)
+        res.json(data)
+    } catch (error) {
+        console.error('Error al obtener datos de MongoDB:', error);
+    }
+})
+
+
+app.get('/api/mongo/', async (req, res) => {
+    try {
+        const data = await flexModel.find()
+        res.json(data)
+    } catch (error) {
+        console.error('Error al obtener datos de MongoDB:', error);
+    }
+})
 
 
 app.listen(PORT, () => {

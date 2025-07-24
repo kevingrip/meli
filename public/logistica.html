@@ -7,7 +7,7 @@
     <title>Document</title>
     <link rel="stylesheet" type="text/css" href="./styles.css">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
@@ -26,7 +26,7 @@
 
         const token = localStorage.getItem('token');
         console.log(token)
-        fetch('/api/orders', {
+        fetch('/api/log', {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -76,14 +76,19 @@
 
                 var cantVentaCorreo = count.correo
                 var cantVentaFlex = count.flex
-                var cantStockC1 = stock.resumenStockC1.reduce(((obj, item) => { obj[item.value] = item.cantidad; return obj; }), {})
-                var cantStockC2 = stock.resumenStockC2.reduce(((obj, item) => { obj[item.value] = item.cantidad; return obj; }), {})
+
+                if (stock) {
+                    var cantStockC1 = stock.resumenStockC1.reduce(((obj, item) => { obj[item.value] = item.cantidad; return obj; }), {})
+                    var cantStockC2 = stock.resumenStockC2.reduce(((obj, item) => { obj[item.value] = item.cantidad; return obj; }), {})
 
 
-                const divStock = crearDivStock(cantStockC1, cantStockC2)
+                    const divStock = crearDivStock(cantStockC1, cantStockC2)
+                    divEnvios.appendChild(divStock)
+
+                }
+
                 let divVentaCorreo = crearDivVentas("Correo", pack.correo, pack.toPrintCorreo, "colorNaranja", cantVentaCorreo)
                 let divVentaFlex = crearDivVentas("Flex", pack.flex, pack.toPrintFlex, "colorVerde", cantVentaFlex)
-                divEnvios.appendChild(divStock)
                 divEnvios.appendChild(divVentaCorreo)
                 divEnvios.appendChild(divVentaFlex)
 
@@ -189,7 +194,6 @@
                     const idShipping = document.createElement('p')
                     const dateCreated = document.createElement('p')
                     const dataStatus = document.createElement('p')
-                    const dataSubstatus = document.createElement('p')
                     const ShippingType = document.createElement('h2')
                     const ShippingMap = document.createElement('p')
                     const ShippingComment = document.createElement('p')
@@ -207,6 +211,24 @@
                     const color = document.createElement('p')
                     const sector = document.createElement('p')
                     const direccion = document.createElement('p')
+
+                    const label = document.createElement('label');
+                    label.textContent = 'Envio: ';
+
+                    const select = document.createElement('select');
+                    select.classList.add('select-opciones');  // NO usar id repetido
+
+                    ['Elegir', 'PLEX', 'VERGUI', 'KEVIN'].forEach(value => {
+                        const option = document.createElement('option');
+                        option.value = value;
+                        option.textContent = value;
+                        select.appendChild(option);
+                    });
+
+
+                    let seleccionado = 'Elegir';
+
+                    
 
                     buttonFiltroCorreo.addEventListener('click', () => {
                         if ((element.shipping_info.logistic_type === 'xd_drop_off' || element.shipping_info.logistic_type === 'drop_off')) {
@@ -228,6 +250,8 @@
                         bloquePadre.style.display = 'block';
                     })
 
+                    buttonFiltroFlex.click();
+
                     const address = element.shipping_info?.receiver_address?.address_line || "Dirección no disponible";
                     const localidad = element.shipping_info?.receiver_address?.city?.name || "Localidad no disponible";
 
@@ -235,7 +259,7 @@
                     var tipoEnvio;
                     if (element.shipping_info.logistic_type === 'self_service') {
                         tipoEnvio = 'FLEX'
-                        direccion.textContent = `Direccion: ${address},${localidad}`
+                        direccion.textContent = `${address}, ${localidad}`
                         link.href = element.maps
                         link.target = '_blank';
                         link.textContent = "Ver direccion 📍"
@@ -258,18 +282,23 @@
                     idShipping.textContent = `SHIPPING ID: ${element.shipping.id}`
                     dateCreated.textContent = `Fecha Venta: ${new Date(element.date_created).toLocaleString()}`
                     dataStatus.textContent = `Status: ${element.shipping_info.status}`
-                    dataSubstatus.textContent = `Substatus: ${element.shipping_info.substatus}`
                     ShippingLabelStatus.textContent = `Estado: ${element.shipping_info.statusLabel}`
                     ShippingLastTime.textContent = `Despachar antes de: ${new Date(element.shipping_info.lastTimeToSend).toLocaleString()}`
                     ShippingType.textContent = tipoEnvio
-                    sector.textContent = `Sector: ${element.shipping_info?.receiver_address?.state.name || 'No disponible'}`
+                    sector.textContent = `${element.shipping_info?.receiver_address?.state.name || 'No disponible'}`
 
                     const ubicacion = element.shipping_info?.receiver_address?.state.name
 
                     title.textContent = `${element.order_items[0].item.title}`
 
                     const variantes = []
+
+                    let tipo;
+
+
                     element.orderResumen.forEach(detalle => {
+
+                        tipo = detalle.tipo
 
                         const divProduct = document.createElement('div')
                         const quantity = document.createElement('p')
@@ -292,58 +321,143 @@
                             divProduct.classList.add("bolaSC")
                         }
 
-                        orderResumen.innerHTML += `- ${detalle.tipo || title.textContent} ${detalle.variante || ''} x${detalle.cantidad}<br>`
+
+                        orderResumen.innerHTML += `- ${tipo || title.textContent} ${detalle.variante || ''} x${detalle.cantidad}<br>`
 
                         variantes.push(`${productBrev} : ${detalle.cantidad}`)
                         quantity.textContent = `x${detalle.cantidad}`
 
-                        var detalleProduct = `${detalle.tipo} ${detalle.variante || ''}`
+                        var detalleProduct = `${tipo} ${detalle.variante || ''}`
                         if (variantes.length > 1) {
                             titleResumen.textContent = `PACK`
                         } else {
-                            titleResumen.textContent = `${detalle.tipo || title.textContent} ${detalle.variante || ''}`
+                            titleResumen.textContent = `${tipo || title.textContent} ${detalle.variante || ''}`
                         }
                         divProduct.appendChild(quantity)
                         bloqueProduct.appendChild(divProduct)
                     })
 
-                    buttonDescarga.textContent = '>'
-                    const variantesSTR = variantes.join(" | ")
-                    buttonDescarga.addEventListener("click", async () => {
+                    fetch(`api/mongo/${element.ventaid}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            console.log('Datos traídos de MongoDB:', data);
+                            if (!data || (Array.isArray(data) && data.length === 0)) {
+                                label.appendChild(select);
+                            } else {
+                                const dataEnvio = document.createElement('p')
+                                dataEnvio.textContent = data[0].envio
+                                label.appendChild(dataEnvio)
+                            }
+                        })
 
-                        if (element.shipping_info.logistic_type === 'self_service' && element.shipping_info.substatus === 'ready_to_print')
-                            buttonDescarga.classList.toggle("buttonDescargaFlexPTD")
-                        if ((element.shipping_info.logistic_type === 'drop_off' || element.shipping_info.logistic_type === 'xd_drop_off') && element.shipping_info.substatus === 'ready_to_print')
-                            buttonDescarga.classList.toggle("buttonDescargaCorreoPTD")
 
-                        const bodyData = {
-                            usuario: element.seller.nickname,
-                            id: element.shipping.id,
-                            variantes: variantesSTR
-                        }                        
+
+                    
+
+                    select.addEventListener('change', async (event) => {
+                        seleccionado = event.target.value;                        
+
+                        let pagoLogistica;
+                        let pagoNumber = (parseFloat(element.pagos.flex.replace(/\./g, '').replace(',', '.')))
+                        let pagoPositivo = pagoNumber * (-1)
+
+                        if (pagoPositivo === 6792) {
+                            if (seleccionado === "VERGUI") {
+                                pagoLogistica = 6175
+                            } else {
+                                pagoLogistica = 7000
+                            }
+                        } else if (pagoPositivo === 4249) {
+                            if (seleccionado === "VERGUI") {
+                                pagoLogistica = 3880
+                            } else {
+                                pagoLogistica = pagoPositivo
+                            }
+                        } else if (pagoPositivo === 9443) {
+                            if (seleccionado === "VERGUI") {
+                                pagoLogistica = 8500
+                            } else {
+                                pagoLogistica = pagoPositivo
+                            }
+                        }
+
+                        const bodyMongoFlex = {
+                        seller: element.seller.nickname,
+                        ventaid: element.ventaid,
+                        shipping: element.shipping.id,
+                        fechaVenta: new Date(element.date_created).toLocaleDateString(),
+                        fechaEntrega: new Date(element.shipping_info.lastTimeToSend).toLocaleDateString(),
+                        mes: new Date(element.shipping_info.lastTimeToSend).toLocaleString('es-AR', { month: 'long' }),
+                        producto: tipo || title.textContent,
+                        zona: localidad,
+                        envio: seleccionado,
+                        precio: element.pagos.flex,
+                        pago: pagoLogistica
+                        }
+
+                        console.log(`Actualizado bodyMongoFlex para orden ${element.id}:`, bodyMongoFlex);
+
                         try {
-                            const peticionEtiqueta = await fetch('/etiqueta', {
+                            const subirMongo = await fetch('/mongo', {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json'
                                 },
-                                body: JSON.stringify(bodyData)
-                            });
-
-                            if (!peticionEtiqueta.ok) throw new Error('Fallo la descarga del PDF');
-
-                            const blob = await peticionEtiqueta.blob();
-
-                            const url = window.URL.createObjectURL(blob);
-                            const a = document.createElement('a');
-                            a.href = url;
-                            a.download = `${fechaEtiqueta}-${tipoEnvio === "FLEX" ? 'FLEX' : 'CORREO'}${tipoEnvio === "FLEX" ? ': ' + localidad : ''}-${element.ventaid}.pdf`; // nombre del archivo
-                            document.body.appendChild(a);
-                            a.click();
-                            a.remove();
-                            window.URL.revokeObjectURL(url);
+                                body: JSON.stringify(bodyMongoFlex)
+                            })
                         } catch (error) {
                             console.error("Error al enviar solicitud al backend:", error);
+                        };
+                    })
+
+
+
+                    buttonDescarga.textContent = '>'
+                    const variantesSTR = variantes.join(" | ")
+                    buttonDescarga.addEventListener("click", async () => {
+                        
+                        if (seleccionado != 'Elegir' && seleccionado != null) {
+                            if (element.shipping_info.logistic_type === 'self_service' && element.shipping_info.substatus === 'ready_to_print')
+                                buttonDescarga.classList.toggle("buttonDescargaFlexPTD")
+                            if ((element.shipping_info.logistic_type === 'drop_off' || element.shipping_info.logistic_type === 'xd_drop_off') && element.shipping_info.substatus === 'ready_to_print')
+                                buttonDescarga.classList.toggle("buttonDescargaCorreoPTD")
+
+                            const body = {
+                                usuario: element.seller.nickname,
+                                id: element.shipping.id,
+                                variantes: variantesSTR
+                            }
+
+                            try {
+                                const peticionEtiqueta = await fetch('/etiqueta', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify(body)
+                                });
+
+                                if (!peticionEtiqueta.ok) throw new Error('Fallo la descarga del PDF');
+
+                                const blob = await peticionEtiqueta.blob();
+
+                                const url = window.URL.createObjectURL(blob);
+                                const a = document.createElement('a');
+                                a.href = url;
+                                a.download = `${fechaEtiqueta}-${tipoEnvio === "FLEX" ? 'FLEX' : 'CORREO'}${tipoEnvio === "FLEX" ? ': ' + localidad : ''}-${element.ventaid}.pdf`; // nombre del archivo
+                                document.body.appendChild(a);
+                                a.click();
+                                a.remove();
+                                window.URL.revokeObjectURL(url);
+                            } catch (error) {
+                                console.error("Error al enviar solicitud al backend:", error);
+                            }
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Por favor, selecciona un envío.'
+                            });
                         }
                     })
 
@@ -374,7 +488,7 @@
                     totalLiquidacion.textContent = `A liquidar: $${element.pagos.totalLiquidacion}`;
                     bloquePago.appendChild(totalLiquidacion)
 
-                    Pagoflex.textContent = `Precio Flex: $${element.pagos.flex}`;
+                    Pagoflex.textContent = `Precio Flex: $ ${element.pagos.flex}`;
 
 
                     fechaLiquidacion.textContent = `Fecha Liquidacion: ${new Date(element.pagos.fechaLiquidacion).toLocaleString()}`;
@@ -386,21 +500,22 @@
                     bloqueEnvio.appendChild(ShippingType)
                     bloqueEnvio.appendChild(ShippingLastTime)
                     if (tipoEnvio === 'FLEX') {
-
+                        bloqueEnvio.appendChild(Pagoflex)
+                        bloqueEnvio.appendChild(idShipping)
                         bloqueEnvio.appendChild(sector)
                         bloqueEnvio.appendChild(direccion)
                         bloqueEnvio.appendChild(ShippingMap)
-                        bloqueEnvio.appendChild(Pagoflex)
-                        if (element.shipping_info.substatus) {
-                            bloqueEnvio.appendChild(dataSubstatus)
-                        }
+                        bloqueEnvio.appendChild(label)
+
+                    } else {
+                        bloqueEnvio.appendChild(idShipping)
                     }
-                    bloqueEnvio.appendChild(idShipping)
+
+
 
 
                     if (element.shipping_info.substatus === 'ready_to_print' || element.shipping_info.substatus === 'printed') {
                         bloqueDescarga.appendChild(buttonDescarga)
-
                     } else {
                         if (element.shipping_info.status === 'delivered') {
                             bloquePadre.classList.add("bloquePadreDelivered")
@@ -412,7 +527,6 @@
                             bloquePadre.classList.add("bloquePadreInComing")
                         }
                     }
-
 
                     bloqueData.classList.add("bloqueData")
                     bloquePago.classList.add("bloquePago")

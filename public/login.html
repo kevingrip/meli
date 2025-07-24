@@ -58,7 +58,12 @@
 
         setTimeout(() => {
           if (user != 'admin') {
-            window.location.href = 'inicio.html';
+            console.log(user)
+            if (user==='jose'){
+              window.location.href = 'logistica.html';
+            }else{
+              window.location.href = 'inicio.html';
+            }            
           } else {
             window.location.href = 'index.html';
           }

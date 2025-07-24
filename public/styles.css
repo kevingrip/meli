@@ -14,11 +14,45 @@
 
 }
 
+.divPagos {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    margin-bottom: 20px;
+}
+
+.divSubPagos {
+    font-size: small;
+    display:flex;
+    flex:1;
+    border:1px solid #ccc; 
+    padding:5px;
+    height:30px;
+    text-align:center;
+    align-items:center; 
+    justify-content:center;
+    word-break: break-word;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.divTotalPagos {
+    display:flex;
+    justify-content: flex-end;
+    align-items: center;
+    box-shadow: 0 0 5px rgba(255, 0, 179, 0.5);
+    background-color: rgb(245, 167, 255);
+    height: 40px;
+}
+
 .divEtiquetaCantidad {
     width: 100%;
 }
 
-.sombraBordeDer{
+.sombraBordeDer {
     box-shadow: 1px 0 1px rgba(0, 0, 0, 0.3);
 }
 
@@ -188,7 +222,7 @@ body {
     margin: 3vh;
 }
 
-.bolaFigu{
+.bolaFigu {
     border: 2px solid red;
 }
 
@@ -330,10 +364,10 @@ body {
 
 .divResumen {
     display: flex;
-    flex-direction: column; 
+    flex-direction: column;
 }
 
-.solidDer{
+.solidDer {
     border-right: 3px solid black;
 }
 

@@ -18,6 +18,8 @@ const flexSchema = new mongoose.Schema({
 
     mes: { type: String, required: true },
 
+    dia: { type: String, required: true },
+
     producto: { type: String, required: true },
 
     zona: { type: String, required: true },

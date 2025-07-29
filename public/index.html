@@ -11,7 +11,7 @@
 </head>
 
 <body>
-    <h1 style="display: flex; justify-content: center; align-items: center; margin:30px;">All orders</h1>
+    <h1 id='INDEX' style="display: flex; justify-content: center; align-items: center; margin:30px;">INDEX</h1>
     <div id="ordenes"></div>
     <div style="display: flex; justify-content: center; align-items: center" id="cargando">
         <h3>Cargando...</h3>
@@ -44,8 +44,38 @@
                 const count = result.counts
                 const pack = result.packs
 
+                document.getElementById("INDEX").remove()
                 document.getElementById("cargando").remove()
                 const ordenes = document.getElementById("ordenes")
+
+                const header = document.createElement('header')
+                header.style.backgroundColor = 'black'
+
+                const nav = document.createElement('nav')
+
+                const navList = document.createElement('ul')
+                navList.style.listStyle='none'
+                navList.classList.add('navList')
+
+                const createNavBarItem = (titulo,link) => {
+                    const navItem = document.createElement('li')
+                    const item = document.createElement('a')
+                    item.textContent = titulo
+                    item.href = link
+                    item.classList.add('itemNav')
+                    navItem.appendChild(item)
+                    navList.appendChild(navItem)
+                    nav.appendChild(navList)
+                    header.appendChild(nav)
+                    ordenes.appendChild(header)
+                }
+
+                createNavBarItem('Inicio', '/inicio.html')
+                createNavBarItem('Flex', '/logistica.html')
+                createNavBarItem('Pagos', '/pagos.html')
+
+
+
 
                 const buttonFiltroFlex = document.createElement('button')
                 buttonFiltroFlex.textContent = "Flex"
@@ -320,7 +350,7 @@
                             usuario: element.seller.nickname,
                             id: element.shipping.id,
                             variantes: variantesSTR
-                        }                        
+                        }
                         try {
                             const peticionEtiqueta = await fetch('/etiqueta', {
                                 method: 'POST',

@@ -146,7 +146,7 @@ app.post(('/etiqueta'), async (req, res) => {
 
 app.post(('/mongo'), async (req, res) => {
     const bodyMongo = req.body || {};
-    const { seller, ventaid, shipping, fechaVenta, fechaEntrega, mes, producto, zona, envio, precio, pago } = bodyMongo
+    const { seller, ventaid, shipping, fechaVenta, fechaEntrega, mes, producto, zona, envio, precio, pago, dia } = bodyMongo
 
     const datosFlex = {
         seller,
@@ -154,6 +154,7 @@ app.post(('/mongo'), async (req, res) => {
         shipping,
         fechaVenta,
         fechaEntrega,
+        dia,
         mes,
         producto,
         zona,
@@ -193,7 +194,7 @@ app.get('/api/mongo/:ventaid', async (req, res) => {
     }
 })
 
-app.get('/api/mongo/env/:envio', async (req, res) => {
+app.get('/api/pagos/:envio', async (req, res) => {
     try {
         const envioParam = req.params.envio;
         let filtro = {};
@@ -201,7 +202,7 @@ app.get('/api/mongo/env/:envio', async (req, res) => {
         if (envioParam && envioParam !== 'null' && envioParam !== 'TODAS') {
             filtro = { envio: envioParam };
         }
-        const data = await flexModel.find(filtro)
+        const data = await flexModel.find(filtro).sort({ fechaEntrega: 1 });
         res.json(data)
     } catch (error) {
         console.error('Error al obtener datos de MongoDB:', error);

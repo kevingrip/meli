@@ -17,7 +17,9 @@
         <h3>Cargando...</h3>
     </div>
 
-    <script>
+    <script type="module">
+        import { createDivCountDoble, createDivProduct, crearDivStock, crearDivVentas, createDivs } from './functions.js';
+
 
         setTimeout(() => {
           window.location.href = 'login.html';
@@ -68,164 +70,38 @@
 
                 //////////////////////////////// DIV CUADROS CANTIDADES
 
-                let divFlex, divCorreo;
-
                 const divEnvios = document.createElement('div')
 
                 divEnvios.classList.add("divEnvios")
 
-                var cantFiguCorreo = (count.correo["Mundial Qatar"] || 0) + (count.correo["Copa America"] || 0)
-                var cantFiguFlex = (count.flex["Mundial Qatar"] || 0) + (count.flex["Copa America"] || 0)
-
-
-                const createDivCountEtiqueta = (nombre, color) => {
-                    let total;
-                    let toPrint;
-                    const divEtiqueta = document.createElement('div')
-                    const divNombre = document.createElement('div')
-                    const divPadreNumero = document.createElement('div')
-                    const divNumeroTotal = document.createElement('div')
-                    const divNumeroToPrint = document.createElement('div')
-                    divPadreNumero.style.display = 'flex'
-                    divNombre.textContent = nombre
-                    if (nombre === "Flex") {
-                        total = pack.flex
-                        toPrint = pack.toPrintFlex
-                    } else {
-                        total = pack.correo
-                        toPrint = pack.toPrintCorreo
-                    }
-                    divNumeroTotal.textContent = `${total || 0}`
-                    divNumeroToPrint.textContent = `${toPrint || 0}`
-                    divEtiqueta.appendChild(divNombre)
-                    divPadreNumero.appendChild(divNumeroTotal)
-                    divPadreNumero.appendChild(divNumeroToPrint)
-                    divEtiqueta.appendChild(divPadreNumero)
-                    divNombre.classList.add('divNombreResumen', 'borderRight', 'borderLeft', color)
-                    divNumeroTotal.classList.add('divEtiquetaCantidad', 'sombraBordeDer', 'divNumeroResumen')
-                    divNumeroToPrint.classList.add('divEtiquetaCantidad', 'divNumeroResumen')
-                    divEtiqueta.classList.add('divResumen')
-                    divPadreNumero.style.height = '100%'
-                    return divEtiqueta
-                }
-
-                const createDivProduct = (nombre, cant, Color, bordeIzq, BordeDer, bordeIndividual) => {
-                    const divProduct = document.createElement('div')
-                    const divNombre = document.createElement('div')
-                    const divNumero = document.createElement('div')
-                    divNombre.textContent = nombre
-                    divNumero.textContent = `${cant || 0}`
-                    divProduct.appendChild(divNombre)
-                    divProduct.appendChild(divNumero)
-                    divNombre.classList.add('divNombreResumen', "solidDown", Color, bordeIzq, BordeDer)
-                    divNumero.classList.add('divNumeroResumen')
-                    divProduct.classList.add(bordeIndividual, "displayColumn")
-                    return divProduct
-                }
-
-                const crearDivCorreo = () => {
-                    divCorreo = document.createElement('div')
-
-                    const divEtiquetaCorreo = createDivCountEtiqueta("Correo", "colorNaranja")
-
-                    const divCantidadVariantes = document.createElement('div')
-
-                    divCantidadVariantes.appendChild(
-                        createDivProduct(window.matchMedia("(max-width: 768px)").matches ? "BG" : "Beige", count.correo.Beige, "colorBeige", "borderLeft")
-                    )
-                    divCantidadVariantes.appendChild(
-                        createDivProduct(window.matchMedia("(max-width: 768px)").matches ? "OS" : "Gris Oscuro", count.correo["Gris Oscuro"], "colorGrisOscuro")
-                    )
-                    divCantidadVariantes.appendChild(
-                        createDivProduct(window.matchMedia("(max-width: 768px)").matches ? "CL" : "Gris Claro", count.correo["Gris Claro"], "colorGrisClaro")
-                    )
-                    divCantidadVariantes.appendChild(
-                        createDivProduct(window.matchMedia("(max-width: 768px)").matches ? "NG" : "Negro", count.correo.Negro, "colorNegro")
-                    )
-                    divCantidadVariantes.appendChild(
-                        createDivProduct(window.matchMedia("(max-width: 768px)").matches ? "BL" : "Blanco", count.correo.Blanco, "colorBlanco", "borderRight")
-                    )
-
-                    divCorreo.appendChild(divEtiquetaCorreo)
-                    divCorreo.appendChild(divCantidadVariantes)
-
-                    divCorreo.appendChild(
-                        createDivProduct(window.matchMedia("(max-width: 768px)").matches ? "PJ" : "Pajaro", count.correo.Pajaro, "colorPajaro", "borderLeft", "borderRight", "divBordeProductInd")
-                    )
-                    if (cantFiguCorreo > 0 && cantFiguFlex > 0) {
-                        divCorreo.appendChild(
-                            createDivProduct(window.matchMedia("(max-width: 768px)").matches ? "FG" : "Figu", cantFiguCorreo, "colorFigu", "borderLeft", "borderRight", "divBordeProductInd")
-                        )
-                    }
-
-                    divCorreo.classList.add("divCounts")
-                    divCantidadVariantes.classList.add("divBordeProductInd", "displayRow")
-                    divEnvios.appendChild(divCorreo)
-
-                }
-
-                const crearDivFlex = () => {
-                    divFlex = document.createElement('div')
-
-                    const divEtiquetaFlex = createDivCountEtiqueta("Flex", "colorVerde")
-
-                    const divCantidadVariantes = document.createElement('div')
-
-                    divCantidadVariantes.appendChild(
-                        createDivProduct(window.matchMedia("(max-width: 768px)").matches ? "BG" : "Beige", count.flex.Beige, "colorBeige", "borderLeft")
-                    )
-                    divCantidadVariantes.appendChild(
-                        createDivProduct(window.matchMedia("(max-width: 768px)").matches ? "OS" : "Gris Oscuro", count.flex["Gris Oscuro"], "colorGrisOscuro")
-                    )
-                    divCantidadVariantes.appendChild(
-                        createDivProduct(window.matchMedia("(max-width: 768px)").matches ? "CL" : "Gris Claro", count.flex["Gris Claro"], "colorGrisClaro")
-                    )
-                    divCantidadVariantes.appendChild(
-                        createDivProduct(window.matchMedia("(max-width: 768px)").matches ? "NG" : "Negro", count.flex.Negro, "colorNegro")
-                    )
-                    divCantidadVariantes.appendChild(
-                        createDivProduct(window.matchMedia("(max-width: 768px)").matches ? "BL" : "Blanco", count.flex.Blanco, "colorBlanco", "borderRight")
-                    )
-
-                    divFlex.appendChild(divEtiquetaFlex)
-                    divFlex.appendChild(divCantidadVariantes)
-
-                    divFlex.appendChild(
-                        createDivProduct(window.matchMedia("(max-width: 768px)").matches ? "PJ" : "Pajaro", count.flex.Pajaro, "colorPajaro", "borderLeft", "borderRight", "divBordeProductInd")
-                    )
-                    if (cantFiguCorreo > 0 && cantFiguFlex > 0) {
-                        divFlex.appendChild(
-                            createDivProduct(window.matchMedia("(max-width: 768px)").matches ? "FG" : "Figu", cantFiguFlex, "colorFigu", "borderLeft", "borderRight", "divBordeProductInd")
-                        )
-                    }
-
-                    divFlex.classList.add("divCounts")
-
-                    divCantidadVariantes.classList.add("divBordeProductInd", "displayRow")
-                    divEnvios.appendChild(divFlex)
-
-                }
-
-                crearDivFlex()
-                crearDivCorreo()
+                var cantVentaCorreo = count.correo
+                var cantVentaFlex = count.flex
+                let divVentaCorreo = crearDivVentas("Correo", pack.correo, pack.toPrintCorreo, "colorNaranja", cantVentaCorreo)
+                let divVentaFlex = crearDivVentas("Flex", pack.flex, pack.toPrintFlex, "colorVerde", cantVentaFlex)
+                divEnvios.appendChild(divVentaCorreo)
+                divEnvios.appendChild(divVentaFlex)
 
                 buttonFiltroFlex.addEventListener('click', () => {
-                    divCorreo.remove()
-                    divFlex.remove()
-                    crearDivFlex()
+                    divVentaCorreo.remove()
+                    divVentaFlex.remove()
+                    divVentaFlex = crearDivVentas("Flex", pack.flex, pack.toPrintFlex, "colorVerde", cantVentaFlex)
+                    divEnvios.appendChild(divVentaFlex)
                 })
 
                 buttonFiltroCorreo.addEventListener('click', () => {
-                    divFlex.remove()
-                    divCorreo.remove()
-                    crearDivCorreo()
+                    divVentaCorreo.remove()
+                    divVentaFlex.remove()
+                    divVentaCorreo = crearDivVentas("Correo", pack.correo, pack.toPrintCorreo, "colorNaranja", cantVentaCorreo)
+                    divEnvios.appendChild(divVentaCorreo)
                 })
 
                 buttonFiltroTodas.addEventListener('click', () => {
-                    divCorreo.remove()
-                    divFlex.remove()
-                    crearDivFlex()
-                    crearDivCorreo()
+                    divVentaCorreo.remove()
+                    divVentaFlex.remove()
+                    divVentaFlex = crearDivVentas("Flex", pack.flex, pack.toPrintFlex, "colorVerde", cantVentaFlex)
+                    divEnvios.appendChild(divVentaFlex)
+                    divVentaCorreo = crearDivVentas("Correo", pack.correo, pack.toPrintCorreo, "colorNaranja", cantVentaCorreo)
+                    divEnvios.appendChild(divVentaCorreo)
                 })
 
                 ordenes.appendChild(divEnvios)

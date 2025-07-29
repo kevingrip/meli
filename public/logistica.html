@@ -64,7 +64,7 @@
                 buttonsFiltros.style.display = 'flex'
                 buttonsFiltros.style.justifyContent = 'center'
                 buttonsFiltros.style.margin = '30px'
-                ordenes.appendChild(buttonsFiltros)
+                // ordenes.appendChild(buttonsFiltros)
 
 
 
@@ -359,7 +359,7 @@
 
                     select.addEventListener('change', async (event) => {
                         seleccionado = event.target.value;                        
-
+                        
                         let pagoLogistica;
                         let pagoNumber = (parseFloat(element.pagos.flex.replace(/\./g, '').replace(',', '.')))
                         let pagoPositivo = pagoNumber * (-1)
@@ -390,6 +390,7 @@
                         shipping: element.shipping.id,
                         fechaVenta: new Date(element.date_created).toLocaleDateString(),
                         fechaEntrega: new Date(element.shipping_info.lastTimeToSend).toLocaleDateString(),
+                        dia: ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'][new Date(element.shipping_info.lastTimeToSend).getDay()],
                         mes: new Date(element.shipping_info.lastTimeToSend).toLocaleString('es-AR', { month: 'long' }),
                         producto: tipo || title.textContent,
                         zona: localidad,

@@ -10,7 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
-<body>
+<body style="background-color: blueviolet;">
     <h1 style="display: flex; justify-content: center; align-items: center; margin:30px;">Pagos</h1>
 
     <!-- Contenedor solo para botones -->
@@ -23,89 +23,108 @@
         <h3>Cargando...</h3>
     </div>
 
-<script type="module">
-    const ordenes = document.getElementById('ordenes')
-    const filtros = document.getElementById('filtros')
-    const cargando = document.getElementById('cargando')
+    <script type="module">
+        const ordenes = document.getElementById('ordenes')
+        const filtros = document.getElementById('filtros')
+        const cargando = document.getElementById('cargando')
 
-    const createButton = (nombre) => {
-        const button = document.createElement('button')
-        button.textContent = nombre
-        return button
-    }
+        const createButton = (nombre) => {
+            const button = document.createElement('button')
+            button.textContent = nombre
+            return button
+        }
 
-    ['VERGUI', 'PLEX', 'KEVIN', 'TODAS'].forEach(nombre => {
-        const btn = createButton(nombre)
-        filtros.appendChild(btn)
+        const constructor = (divPadre, variable) => {
+            const div = document.createElement('div')
+            div.textContent = `${variable}`
+            div.classList.add('divSubPagos')
+            divPadre.appendChild(div)
+        }
 
-        btn.addEventListener('click', () => {
-            // Mostrar cargando mientras trae datos
-            cargando.style.display = 'flex'
+        ['TODAS', 'VERGUI', 'PLEX', 'KEVIN'].forEach(nombre => {
+            const btn = createButton(nombre)
+            filtros.appendChild(btn)
 
-            // Limpiar resultados previos
-            ordenes.innerHTML = ''
-            const filtroEnvio = (nombre === 'TODAS') ? 'null' : nombre
-            fetch(`/api/mongo/env/${filtroEnvio}`)
-                .then(response => {
-                    if (!response.ok) {
-                        window.location.href = 'login.html';
-                        throw new Error('__redirigir_login__');
-                    }
-                    return response.json();
-                })
-                .then(result => {
-                    cargando.style.display = 'none'
+            btn.addEventListener('click', () => {
+                // Mostrar cargando mientras trae datos
+                cargando.style.display = 'flex'
 
-                    const constructor = (divPadre, variable) => {
-                        const div = document.createElement('div')
-                        div.textContent = `${variable}`
-                        div.classList.add('divSubPagos')
-                        divPadre.appendChild(div)
-                    }
-
-                    let precioTotal = 0;
-
-                    result.forEach(element => {
-                        const divEnvio = document.createElement('div')
-
-                        constructor(divEnvio, element.seller)
-                        constructor(divEnvio, element.ventaid)
-                        constructor(divEnvio, element.shipping)
-                        constructor(divEnvio, element.fechaVenta)
-                        constructor(divEnvio, element.fechaEntrega)
-                        constructor(divEnvio, element.mes)
-                        constructor(divEnvio, element.producto)
-                        constructor(divEnvio, element.zona)
-                        constructor(divEnvio, element.envio)
-                        constructor(divEnvio, element.precio)
-                        constructor(divEnvio, element.pago)
-
-                        divEnvio.classList.add("divPagos")
-
-                        precioTotal += element.pago
-
-                        ordenes.appendChild(divEnvio)
+                // Limpiar resultados previos
+                ordenes.innerHTML = ''
+                const filtroEnvio = (nombre === 'TODAS') ? 'null' : nombre
+                fetch(`/api/pagos/${filtroEnvio}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            window.location.href = 'login.html';
+                            throw new Error('__redirigir_login__');
+                        }
+                        return response.json();
                     })
+                    .then(result => {
+                        cargando.style.display = 'none'
 
-                    const divPrecioTotal = document.createElement('div')
-                    const subPrecioTotal = document.createElement('div')
-                    subPrecioTotal.style.padding = '30px'
-                    subPrecioTotal.textContent = precioTotal
-                    divPrecioTotal.appendChild(subPrecioTotal)
-                    divPrecioTotal.classList.add('divTotalPagos')
-                    ordenes.appendChild(divPrecioTotal)
-                })
-                .catch(err => {
-                    cargando.style.display = 'none'
-                    console.error(err)
-                })
+                        const divTitulo = document.createElement('div')
+                        constructor(divTitulo, 'Dia')
+                        constructor(divTitulo, 'Fecha')
+                        constructor(divTitulo, 'Mes')
+                        constructor(divTitulo, 'Zona')
+                        constructor(divTitulo, 'Envio')
+                        constructor(divTitulo, 'Precio ML')
+                        constructor(divTitulo, 'Pago')
+                        constructor(divTitulo, 'Cuenta')
+                        constructor(divTitulo, 'Venta ID')
+                        constructor(divTitulo, 'Producto')
+                        divTitulo.classList.add("divPagos")
+                        divTitulo.style.backgroundColor='cyan'
+                        divTitulo.style.fontWeight='bold'
+                        ordenes.appendChild(divTitulo)
+
+                        let precioTotal = 0;
+
+                        result.forEach(element => {
+                            const divEnvio = document.createElement('div')
+
+                            // constructor(divEnvio, element.shipping)
+                            // constructor(divEnvio, element.fechaVenta)
+                            constructor(divEnvio, element.dia)
+                            constructor(divEnvio, element.fechaEntrega)
+                            constructor(divEnvio, element.mes)
+                            constructor(divEnvio, element.zona)
+                            constructor(divEnvio, element.envio)
+                            constructor(divEnvio, element.precio)
+                            constructor(divEnvio, element.pago)
+                            constructor(divEnvio, element.seller)
+                            constructor(divEnvio, element.ventaid)
+                            constructor(divEnvio, element.producto)
+
+
+                            divEnvio.classList.add("divPagos")
+
+                            precioTotal += element.pago
+
+                            ordenes.appendChild(divEnvio)
+                        })
+
+                        const divPrecioTotal = document.createElement('div')
+                        const subPrecioTotal = document.createElement('div')
+                        subPrecioTotal.style.padding = '30px'
+                        subPrecioTotal.textContent = `Total: $${precioTotal}`
+                        divPrecioTotal.appendChild(subPrecioTotal)
+                        divPrecioTotal.classList.add('divTotalPagos')
+                        divPrecioTotal.style.fontWeight='bold'
+                        ordenes.appendChild(divPrecioTotal)
+                    })
+                    .catch(err => {
+                        cargando.style.display = 'none'
+                        console.error(err)
+                    })
+            })
         })
-    })
 
-    // Opcional: iniciar con datos del primer filtro
-    filtros.querySelector('button').click()
+        // Opcional: iniciar con datos del primer filtro
+        filtros.querySelector('button').click()
 
-</script>
+    </script>
 </body>
 
 

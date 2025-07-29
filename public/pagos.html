@@ -41,15 +41,57 @@
             divPadre.appendChild(div)
         }
 
+        const createDivEspacio = () => {
+
+            let divEspacio = document.createElement('div')
+            divEspacio.style.height = '25px'
+            ordenes.appendChild(divEspacio)
+        }
+
+        const createTitles = () => {
+            const divTitulo = document.createElement('div')
+            constructor(divTitulo, 'Dia')
+            constructor(divTitulo, 'Fecha')
+            constructor(divTitulo, 'Mes')
+            constructor(divTitulo, 'Zona')
+            constructor(divTitulo, 'Envio')
+            constructor(divTitulo, 'Precio ML')
+            constructor(divTitulo, 'Pago')
+            constructor(divTitulo, 'Cuenta')
+            constructor(divTitulo, 'Venta ID')
+            constructor(divTitulo, 'Producto')
+            constructor(divTitulo, 'Semana')
+            divTitulo.classList.add("divPagos")
+            divTitulo.style.backgroundColor = 'cyan'
+            divTitulo.style.fontWeight = 'bold'
+            ordenes.appendChild(divTitulo)
+        }
+
+        const createDivPrecioTotal = (precioTotal) => {
+
+            let divPrecioTotal = document.createElement('div')
+            let subPrecioTotal = document.createElement('div')
+            subPrecioTotal.textContent = `Total: $${precioTotal}`
+            subPrecioTotal.style.padding = '30px'
+            divPrecioTotal.appendChild(subPrecioTotal)
+            divPrecioTotal.classList.add('divTotalPagos')
+            divPrecioTotal.style.fontWeight = 'bold'
+            ordenes.appendChild(divPrecioTotal)
+
+
+        }
+
         ['TODAS', 'VERGUI', 'PLEX', 'KEVIN'].forEach(nombre => {
             const btn = createButton(nombre)
             filtros.appendChild(btn)
 
             btn.addEventListener('click', () => {
-                // Mostrar cargando mientras trae datos
+                Array.from(filtros.children).forEach(btn => {
+                    btn.style.backgroundColor = ''
+                })
                 cargando.style.display = 'flex'
+                btn.style.backgroundColor = 'violet'
 
-                // Limpiar resultados previos
                 ordenes.innerHTML = ''
                 const filtroEnvio = (nombre === 'TODAS') ? 'null' : nombre
                 fetch(`/api/pagos/${filtroEnvio}`)
@@ -63,97 +105,101 @@
                     .then(result => {
                         cargando.style.display = 'none'
 
-                        const divTitulo = document.createElement('div')
-                        constructor(divTitulo, 'Dia')
-                        constructor(divTitulo, 'Fecha')
-                        constructor(divTitulo, 'Mes')
-                        constructor(divTitulo, 'Zona')
-                        constructor(divTitulo, 'Envio')
-                        constructor(divTitulo, 'Precio ML')
-                        constructor(divTitulo, 'Pago')
-                        constructor(divTitulo, 'Cuenta')
-                        constructor(divTitulo, 'Venta ID')
-                        constructor(divTitulo, 'Producto')
-                        divTitulo.classList.add("divPagos")
-                        divTitulo.style.backgroundColor = 'cyan'
-                        divTitulo.style.fontWeight = 'bold'
-                        ordenes.appendChild(divTitulo)
-
-                        let precioTotal = 0;
-                        let precioEnCurso=0
+                        createTitles()
 
                         let semana = 0
                         let diaAnterior = 0
-
-                        const createDivEspacio = () => {
-
-                            let divEspacio = document.createElement('div')
-                            divEspacio.style.height='25px'
-                            ordenes.appendChild(divEspacio)
-
-
-                        }
-
-                        const createDivPrecioTotal = (precioTotal) => {
-
-                            let divPrecioTotal = document.createElement('div')
-                            let subPrecioTotal = document.createElement('div')
-                            subPrecioTotal.textContent = `Total: $${precioTotal}`                            
-                            subPrecioTotal.style.padding = '30px'
-                            divPrecioTotal.appendChild(subPrecioTotal)
-                            divPrecioTotal.classList.add('divTotalPagos')
-                            divPrecioTotal.style.fontWeight = 'bold'
-                            ordenes.appendChild(divPrecioTotal)
-
-
-                        }
-
-
-
+                        let maxSemana = 0
 
                         result.forEach(element => {
-                            const divEnvio = document.createElement('div')
+                            const numeroSemana = element.diaSemana
 
-                            // constructor(divEnvio, element.shipping)
-                            // constructor(divEnvio, element.fechaVenta)
-                            constructor(divEnvio, element.dia)
-                            constructor(divEnvio, element.fechaEntrega)
-                            constructor(divEnvio, element.mes)
-                            constructor(divEnvio, element.zona)
-                            constructor(divEnvio, element.envio)
-                            constructor(divEnvio, element.precio)
-                            constructor(divEnvio, element.pago)
-                            constructor(divEnvio, element.seller)
-                            constructor(divEnvio, element.ventaid)
-                            constructor(divEnvio, element.producto)
-
-
-                            divEnvio.classList.add("divPagos")
-
-                            const numeroSemana = (element.diaSemana)
-
-                            console.log(numeroSemana)
-
-                            if ((diaAnterior <= numeroSemana)) {
-                                precioTotal += element.pago
-                                ordenes.appendChild(divEnvio)
+                            if (diaAnterior <= numeroSemana) {
+                                element.semana = semana
                                 diaAnterior = numeroSemana
-
-
                             } else {
+                                semana++
                                 diaAnterior = 0
-                                createDivPrecioTotal(precioTotal)
-                                createDivEspacio()
-                                precioTotal=0
+                                element.semana = semana
+                                maxSemana = semana
+                            }
+                        })
+
+                        let semanaElegida = maxSemana
+
+                        const resultadoPorSemana = (semana) => {
+
+                            let precioTotal = 0
+
+                            let buttonAnt = createButton('ant')
+
+                            let buttonSig = createButton('sig')
+
+                            let divButtonPag = document.createElement('div')
+                            let subDivButtonPag = document.createElement('div')
+                            divButtonPag.style.display = 'flex'
+                            subDivButtonPag.style.display = 'flex'
+                            divButtonPag.style.justifyContent = 'center'
+                            subDivButtonPag.style.justifyContent = 'space-evenly'
+                            subDivButtonPag.style.width = '100px'
+                            divButtonPag.style.width = '100%'
+                            divButtonPag.style.margin = '10px'
+
+
+
+                            result.filter(element => element.semana === semana).forEach(element => {
+                                const divEnvio = document.createElement('div')
+
+                                constructor(divEnvio, element.dia)
+                                constructor(divEnvio, element.fechaEntrega)
+                                constructor(divEnvio, element.mes)
+                                constructor(divEnvio, element.zona)
+                                constructor(divEnvio, element.envio)
+                                constructor(divEnvio, element.precio)
+                                constructor(divEnvio, element.pago)
+                                constructor(divEnvio, element.seller)
+                                constructor(divEnvio, element.ventaid)
+                                constructor(divEnvio, element.producto)
+                                constructor(divEnvio, element.semana)
+
+                                divEnvio.classList.add("divPagos")
                                 precioTotal += element.pago
-                                console.log(element.zona)
 
                                 ordenes.appendChild(divEnvio)
+                            })
 
+                            createDivPrecioTotal(precioTotal)
+
+                            if (semana != 0) {
+                                subDivButtonPag.appendChild(buttonAnt)
                             }
 
-                        })
-                        createDivPrecioTotal(precioTotal)
+                            if (semana != maxSemana) {
+                                subDivButtonPag.appendChild(buttonSig)
+                            }
+
+                            divButtonPag.appendChild(subDivButtonPag)
+                            ordenes.appendChild(divButtonPag)
+
+                            buttonAnt.addEventListener('click', () => {
+                                ordenes.innerHTML = '';
+                                createTitles()
+                                semanaElegida--
+                                resultadoPorSemana(semanaElegida)
+                            })
+
+                            buttonSig.addEventListener('click', () => {
+                                ordenes.innerHTML = '';
+                                createTitles()
+                                semanaElegida++
+                                resultadoPorSemana(semanaElegida)
+                            })
+
+                        }
+
+                        resultadoPorSemana(semanaElegida)
+
+
 
 
                     })

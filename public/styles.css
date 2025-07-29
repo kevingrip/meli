@@ -126,11 +126,6 @@ body {
 
 .buttonDescargaFlexRTP {
     background-color: rgb(64, 255, 47);
-    height: 100%;
-    width: 100%;
-    border: 0px;
-    border-end-end-radius: 10px;
-    border-top-right-radius: 10px;
 }
 
 .buttonDescargaFlexRTP:hover {
@@ -139,6 +134,12 @@ body {
 
 .buttonDescargaFlexPTD {
     background-color: rgba(184, 249, 177, 0.449);
+}
+
+.buttonDescargaFlexRTP,
+.buttonDescargaFlexPTD,
+.buttonDescargaCorreoRTP,
+.buttonDescargaCorreoPTD {
     height: 100%;
     width: 100%;
     border: 0px;
@@ -150,40 +151,9 @@ body {
     background-color: rgb(139, 217, 132);
 }
 
-.buttonDescargaFlexDLV {
-    background-color: rgba(255, 158, 200, 0.711);
-    height: 100%;
-    width: 100%;
-    border: 0px;
-    border-end-end-radius: 10px;
-    border-top-right-radius: 10px;
-}
-
-.buttonDescargaFlexDLV:hover {
-    background-color: rgba(255, 32, 129, 0.479);
-}
-
-.buttonDescargaFlexSPD {
-    background-color: rgba(252, 255, 158, 0.711);
-    height: 100%;
-    width: 100%;
-    border: 0px;
-    border-end-end-radius: 10px;
-    border-top-right-radius: 10px;
-}
-
-.buttonDescargaFlexSPD:hover {
-    background-color: rgb(250, 255, 109);
-}
-
 
 .buttonDescargaCorreoRTP {
     background-color: rgb(254, 126, 7);
-    height: 100%;
-    width: 100%;
-    border: 0px;
-    border-end-end-radius: 10px;
-    border-top-right-radius: 10px;
 }
 
 .buttonDescargaCorreoRTP:hover {
@@ -196,25 +166,8 @@ body {
 
 .buttonDescargaCorreoPTD {
     background-color: rgb(251, 176, 106);
-    height: 100%;
-    width: 100%;
-    border: 0px;
-    border-end-end-radius: 10px;
-    border-top-right-radius: 10px;
 }
 
-.buttonDescargado {
-    background-color: rgb(255, 123, 183);
-    height: 100%;
-    width: 100%;
-    border: 0px;
-    border-end-end-radius: 10px;
-    border-top-right-radius: 10px;
-}
-
-/* .buttonDescarga:hover{
-    background-color: rgb(255, 151, 95);
-} */
 
 .bolaPajaro,
 .bolaGrisClaro,
@@ -272,11 +225,11 @@ body {
 }
 
 .borderLeft {
-    border-top-left-radius: 9px;
+    border-top-left-radius: 13px;
 }
 
 .borderRight {
-    border-top-right-radius: 9px;
+    border-top-right-radius: 13px;
 }
 
 .solidDown {
@@ -363,8 +316,8 @@ body {
 .divBordeProductInd {
     display: flex;
     border: solid 2px;
-    border-top-right-radius: 0.8vw;
-    border-top-left-radius: 0.8vw;
+    border-top-right-radius: 14px;
+    border-top-left-radius: 14px;
 }
 
 .displayRow {

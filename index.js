@@ -36,6 +36,7 @@ app.use(express.json())
 
 const PORT = process.env.PORT || 3500
 
+
 // Ruta de login
 app.post('/api/login', async (req, res) => {
     let { user, password } = req.body;
@@ -86,6 +87,45 @@ const verificarToken = (req, res, next) => {
         return res.status(403).json({ error: "Token inválido o expirado" });
     }
 };
+
+/////
+
+//actualizar dia semana mongo
+
+// async function actualizarDiaSemana() {
+//     try {
+//         const docs = await flexModel.find();
+//         let nuevoDiaSemana;
+//         for (const doc of docs) {
+//             if(doc.dia==='lunes'){
+//                 nuevoDiaSemana=1
+//             }else if (doc.dia==='martes'){
+//                 nuevoDiaSemana=2
+//             }else if (doc.dia==='miercoles'){
+//                 nuevoDiaSemana=3
+//             }else if (doc.dia==='jueves'){
+//                 nuevoDiaSemana=4
+//             }else if (doc.dia==='viernes'){
+//                 nuevoDiaSemana=5
+//             }else if (doc.dia==='sabado'){
+//                 nuevoDiaSemana=6
+//             }else if (doc.dia==='domingo'){
+//                 nuevoDiaSemana=0
+//             }
+//             // Solo actualizar si no coincide o no existe diaSemana
+//             if (doc.diaSemana !== nuevoDiaSemana) {
+//                 doc.diaSemana = nuevoDiaSemana;
+//                 await doc.save();
+//             }
+//         }
+
+//         console.log('Actualización completa');
+//     } catch (error) {
+//         console.error('Error actualizando diaSemana:', error);
+//     }
+// }
+
+// actualizarDiaSemana()
 
 /////
 
@@ -146,7 +186,7 @@ app.post(('/etiqueta'), async (req, res) => {
 
 app.post(('/mongo'), async (req, res) => {
     const bodyMongo = req.body || {};
-    const { seller, ventaid, shipping, fechaVenta, fechaEntrega, mes, producto, zona, envio, precio, pago, dia } = bodyMongo
+    const { seller, ventaid, shipping, fechaVenta, fechaEntrega, mes, producto, zona, envio, precio, pago, dia, diaSemana } = bodyMongo
 
     const datosFlex = {
         seller,
@@ -154,6 +194,7 @@ app.post(('/mongo'), async (req, res) => {
         shipping,
         fechaVenta,
         fechaEntrega,
+        diaSemana,
         dia,
         mes,
         producto,
@@ -185,9 +226,12 @@ app.post(('/mongo'), async (req, res) => {
 
 })
 
+
+
 app.get('/api/mongo/:ventaid', async (req, res) => {
     try {
         const data = await flexModel.find({ ventaid: req.params.ventaid })
+        
         res.json(data)
     } catch (error) {
         console.error('Error al obtener datos de MongoDB:', error);

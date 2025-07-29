@@ -75,11 +75,41 @@
                         constructor(divTitulo, 'Venta ID')
                         constructor(divTitulo, 'Producto')
                         divTitulo.classList.add("divPagos")
-                        divTitulo.style.backgroundColor='cyan'
-                        divTitulo.style.fontWeight='bold'
+                        divTitulo.style.backgroundColor = 'cyan'
+                        divTitulo.style.fontWeight = 'bold'
                         ordenes.appendChild(divTitulo)
 
                         let precioTotal = 0;
+                        let precioEnCurso=0
+
+                        let semana = 0
+                        let diaAnterior = 0
+
+                        const createDivEspacio = () => {
+
+                            let divEspacio = document.createElement('div')
+                            divEspacio.style.height='25px'
+                            ordenes.appendChild(divEspacio)
+
+
+                        }
+
+                        const createDivPrecioTotal = (precioTotal) => {
+
+                            let divPrecioTotal = document.createElement('div')
+                            let subPrecioTotal = document.createElement('div')
+                            subPrecioTotal.textContent = `Total: $${precioTotal}`                            
+                            subPrecioTotal.style.padding = '30px'
+                            divPrecioTotal.appendChild(subPrecioTotal)
+                            divPrecioTotal.classList.add('divTotalPagos')
+                            divPrecioTotal.style.fontWeight = 'bold'
+                            ordenes.appendChild(divPrecioTotal)
+
+
+                        }
+
+
+
 
                         result.forEach(element => {
                             const divEnvio = document.createElement('div')
@@ -100,19 +130,32 @@
 
                             divEnvio.classList.add("divPagos")
 
-                            precioTotal += element.pago
+                            const numeroSemana = (element.diaSemana)
 
-                            ordenes.appendChild(divEnvio)
+                            console.log(numeroSemana)
+
+                            if ((diaAnterior <= numeroSemana)) {
+                                precioTotal += element.pago
+                                ordenes.appendChild(divEnvio)
+                                diaAnterior = numeroSemana
+
+
+                            } else {
+                                diaAnterior = 0
+                                createDivPrecioTotal(precioTotal)
+                                createDivEspacio()
+                                precioTotal=0
+                                precioTotal += element.pago
+                                console.log(element.zona)
+
+                                ordenes.appendChild(divEnvio)
+
+                            }
+
                         })
+                        createDivPrecioTotal(precioTotal)
 
-                        const divPrecioTotal = document.createElement('div')
-                        const subPrecioTotal = document.createElement('div')
-                        subPrecioTotal.style.padding = '30px'
-                        subPrecioTotal.textContent = `Total: $${precioTotal}`
-                        divPrecioTotal.appendChild(subPrecioTotal)
-                        divPrecioTotal.classList.add('divTotalPagos')
-                        divPrecioTotal.style.fontWeight='bold'
-                        ordenes.appendChild(divPrecioTotal)
+
                     })
                     .catch(err => {
                         cargando.style.display = 'none'

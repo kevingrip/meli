@@ -25,7 +25,7 @@
         }, 300000); //5 min
 
         const token = localStorage.getItem('token');
-        console.log(token)
+
         fetch('/api/orders', {
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -73,7 +73,6 @@
                 createNavBarItem('Inicio', '/inicio.html')
                 createNavBarItem('Flex', '/logistica.html')
                 createNavBarItem('Pagos', '/pagos.html')
-
 
 
 

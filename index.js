@@ -63,7 +63,7 @@ app.post('/api/login', async (req, res) => {
         return res.status(401).json({ error: "Contraseña incorrecta" });
     }
 
-    const token = jwt.sign({ user }, process.env.JWT_SECRET, { expiresIn: '15m' }); //si corregimos el tiempo de expiracion aca, lo hacemos tambien en settimeout de index e inicio 
+    const token = jwt.sign({ user }, process.env.JWT_SECRET, { expiresIn: '15m' }); //si corregimos el tiempo de expiracion aca, lo hacemos tambien en settimeout de index e inicio. este token generado es el que va a verificarToken
 
     res.json({ token });
 });
@@ -246,7 +246,8 @@ app.get('/api/pagos/:envio', async (req, res) => {
         if (envioParam && envioParam !== 'null' && envioParam !== 'TODAS') {
             filtro = { envio: envioParam };
         }
-        const data = await flexModel.find(filtro).sort({ fechaEntrega: 1 });
+        const data = await flexModel.find(filtro);
+        console.log(data)
         res.json(data)
     } catch (error) {
         console.error('Error al obtener datos de MongoDB:', error);
@@ -254,14 +255,6 @@ app.get('/api/pagos/:envio', async (req, res) => {
 })
 
 
-app.get('/api/mongo/', async (req, res) => {
-    try {
-        const data = await flexModel.find()
-        res.json(data)
-    } catch (error) {
-        console.error('Error al obtener datos de MongoDB:', error);
-    }
-})
 
 
 app.listen(PORT, () => {

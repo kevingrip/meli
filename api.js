@@ -173,7 +173,22 @@ const fixVentaId = (orders) => {
             })
         }
     })
-    //console.log(allVentas)
+    
+    allVentas.forEach(venta=>{
+        const resumenAgrupado={}
+
+        venta.orderResumen.forEach(item =>{
+            const key = `${item.tipo}-${item.variante}`;
+
+            if (!resumenAgrupado[key]){
+                resumenAgrupado[key] = {...item}
+            } else{
+                resumenAgrupado[key].cantidad += item.cantidad;
+            }
+        })
+        venta.orderResumen = Object.values(resumenAgrupado);
+    })
+
     return allVentas
 }
 
@@ -257,7 +272,7 @@ const getOrders = async (alfombra) => {
         if (alfombra) {
             allOrdersFixed = allOrdersFixed.filter(element => element.orderResumen.some(resumen => ["Alfombra", "Juguete"].includes(resumen.tipo))) //some para recorrer array
         }
-        // const allOrdersFixed = fixVentaId(ventaid).filter(venta => venta.ventaid===2000008517676881)
+        // const allOrdersFixed = fixVentaId(ventaid).filter(venta => venta.ventaid===2000008704617649)
         await Promise.all(
             allOrdersFixed.map(async (orden) => {
                 orden.shippingId = orden.shipping.id
@@ -341,8 +356,8 @@ const getOrders = async (alfombra) => {
                 return orden;
             })
         );
-        // const findByMPID = allOrdersFixed.filter(item => item.payments[0].id === 115626115802)
-        // const findByMPID = allOrdersFixed.filter(item => item.ventaid === 2000008568055963)
+        // const findByMPID = allOrdersFixed.filter(item => item.payments[0].id === 2000008704617649)
+        // const findByMPID = allOrdersFixed.filter(item => item.ventaid === 2000008704617649)
 
         // console.dir(findByMPID, { depth: null })
 

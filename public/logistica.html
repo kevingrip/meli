@@ -389,7 +389,7 @@
                         ventaid: element.ventaid,
                         shipping: element.shipping.id,
                         fechaVenta: new Date(element.date_created).toLocaleDateString(),
-                        fechaEntrega: new Date(element.shipping_info.lastTimeToSend).toLocaleDateString(),
+                        fechaEntrega: new Date(element.shipping_info.lastTimeToSend),
                         diaSemana: new Date(element.shipping_info.lastTimeToSend).getDay(),
                         dia: ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'][new Date(element.shipping_info.lastTimeToSend).getDay()],
                         mes: new Date(element.shipping_info.lastTimeToSend).toLocaleString('es-AR', { month: 'long' }),

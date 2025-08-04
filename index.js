@@ -127,6 +127,7 @@ const verificarToken = (req, res, next) => {
 
 // actualizarDiaSemana()
 
+
 /////
 
 app.get('/api/orders', verificarToken, async (req, res) => {
@@ -231,7 +232,6 @@ app.post(('/mongo'), async (req, res) => {
 app.get('/api/mongo/:ventaid', async (req, res) => {
     try {
         const data = await flexModel.find({ ventaid: req.params.ventaid })
-        
         res.json(data)
     } catch (error) {
         console.error('Error al obtener datos de MongoDB:', error);
@@ -246,8 +246,7 @@ app.get('/api/pagos/:envio', async (req, res) => {
         if (envioParam && envioParam !== 'null' && envioParam !== 'TODAS') {
             filtro = { envio: envioParam };
         }
-        const data = await flexModel.find(filtro);
-        console.log(data)
+        const data = await flexModel.find(filtro).sort({ fechaEntrega: 1 });;
         res.json(data)
     } catch (error) {
         console.error('Error al obtener datos de MongoDB:', error);

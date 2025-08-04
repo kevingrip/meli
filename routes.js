@@ -3,8 +3,8 @@ export const cantidadStockPublicado = (mla) => {
 }
 
 export const ordersRoute = (seller) => {
-    return `https://api.mercadolibre.com/orders/search?seller=${seller}&sort=date_desc&limit=50`
-    // return `https://api.mercadolibre.com/orders/search?seller=${seller}&sort=date_desc&limit=50&order.date_created.from=2025-07-15T00:00:00Z&order.date_created.to=2025-07-25T00:00:00Z`
+    // return `https://api.mercadolibre.com/orders/search?seller=${seller}&sort=date_desc&limit=50`
+    return `https://api.mercadolibre.com/orders/search?seller=${seller}&sort=date_desc&limit=50&order.date_created.from=2025-07-10T00:00:00Z&order.date_created.to=2025-07-25T00:00:00Z`
 }
 
 export const shippingRoute = (shipment_id) => {

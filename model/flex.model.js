@@ -14,7 +14,7 @@ const flexSchema = new mongoose.Schema({
 
     fechaVenta: { type: String, required: true },
 
-    fechaEntrega: { type: String, required: true },
+    fechaEntrega: { type: Date, required: true },
 
     diaSemana: { type: Number, required: true },
 

@@ -149,9 +149,8 @@
 
                             result.filter(element => element.semana === semana).forEach(element => {
                                 const divEnvio = document.createElement('div')
-
                                 constructor(divEnvio, element.dia)
-                                constructor(divEnvio, element.fechaEntrega)
+                                constructor(divEnvio, new Date(element.fechaEntrega).toLocaleDateString('es-AR'))
                                 constructor(divEnvio, element.mes)
                                 constructor(divEnvio, element.zona)
                                 constructor(divEnvio, element.envio)

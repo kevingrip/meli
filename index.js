@@ -185,7 +185,7 @@ app.post(('/etiqueta'), async (req, res) => {
     }
 })
 
-app.post(('/mongo'), async (req, res) => {
+app.post('/mongo', async (req, res) => {
     const bodyMongo = req.body || {};
     const { seller, ventaid, shipping, fechaVenta, fechaEntrega, mes, producto, zona, envio, precio, pago, dia, diaSemana } = bodyMongo
 

@@ -207,23 +207,23 @@ app.post('/mongo', async (req, res) => {
 
     try {
         if (seller && ventaid && shipping) {
-        const nuevoEnvio = new flexModel(datosFlex);
-        await nuevoEnvio.save();
-        console.log('✅ FLEX guardado en MongoDB');
-        return res.status(200).json({ success: true, message: "Guardado correctamente" });
+            const nuevoEnvio = new flexModel(datosFlex);
+            await nuevoEnvio.save();
+            console.log('✅ FLEX guardado en MongoDB');
+            return res.status(200).json({ success: true, message: "Guardado correctamente" });
 
-    } else {
-        console.log('❌ Datos incompletos, no se guarda en MongoDB');
-        return res.status(400).json({ success: false, message: "Datos incompletos" });
+        } else {
+            console.log('❌ Datos incompletos, no se guarda en MongoDB');
+            return res.status(400).json({ success: false, message: "Datos incompletos" });
 
-    }
+        }
     } catch (error) {
         console.error('❌ Error al guardar en MongoDB:', error.message);
         return res.status(500).json({ success: false, message: "Error interno al guardar en MongoDB" });
-        
+
     }
 
-    
+
 
 })
 
@@ -250,6 +250,23 @@ app.get('/api/pagos/:envio', async (req, res) => {
         res.json(data)
     } catch (error) {
         console.error('Error al obtener datos de MongoDB:', error);
+    }
+})
+
+app.put('/api/pagos/:ventaid', async (req, res) => {
+    try {
+        const ventaid = req.params.ventaid
+        const act = req.body
+
+        const result = await flexModel.updateOne(
+            { ventaid: Number(ventaid) },
+            { $set: act }
+        )
+
+        res.json({ ok: true, result });
+
+    } catch (error) {
+        res.status(500).json({ ok: false, error: error.message });
     }
 })
 

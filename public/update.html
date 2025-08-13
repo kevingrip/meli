@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="./styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body style="background-color: blueviolet;">
+    <h1 style="display: flex; justify-content: center; align-items: center; margin:30px;">Pagos</h1>
+
+    <!-- Contenedor solo para botones -->
+    <div id="filtros" style="display:flex; justify-content:center; margin-bottom:20px;"></div>
+
+    <!-- Contenedor para resultados -->
+    <div id="ordenes"></div>
+
+    <div style="display: flex; justify-content: center; align-items: center" id="cargando">
+        <h3>Cargando...</h3>
+    </div>
+
+    <script type="module">
+        const ordenes = document.getElementById('ordenes')
+        const filtros = document.getElementById('filtros')
+        const cargando = document.getElementById('cargando')
+
+        const createCard = (element) => {
+            const card = document.createElement('div')
+            card.classList.add('card')
+
+            const ventaId = document.createElement('div')
+            ventaId.textContent = element.ventaid
+
+            const logistica = document.createElement('input')
+            logistica.value = element.envio
+
+            const producto = document.createElement('input')
+            producto.value = element.producto
+
+            const precio = document.createElement('input')
+            precio.value = element.precio
+
+            const pago = document.createElement('input')
+            pago.value = element.pago
+
+            const btnGuardar = document.createElement('button')
+            btnGuardar.textContent = 'Guardar'
+            btnGuardar.style.backgroundColor = 'lightgreen'
+
+            btnGuardar.onclick = async () => {
+                const actualizado = {
+                    envio: logistica.value,
+                    producto: producto.value,
+                    precio: precio.value,
+                    pago: Number(pago.value)
+                }
+
+                const res = await fetch(`/api/pagos/${element.ventaid}`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(actualizado)
+                })
+
+                const result = await res.json()
+                if (result.ok) {
+                    Swal.fire("✅ Cambios guardados")
+                } else {
+                    Swal.fire("❌ Error al guardar")
+                }
+
+            }
+
+            card.appendChild(ventaId)
+            card.appendChild(producto)
+            card.appendChild(logistica)
+            card.appendChild(precio)
+            card.appendChild(pago)
+            card.appendChild(btnGuardar)
+
+            return card
+        }
+
+        const updateMongo = async () => {
+            cargando.remove()
+            const res = await fetch(`/api/pagos/TODAS`)
+
+            const data = await res.json();
+
+            data.forEach(element => {
+                console.log(element)
+                ordenes.appendChild(createCard(element))
+            });
+        }
+
+        updateMongo()
+
+
+
+    </script>
+</body>
+
+
+</html>

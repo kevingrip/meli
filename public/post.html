@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="./styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body style="background-color: blueviolet;">
+    <h1 style="display: flex; justify-content: center; align-items: center; margin:30px;">Pagos</h1>
+
+    <!-- Contenedor solo para botones -->
+    <div id="filtros" style="display:flex; justify-content:center; margin-bottom:20px;"></div>
+
+    <!-- Contenedor para resultados -->
+    <div id="ordenes"></div>
+
+
+    <script type="module">
+        const ordenes = document.getElementById('ordenes')
+        const filtros = document.getElementById('filtros')
+
+        const createCard = () => {
+
+            const card = document.createElement('div')
+            card.classList.add('cardNewPost')
+
+            const seller = document.createElement('input')
+            seller.placeholder = 'Cuenta (F3FG , HUELLITAS3F)'
+
+            const fechaEntrega = document.createElement('input')
+            fechaEntrega.value = '2025-08-02T03:00:00.000Z'
+
+            const diaSemana = document.createElement('input')
+            diaSemana.placeholder = '4'
+            
+            const dia = document.createElement('input')
+            dia.placeholder = 'lunes'
+            
+            const mes = document.createElement('input')
+            mes.placeholder = 'agosto'
+
+            const ventaid = document.createElement('input')
+            ventaid.placeholder = '#Ventaid'
+
+            const zona = document.createElement('input')
+            zona.placeholder = 'zona'
+
+            const logistica = document.createElement('input')
+            logistica.placeholder = 'Logistica'
+
+            const producto = document.createElement('input')
+            producto.placeholder = 'Producto'
+
+            const precio = document.createElement('input')
+            precio.placeholder = 'Precio ML'
+
+            const pago = document.createElement('input')
+            pago.placeholder = 'A Pagar'
+
+            const btnGuardar = document.createElement('button')
+            btnGuardar.textContent = 'Guardar'
+            btnGuardar.style.backgroundColor = 'lightgreen'
+          
+
+            btnGuardar.onclick = async () => {
+                const nuevoItem = {
+                    seller: seller.value,
+                    ventaid: Number(ventaid.value),
+                    shipping: 123456789,
+                    fechaVenta: '-',
+                    fechaEntrega: new Date(fechaEntrega.value),
+                    diaSemana: Number(diaSemana.value),
+                    dia: dia.value,
+                    mes: mes.value,
+                    producto: producto.value,
+                    zona: zona.value,
+                    envio: logistica.value,
+                    precio: precio.value,
+                    pago: Number(pago.value)
+                }
+
+                const res = await fetch(`/mongo`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(nuevoItem)
+                })
+
+                const result = await res.json()
+                if (result.success) {
+                    Swal.fire("✅ Cambios guardados")
+                } else {
+                    Swal.fire("❌ Error al guardar")
+                }
+
+            }
+
+            card.appendChild(ventaid)
+            card.appendChild(seller)
+            card.appendChild(fechaEntrega)
+            card.appendChild(diaSemana)
+            card.appendChild(dia)
+            card.appendChild(mes)
+            card.appendChild(producto)
+            card.appendChild(zona)
+            card.appendChild(logistica)
+            card.appendChild(precio)
+            card.appendChild(pago)
+            card.appendChild(btnGuardar)
+
+            return card
+        }
+
+        ordenes.appendChild(createCard())
+
+
+    </script>
+</body>
+
+
+</html>

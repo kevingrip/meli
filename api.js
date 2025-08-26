@@ -363,8 +363,8 @@ const getOrders = async (alfombra) => {
                 return orden;
             })
         );
-        // const findByMPID = allOrdersFixed.filter(item => item.payments[0].id === 2000008704617649)
-        // const findByMPID = allOrdersFixed.filter(item => item.ventaid === 2000008966681277)
+        // const findByMPID = allOrdersFixed.filter(item => item.payments[0].id === 2000008767821545)
+        // const findByMPID = allOrdersFixed.filter(item => item.ventaid === 2000008812163003)
 
         // console.dir(findByMPID, { depth: null })
 

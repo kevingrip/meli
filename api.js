@@ -90,6 +90,11 @@ const variantes = (valueName, mla) => {
         valueVariante = 'Negro'
         type = 'Alfombra'
         brev = 'NG (2mt)'
+    
+    } else if ((valueName === "Beige" && mla==='MLA2290461256') || ["MLA2289535536","MLA2300115880","MLA1517562895"].includes(mla)) {
+        valueVariante = 'Beige'
+        type = 'Alfombra'
+        brev = 'BG (2mt)'
 
 
     } else if (valueName === "Blanco" || ["MLA1507750191", "MLA2153666050"].includes(mla)) {

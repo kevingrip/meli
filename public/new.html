@@ -48,7 +48,7 @@
             ventaid.placeholder = '#Ventaid'
 
             const zona = document.createElement('input')
-            zona.placeholder = 'zona'
+            zona.placeholder = 'Zona'
 
             const logistica = document.createElement('input')
             logistica.placeholder = 'Logistica'
@@ -80,7 +80,7 @@
             btnGuardar.onclick = async () => {
                 const nuevoItem = {
                     seller: seller.value,
-                    ventaid: Number(ventaid.value),
+                    ventaid: Number(ventaid.value) || Number(new Date()),
                     shipping: 123456789,
                     fechaVenta: '-',
                     fechaEntrega: `${fechaEntrega.value}T03:00:00.000Z`,

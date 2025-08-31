@@ -33,16 +33,16 @@
             seller.placeholder = 'Cuenta (F3FG , HUELLITAS3F)'
 
             const fechaEntrega = document.createElement('input')
-            fechaEntrega.value = '2025-08-02T03:00:00.000Z'
+            fechaEntrega.value = `${new Date().toISOString().slice(0, 10)}`
 
-            const diaSemana = document.createElement('input')
-            diaSemana.placeholder = '4'
-            
+            // const diaSemana = document.createElement('input')
+            // diaSemana.value = [new Date().getDay()]
+
             const dia = document.createElement('input')
-            dia.placeholder = 'lunes'
-            
+            dia.value = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'][new Date().getDay()]
+
             const mes = document.createElement('input')
-            mes.placeholder = 'agosto'
+            mes.value = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'][new Date().getUTCMonth()]
 
             const ventaid = document.createElement('input')
             ventaid.placeholder = '#Ventaid'
@@ -65,7 +65,17 @@
             const btnGuardar = document.createElement('button')
             btnGuardar.textContent = 'Guardar'
             btnGuardar.style.backgroundColor = 'lightgreen'
-          
+
+            const dias = {
+                "domingo": 0,
+                "lunes": 1,
+                "martes": 2,
+                "miércoles": 3,
+                "jueves": 4,
+                "viernes": 5,
+                "sábado": 6
+            };
+
 
             btnGuardar.onclick = async () => {
                 const nuevoItem = {
@@ -73,8 +83,8 @@
                     ventaid: Number(ventaid.value),
                     shipping: 123456789,
                     fechaVenta: '-',
-                    fechaEntrega: new Date(fechaEntrega.value),
-                    diaSemana: Number(diaSemana.value),
+                    fechaEntrega: `${fechaEntrega.value}T03:00:00.000Z`,
+                    diaSemana: Number(dias[dia.value]),
                     dia: dia.value,
                     mes: mes.value,
                     producto: producto.value,
@@ -102,7 +112,7 @@
             card.appendChild(ventaid)
             card.appendChild(seller)
             card.appendChild(fechaEntrega)
-            card.appendChild(diaSemana)
+            // card.appendChild(diaSemana)
             card.appendChild(dia)
             card.appendChild(mes)
             card.appendChild(producto)

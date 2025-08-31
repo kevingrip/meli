@@ -76,7 +76,7 @@ const variantes = (valueName, mla) => {
         type = 'Alfombra'
         brev = 'OS'
 
-    } else if (valueName === "Gris Claro" || ["MLA2097220912", "MLA2152475848","MLA1517498065"].includes(mla)) {
+    } else if (valueName === "Gris Claro" || ["MLA2097220912", "MLA2152475848","MLA1517498065","MLA2285279166"].includes(mla)) {
         valueVariante = 'Gris Claro'
         type = 'Alfombra'
         brev = 'CL'
@@ -87,12 +87,12 @@ const variantes = (valueName, mla) => {
         brev = 'NG'
 
     } else if ((valueName === "Negro" && mla==='MLA2290461256') || ["MLA2289561384"].includes(mla)) {
-        valueVariante = 'Negro'
+        valueVariante = 'Negro (2mt)'
         type = 'Alfombra'
         brev = 'NG (2mt)'
     
     } else if ((valueName === "Beige" && mla==='MLA2290461256') || ["MLA2289535536","MLA2300115880","MLA1517562895"].includes(mla)) {
-        valueVariante = 'Beige'
+        valueVariante = 'Beige (2mt)'
         type = 'Alfombra'
         brev = 'BG (2mt)'
 
@@ -117,7 +117,7 @@ const variantes = (valueName, mla) => {
         type = 'Panini'
         brev = 'MQ'
 
-    } else if (["MLA1413919557"].includes(mla)) {
+    } else if (["MLA1413919557","MLA1413968381"].includes(mla)) {
         valueVariante = 'Copa America'
         type = 'Panini'
         brev = 'AM'
@@ -387,7 +387,7 @@ const getOrders = async (alfombra) => {
             const desktopPath = path.join(os.homedir(), 'Desktop', 'etiquetas');
             const filePathJson = path.join(desktopPath, 'ventas.txt')
             const allOrdersForTxt = allOrdersFixed.filter(item => item.status === 'paid').sort((a, b) => new Date(a.date_created) - new Date(b.date_created));
-            const ventasTxt = allOrdersForTxt.map(order => `${order.orderResumen[0].tipo || null}\t${order.payments[0].reason}\t${order.orderItemNuevo[0].item.id}\t${order.seller.nickname}\t#${order.ventaid}\t${new Date(order.date_created).toLocaleDateString()}\t${order.orderResumen.find(item => item.abreviado === "CE")?.cantidad || ""}\t${order.orderResumen.find(item => item.abreviado === "OS")?.cantidad || ""}\t${order.orderResumen.find(item => item.abreviado === "CL")?.cantidad || ""}\t${order.orderResumen.find(item => item.abreviado === "BG")?.cantidad || ""}\t${order.orderResumen.find(item => item.abreviado === "NG")?.cantidad || ""}\t${order.orderResumen.find(item => item.abreviado === "BL")?.cantidad || ""}\t${order.orderResumen.find(item => item.abreviado === "PJ")?.cantidad || ""}\t${order.pagos.totalPubli}\t${order.pagos.totalLiquidacion}\t${order.shipping_info?.logistic_type === "self_service" ? order.shipping_info?.receiver_address?.state?.name === "Capital Federal" ? "-7000" : order.pagos.flex : ""}\t${["handling", "pending"].includes(order.shipping_info?.status) || ["ready_to_print"].includes(order.shipping_info?.substatus) ? "N" : "S"}\t${order.seller.nickname === "HUELLITAS3F" ? "C2" : ""}\t""\t${order.shipping_info?.logistic_type === "self_service" ? order.shipping_info?.receiver_address?.state?.name === "Capital Federal" ? "caba" : order.shipping_info?.receiver_address?.city?.name : ""}\t\t\t${order.pagos.fechaLiquidacion}\t#${order.shippingId}\t#${order.payments[0].id}\t${order.pagos.totalNeto}\t${order.pagos.bonificacion}`).join('\n');
+            const ventasTxt = allOrdersForTxt.map(order => `${order.orderResumen[0].tipo || null}\t${order.payments[0].reason}\t${order.orderItemNuevo[0].item.id}\t${order.seller.nickname}\t#${order.ventaid}\t${new Date(order.date_created).toLocaleDateString()}\t${order.orderResumen.find(item => item.abreviado === "CE")?.cantidad || ""}\t${order.orderResumen.find(item => item.abreviado === "OS")?.cantidad || ""}\t${order.orderResumen.find(item => item.abreviado === "CL")?.cantidad || ""}\t${order.orderResumen.find(item => item.abreviado === "BG")?.cantidad || ""}\t${order.orderResumen.find(item => item.abreviado === "NG")?.cantidad || ""}\t${order.orderResumen.find(item => item.abreviado === "BL")?.cantidad || ""}\t${order.orderResumen.find(item => item.abreviado === "PJ")?.cantidad || ""}\t${order.pagos.totalPubli}\t${order.pagos.totalLiquidacion}\t${order.shipping_info?.logistic_type === "self_service" ? order.shipping_info?.receiver_address?.state?.name === "Capital Federal" ? "-7.371,00" : order.pagos.flex : ""}\t${["handling", "pending"].includes(order.shipping_info?.status) || ["ready_to_print"].includes(order.shipping_info?.substatus) ? "N" : "S"}\t${order.seller.nickname === "HUELLITAS3F" ? "C2" : ""}\t""\t${order.shipping_info?.logistic_type === "self_service" ? order.shipping_info?.receiver_address?.state?.name === "Capital Federal" ? "caba" : order.shipping_info?.receiver_address?.city?.name : ""}\t\t\t${order.pagos.fechaLiquidacion}\t#${order.shippingId}\t#${order.payments[0].id}\t${order.pagos.totalNeto}\t${order.pagos.bonificacion}`).join('\n');
             const encabezado = `tipo\ttitle\tmla\tseller\tventaid\tfechaventa\tcepillo\tgris oscuro\tgris claro\tbeige\tnegro\tblanco\tpajaro\tprecio\tliquidar\tflex\tarmado\tcuenta\tlimpio\tsector\tfecha_Envio\tComentario\tfechaLiquidacion\tenvioid\tpaymentid\tp\tflex2\n`
             try {
                 fs.writeFileSync(filePathJson, encabezado + ventasTxt, 'utf-8')

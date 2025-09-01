@@ -66,7 +66,7 @@ const variantes = (valueName, mla) => {
     let brev;
 
 
-    if (valueName === "Beige" || ["MLA2097220908", "MLA2152579766"].includes(mla)) {
+    if (valueName === "Beige" && mla==='MLA2006797664' || ["MLA2097220908", "MLA2152579766"].includes(mla)) {
         valueVariante = 'Beige'
         type = 'Alfombra'
         brev = 'BG'

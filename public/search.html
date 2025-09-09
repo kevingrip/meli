@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="./styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+</head>
+
+<body>
+    <h1 id='INDEX' style="display: flex; justify-content: center; align-items: center; margin:30px;">INDEX</h1>
+    <div id="ordenes"></div>
+    <div style="display: flex; justify-content: center; align-items: center" id="cargando">
+        <h3>Cargando...</h3>
+    </div>
+
+    <script type="module">
+        import { createDivCountDoble, createDivProduct, crearDivStock, crearDivVentas, createDivs } from './functions.js';
+
+        setTimeout(() => {
+            window.location.href = 'login.html';
+        }, 300000); //5 min
+
+        const token = localStorage.getItem('token');
+
+        fetch('/api/search', {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    window.location.href = 'login.html';
+                    throw new Error('__redirigir_login__');
+                }
+                return response.json();
+            })
+            .then(result => {
+                const data = result.data
+
+                document.getElementById("INDEX").remove()
+                document.getElementById("cargando").remove()
+                const ordenes = document.getElementById("ordenes")
+
+                const header = document.createElement('header')
+                header.style.backgroundColor = 'black'
+
+                const nav = document.createElement('nav')
+
+                const navList = document.createElement('ul')
+                navList.style.listStyle = 'none'
+                navList.classList.add('navList')
+
+                const createNavBarItem = (titulo, link) => {
+                    const navItem = document.createElement('li')
+                    const item = document.createElement('a')
+                    item.textContent = titulo
+                    item.href = link
+                    item.classList.add('itemNav')
+                    navItem.appendChild(item)
+                    navList.appendChild(navItem)
+                    nav.appendChild(navList)
+                    header.appendChild(nav)
+                    ordenes.appendChild(header)
+                }
+
+                createNavBarItem('Inicio', '/inicio.html')
+                createNavBarItem('Flex', '/logistica.html')
+                createNavBarItem('Pagos', '/pagos.html')
+
+                const divBusc = document.createElement('div')
+                const buscador = document.createElement('input')
+                buscador.placeholder = '#VentaId'
+                divBusc.classList.add('centrar')
+                divBusc.appendChild(buscador)
+                ordenes.appendChild(divBusc)
+
+                // const fecha = document.createElement('input')
+                // fecha.placeholder = 'dd/m/yy'
+                // ordenes.appendChild(fecha)
+                // let datoFecha;
+
+                let datoInput;
+                let bloquePadre;
+                buscador.addEventListener('keydown', e => {
+                    if (e.key === 'Enter') {
+                        datoInput = buscador.value
+
+                        const dataSearch = data.find(element => datoInput === `${element.ventaid}` || datoInput === `#${element.ventaid}`);
+                        console.log(datoInput)
+                        console.log(dataSearch)
+                        const dataFinal = dataSearch ? [dataSearch] : null;
+
+
+                        if (dataFinal){
+                            dataFinal.forEach(element => {
+                                if (bloquePadre) bloquePadre.remove();
+                                bloquePadre = document.createElement('div')
+                                const bloqueSubPadre = document.createElement('div') //bloque donde estan data,envio,product juntos y se agrega descarga
+                                const bloqueData = document.createElement('div')
+                                const bloquePago = document.createElement('div')
+                                const bloqueEnvio = document.createElement('div')
+                                const bloqueProduct = document.createElement('div')
+                                const bloqueDescarga = document.createElement('div')
+                                const buttonDescarga = document.createElement('button')
+                                const OrderBloque = document.createElement('div')
+                                const OrderData = document.createElement('div')
+                                const ventaId = document.createElement('p')
+                                const orderId = document.createElement('p')
+                                const Client = document.createElement('p')
+                                const Seller = document.createElement('h2')
+                                const idShipping = document.createElement('p')
+                                const dateCreated = document.createElement('p')
+                                const dataStatus = document.createElement('p')
+                                const dataSubstatus = document.createElement('p')
+                                const ShippingType = document.createElement('h2')
+                                const ShippingMap = document.createElement('p')
+                                const ShippingComment = document.createElement('p')
+                                const ShippingLabelStatus = document.createElement('p')
+                                const ShippingLastTime = document.createElement('p')
+                                const totalPubli = document.createElement('p')
+                                const totalLiquidacion = document.createElement('p')
+                                const Pagoflex = document.createElement('p')
+                                const fechaLiquidacion = document.createElement('p')
+                                const link = document.createElement('a');
+                                const title = document.createElement('p')
+                                const titleResumen = document.createElement('h2')
+                                const orderResumen = document.createElement('p')
+                                const quantity = document.createElement('p')
+                                const color = document.createElement('p')
+                                const sector = document.createElement('p')
+                                const direccion = document.createElement('p')
+
+
+                                const address = element.shipping_info?.receiver_address?.address_line || "Dirección no disponible";
+                                const localidad = element.shipping_info?.receiver_address?.city?.name || "Localidad no disponible";
+
+
+                                var tipoEnvio;
+                                if (element.shipping_info.logistic_type === 'self_service') {
+                                    tipoEnvio = 'FLEX'
+                                    direccion.textContent = `Direccion: ${address},${localidad}`
+                                    link.href = element.maps
+                                    link.target = '_blank';
+                                    link.textContent = "Ver direccion 📍"
+                                } else if (element.shipping_info.logistic_type === 'drop_off') {
+                                    tipoEnvio = 'CORREO ARGENTINO'
+
+                                } else if (element.shipping_info.logistic_type === 'xd_drop_off') {
+                                    tipoEnvio = 'PUNTO DE DESPACHO'
+                                } else {
+                                    tipoEnvio = element.shipping_info.status
+                                }
+
+                                let fecha = new Date(element.date_created)
+                                let fechaEtiqueta = fecha.getFullYear() + String(fecha.getMonth() + 1).padStart(2, '0') + String(fecha.getDate()).padStart(2, '0')
+
+                                ventaId.textContent = `Venta: #${element.ventaid}`
+                                orderId.textContent = `orden: ${element.id}`
+                                Client.textContent = `Cliente: ${element.buyer.nickname}`
+                                Seller.textContent = `${element.seller.nickname}`
+                                idShipping.textContent = `SHIPPING ID: ${element.shipping.id}`
+                                dateCreated.textContent = `Fecha Venta: ${new Date(element.date_created).toLocaleString()}`
+                                dataStatus.textContent = `Status: ${element.shipping_info.status}`
+                                dataSubstatus.textContent = `Substatus: ${element.shipping_info.substatus}`
+                                ShippingLabelStatus.textContent = `Estado: ${element.shipping_info.statusLabel}`
+                                ShippingLastTime.textContent = `Despachar antes de: ${new Date(element.shipping_info.lastTimeToSend).toLocaleString()}`
+                                ShippingType.textContent = tipoEnvio
+                                sector.textContent = `Sector: ${element.shipping_info?.receiver_address?.state.name || 'No disponible'}`
+
+                                const ubicacion = element.shipping_info?.receiver_address?.state.name
+
+                                title.textContent = `${element.order_items[0].item.title}`
+
+                                const variantes = []
+                                element.orderResumen.forEach(detalle => {
+
+                                    const divProduct = document.createElement('div')
+                                    const quantity = document.createElement('p')
+                                    const productBrev = detalle.abreviado || null
+                                    if (productBrev === 'CL') {
+                                        divProduct.classList.add("bolaGrisClaro", "colorGrisClaro")
+                                    } else if (productBrev === 'OS') {
+                                        divProduct.classList.add("bolaGrisOscuro", "colorGrisOscuro")
+                                    } else if (productBrev === 'BG') {
+                                        divProduct.classList.add("bolaBeige", "colorBeige")
+                                    } else if (productBrev === 'NG') {
+                                        divProduct.classList.add("bolaNegro", "colorNegro")
+                                    } else if (productBrev === 'NG') {
+                                        divProduct.classList.add("bolaNegro", "colorNegro")
+                                    } else if (productBrev === 'BG (2mt)') {
+                                        divProduct.classList.add("bolaBeige", "colorBeige")
+                                    } else if (productBrev === 'NG (2mt)') {
+                                        divProduct.classList.add("bolaNegro", "colorNegro")
+                                    } else if (productBrev === 'BL') {
+                                        divProduct.classList.add("bolaBlanco", "colorBlanco", "bordeCirculoProduct")
+                                    } else if (productBrev === 'PJ') {
+                                        divProduct.classList.add("bolaPajaro", "colorPajaro")
+                                    } else if (['MQ', 'AM'].includes(productBrev)) {
+                                        divProduct.classList.add("bolaFigu")
+                                    } else {
+                                        divProduct.classList.add("bolaSC")
+                                    }
+
+
+                                    orderResumen.innerHTML += `- ${detalle.tipo || title.textContent} ${detalle.variante || ''} x${detalle.cantidad}<br>`
+
+                                    variantes.push(`${productBrev} : ${detalle.cantidad}`)
+
+                                    quantity.textContent = `x${detalle.cantidad}`
+
+                                    if (productBrev === 'NG (2mt)')
+                                        quantity.innerHTML += `<br> 2 mts`
+                                    divProduct.classList.add('centrar')
+                                    divProduct.style.textAlign = 'center'
+
+                                    if (productBrev === 'BG (2mt)')
+                                        quantity.innerHTML += `<br> 2 mts`
+                                    divProduct.classList.add('centrar')
+                                    divProduct.style.textAlign = 'center'
+
+                                    var detalleProduct = `${detalle.tipo} ${detalle.variante || ''}`
+                                    if (variantes.length > 1) {
+                                        titleResumen.textContent = `PACK`
+                                    } else {
+                                        titleResumen.textContent = `${detalle.tipo || title.textContent} ${detalle.variante || ''}`
+                                    }
+                                    divProduct.appendChild(quantity)
+                                    bloqueProduct.appendChild(divProduct)
+                                })
+
+                                buttonDescarga.textContent = '>'
+                                const variantesSTR = variantes.join(" | ")
+                                buttonDescarga.addEventListener("click", async () => {
+
+                                    if (element.shipping_info.logistic_type === 'self_service' && element.shipping_info.substatus === 'ready_to_print')
+                                        buttonDescarga.classList.toggle("buttonDescargaFlexPTD")
+                                    if ((element.shipping_info.logistic_type === 'drop_off' || element.shipping_info.logistic_type === 'xd_drop_off') && element.shipping_info.substatus === 'ready_to_print')
+                                        buttonDescarga.classList.toggle("buttonDescargaCorreoPTD")
+
+                                    const bodyData = {
+                                        usuario: element.seller.nickname,
+                                        id: element.shipping.id,
+                                        variantes: variantesSTR
+                                    }
+                                    try {
+                                        const peticionEtiqueta = await fetch('/etiqueta', {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/json'
+                                            },
+                                            body: JSON.stringify(bodyData)
+                                        });
+
+                                        if (!peticionEtiqueta.ok) throw new Error('Fallo la descarga del PDF');
+
+                                        const blob = await peticionEtiqueta.blob();
+
+                                        const url = window.URL.createObjectURL(blob);
+                                        const a = document.createElement('a');
+                                        a.href = url;
+                                        a.download = `${fechaEtiqueta}-${tipoEnvio === "FLEX" ? 'FLEX' : 'CORREO'}${tipoEnvio === "FLEX" ? ': ' + localidad : ''}-${element.ventaid}.pdf`; // nombre del archivo
+                                        document.body.appendChild(a);
+                                        a.click();
+                                        a.remove();
+                                        window.URL.revokeObjectURL(url);
+                                    } catch (error) {
+                                        console.error("Error al enviar solicitud al backend:", error);
+                                    }
+                                })
+
+
+
+                                ShippingMap.appendChild(link)
+
+                                bloqueData.appendChild(Seller)
+                                bloqueData.appendChild(ventaId)
+                                bloqueData.appendChild(dateCreated)
+                                bloqueData.appendChild(Client)
+                                // bloqueData.appendChild(title)
+                                // bloqueData.appendChild(dataStatus)
+                                bloqueData.appendChild(orderId)
+                                bloqueData.appendChild(orderResumen)
+
+                                const paymentId = document.createElement('p')
+                                paymentId.innerHTML = `payments: `;
+                                element.paymentsOriginales.forEach(pays => {
+                                    paymentId.innerHTML += `${pays} `;
+                                })
+                                bloquePago.classList.add("bloquePago")
+                                bloquePago.appendChild(titleResumen)
+
+                                totalPubli.textContent = `Precio: $${element.pagos.totalPubli}`;
+                                bloquePago.appendChild(totalPubli)
+
+                                totalLiquidacion.textContent = `A liquidar: $${element.pagos.totalLiquidacion}`;
+                                bloquePago.appendChild(totalLiquidacion)
+
+                                Pagoflex.textContent = `Precio Flex: $${element.pagos.flex}`;
+
+
+                                fechaLiquidacion.textContent = `Fecha Liquidacion: ${new Date(element.pagos.fechaLiquidacion).toLocaleString()}`;
+                                bloquePago.appendChild(fechaLiquidacion)
+
+                                bloquePago.appendChild(paymentId)
+
+
+                                bloqueEnvio.appendChild(ShippingType)
+                                bloqueEnvio.appendChild(ShippingLastTime)
+                                if (tipoEnvio === 'FLEX') {
+
+                                    bloqueEnvio.appendChild(sector)
+                                    bloqueEnvio.appendChild(direccion)
+                                    bloqueEnvio.appendChild(ShippingMap)
+                                    bloqueEnvio.appendChild(Pagoflex)
+                                    if (element.shipping_info.substatus) {
+                                        bloqueEnvio.appendChild(dataSubstatus)
+                                    }
+                                }
+                                bloqueEnvio.appendChild(idShipping)
+
+
+                                if (element.shipping_info.substatus === 'ready_to_print' || element.shipping_info.substatus === 'printed') {
+                                    bloqueDescarga.appendChild(buttonDescarga)
+
+                                } else {
+                                    if (element.shipping_info.status === 'delivered') {
+                                        bloquePadre.classList.add("bloquePadreDelivered")
+                                    } else if (element.shipping_info.status === 'cancelled') {
+                                        bloquePadre.classList.add("bloquePadreCancelled")
+                                    } else if (element.shipping_info.status === 'pending') {
+                                        bloquePadre.classList.add("bloquePadrePending")
+                                    } else {
+                                        bloquePadre.classList.add("bloquePadreInComing")
+                                    }
+                                }
+
+
+                                bloqueData.classList.add("bloqueData")
+                                bloquePago.classList.add("bloquePago")
+                                bloqueEnvio.classList.add("bloqueEnvio")
+                                bloqueProduct.classList.add("bloqueProduct")
+                                bloqueDescarga.classList.add("bloqueDescarga")
+
+                                if (element.shipping_info.logistic_type === 'self_service' && element.shipping_info.substatus === 'ready_to_print') {
+                                    buttonDescarga.classList.add("buttonDescargaFlexRTP")
+                                } else if (element.shipping_info.logistic_type === 'self_service' && element.shipping_info.substatus === 'printed') {
+                                    buttonDescarga.classList.add("buttonDescargaFlexPTD")
+                                } else if ((element.shipping_info.logistic_type === 'drop_off' || element.shipping_info.logistic_type === 'xd_drop_off') && element.shipping_info.substatus === 'ready_to_print') {
+                                    buttonDescarga.classList.add("buttonDescargaCorreoRTP")
+                                } else if ((element.shipping_info.logistic_type === 'drop_off' || element.shipping_info.logistic_type === 'xd_drop_off') && element.shipping_info.substatus === 'printed') {
+                                    buttonDescarga.classList.add("buttonDescargaCorreoPTD")
+                                }
+
+                                buttonDescarga.classList.add("buttonDescarga")
+                                bloquePadre.classList.add("bloquePadreStyle")
+
+                                OrderBloque.classList.add("OrderBloque")
+                                OrderData.appendChild(bloqueData)
+                                OrderData.appendChild(bloquePago)
+                                // OrderData.appendChild(bloqueProduct)
+                                OrderData.classList.add("orderData")
+                                OrderBloque.appendChild(OrderData)
+                                OrderBloque.appendChild(bloqueEnvio)
+                                OrderBloque.appendChild(bloqueProduct)
+
+                                bloqueSubPadre.appendChild(OrderBloque)
+                                bloqueSubPadre.appendChild(bloqueDescarga)
+                                bloqueSubPadre.classList.add("subBloque")
+                                bloquePadre.appendChild(bloqueSubPadre)
+                                ordenes.classList.add("orden")
+                                ordenes.appendChild(bloquePadre)
+
+                                function eliminarBloquePagoSiEsPantallaChica() {
+                                    if (window.matchMedia("(max-width: 768px)").matches) {
+                                        const bloquesPago = document.querySelectorAll('.bloquePago');
+
+                                        bloquesPago.forEach(div => div.remove());
+                                    }
+                                }
+                                eliminarBloquePagoSiEsPantallaChica();
+
+                            });
+                        }else{
+                            bloquePadre.textContent='NO SE ENCONTRO'
+                        }
+                            
+                    }
+                })
+
+
+            })
+            .catch(error => {
+                if (error.message === '__redirigir_login__') return; // No mostrar nada
+                const cargando = document.getElementById("cargando");
+                if (cargando) cargando.remove();
+                const ordenes = document.getElementById("ordenes");
+                const mesaggeError = document.createElement("p");
+                mesaggeError.innerHTML = `Error al cargar la pagina: ${error}`;
+                ordenes.appendChild(mesaggeError);
+            })
+    </script>
+
+
+</body>
+
+</html>

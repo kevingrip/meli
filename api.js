@@ -6,7 +6,7 @@ import { refreshToken } from './config.js'
 import { PDFDocument, rgb } from 'pdf-lib';
 import dotenv from 'dotenv'
 dotenv.config();
-import { ordersRoute, cantidadStockPublicado, shippingRoute, paymentRoute, costShippingRoute } from './routes.js';
+import { ordersRoute, cantidadStockPublicado, shippingRoute, paymentRoute, costShippingRoute, searchOrderId } from './routes.js';
 
 
 
@@ -66,32 +66,32 @@ const variantes = (valueName, mla) => {
     let brev;
 
 
-    if (valueName === "Beige" && mla==='MLA2006797664' || ["MLA2097220908", "MLA2152579766"].includes(mla)) {
+    if (valueName === "Beige" && mla === 'MLA2006797664' || ["MLA2097220908", "MLA2152579766"].includes(mla)) {
         valueVariante = 'Beige'
         type = 'Alfombra'
         brev = 'BG'
 
-    } else if (valueName === "Gris oscuro" || ["MLA2097220910", "MLA2152488642","MLA1517485317"].includes(mla)) {
+    } else if (valueName === "Gris oscuro" || ["MLA2097220910", "MLA2152488642", "MLA1517485317"].includes(mla)) {
         valueVariante = 'Gris oscuro'
         type = 'Alfombra'
         brev = 'OS'
 
-    } else if (valueName === "Gris Claro" || ["MLA2097220912", "MLA2152475848","MLA1517498065","MLA2285279166"].includes(mla)) {
+    } else if (valueName === "Gris Claro" || ["MLA2097220912", "MLA2152475848", "MLA1517498065", "MLA2285279166"].includes(mla)) {
         valueVariante = 'Gris Claro'
         type = 'Alfombra'
         brev = 'CL'
 
-    } else if ((valueName === "Negro" && mla==='MLA2006797664') || ["MLA2104745370", "MLA1508055601"].includes(mla)) {
+    } else if ((valueName === "Negro" && mla === 'MLA2006797664') || ["MLA2104745370", "MLA1508055601"].includes(mla)) {
         valueVariante = 'Negro'
         type = 'Alfombra'
         brev = 'NG'
 
-    } else if ((valueName === "Negro" && mla==='MLA2290461256') || ["MLA2289561384"].includes(mla)) {
+    } else if ((valueName === "Negro" && mla === 'MLA2290461256') || ["MLA2289561384"].includes(mla)) {
         valueVariante = 'Negro (2mt)'
         type = 'Alfombra'
         brev = 'NG (2mt)'
-    
-    } else if ((valueName === "Beige" && mla==='MLA2290461256') || ["MLA2289535536","MLA2300115880","MLA1517562895"].includes(mla)) {
+
+    } else if ((valueName === "Beige" && mla === 'MLA2290461256') || ["MLA2289535536", "MLA2300115880", "MLA1517562895"].includes(mla)) {
         valueVariante = 'Beige (2mt)'
         type = 'Alfombra'
         brev = 'BG (2mt)'
@@ -102,11 +102,11 @@ const variantes = (valueName, mla) => {
         type = 'Alfombra'
         brev = 'BL'
 
-    } else if (["MLA1500334145",'MLA2270106622'].includes(mla)) {
+    } else if (["MLA1500334145", 'MLA2270106622'].includes(mla)) {
         valueVariante = 'Pajaro'
         type = 'Juguete'
         brev = 'PJ'
-    
+
     } else if (["MLA1515754789"].includes(mla)) {
         valueVariante = 'Cepillo'
         type = 'Cepillo'
@@ -117,7 +117,7 @@ const variantes = (valueName, mla) => {
         type = 'Panini'
         brev = 'MQ'
 
-    } else if (["MLA1413919557","MLA1413968381"].includes(mla)) {
+    } else if (["MLA1413919557", "MLA1413968381"].includes(mla)) {
         valueVariante = 'Copa America'
         type = 'Panini'
         brev = 'AM'
@@ -189,16 +189,16 @@ const fixVentaId = (orders) => {
             })
         }
     })
-    
-    allVentas.forEach(venta=>{
-        const resumenAgrupado={}
 
-        venta.orderResumen.forEach(item =>{
+    allVentas.forEach(venta => {
+        const resumenAgrupado = {}
+
+        venta.orderResumen.forEach(item => {
             const key = `${item.tipo}-${item.variante}`;
 
-            if (!resumenAgrupado[key]){
-                resumenAgrupado[key] = {...item}
-            } else{
+            if (!resumenAgrupado[key]) {
+                resumenAgrupado[key] = { ...item }
+            } else {
                 resumenAgrupado[key].cantidad += item.cantidad;
             }
         })
@@ -281,10 +281,17 @@ const getStockMeli = async () => {
     }
 }
 
-const getOrders = async (alfombra) => {
+const getOrders = async (alfombra, fechaDesde,fechaHasta) => {
     try {
-        const ordersSellerC1 = await axios.get(ordersRoute(seller.c1), { headers: headers.c1 })
-        const ordersSellerC2 = await axios.get(ordersRoute(seller.c2), { headers: headers.c2 })
+        let ordersSellerC1;
+        let ordersSellerC2;
+        if (fechaDesde && fechaHasta) {
+            ordersSellerC1 = await axios.get(searchOrderId(seller.c1,fechaDesde,fechaHasta), { headers: headers.c1 })
+            ordersSellerC2 = await axios.get(searchOrderId(seller.c2,fechaDesde,fechaHasta), { headers: headers.c2 })
+        } else {
+            ordersSellerC1 = await axios.get(ordersRoute(seller.c1), { headers: headers.c1 })
+            ordersSellerC2 = await axios.get(ordersRoute(seller.c2), { headers: headers.c2 })
+        }
         const allOrders = [...ordersSellerC1.data.results, ...ordersSellerC2.data.results]
         const ventaid = createVentaId(allOrders)
         let allOrdersFixed = fixVentaId(ventaid)
@@ -375,8 +382,8 @@ const getOrders = async (alfombra) => {
                 return orden;
             })
         );
-        // const findByMPID = allOrdersFixed.filter(item => item.payments[0].id === 2000008767821545)
-        // const findByMPID = allOrdersFixed.filter(item => item.ventaid === 2000008812163003)
+        // const findByMPID = allOrdersFixed.filter(item => item.payments[0].id === 2000012849394932)
+        // const findByMPID = allOrdersFixed.filter(item => item.ventaid === 2000012849394932)
 
         // console.dir(findByMPID, { depth: null })
 

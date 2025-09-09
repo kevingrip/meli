@@ -142,6 +142,16 @@ app.get('/api/orders', verificarToken, async (req, res) => {
     }
 })
 
+app.get('/api/search', verificarToken, async (req, res) => {
+    try {
+        const fechaDesde=new Date("2025-08-21T00:00:00Z").toISOString();
+        const data = await getOrders(false,fechaDesde)
+        res.json({ data })
+    } catch (error) {
+        console.error(error)
+    }
+})
+
 app.get('/api/alf', verificarToken, async (req, res) => {
     try {
         const data = await getOrders(true)

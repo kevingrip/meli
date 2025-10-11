@@ -63,7 +63,7 @@ app.post('/api/login', async (req, res) => {
         return res.status(401).json({ error: "Contraseña incorrecta" });
     }
 
-    const token = jwt.sign({ user }, process.env.JWT_SECRET, { expiresIn: '15m' }); //si corregimos el tiempo de expiracion aca, lo hacemos tambien en settimeout de index e inicio. este token generado es el que va a verificarToken
+    const token = jwt.sign({ user }, process.env.JWT_SECRET, { expiresIn: '20m' }); //si corregimos el tiempo de expiracion aca, lo hacemos tambien en settimeout de index e inicio. este token generado es el que va a verificarToken
 
     res.json({ token });
 });
@@ -144,8 +144,9 @@ app.get('/api/orders', verificarToken, async (req, res) => {
 
 app.get('/api/search', verificarToken, async (req, res) => {
     try {
-        const fechaDesde=new Date("2025-08-21T00:00:00Z").toISOString();
-        const data = await getOrders(false,fechaDesde)
+        const fechaDesde=new Date("2025-09-01T00:00:00Z").toISOString();
+        const fechaHasta=new Date("2025-09-14T00:00:00Z").toISOString();
+        const data = await getOrders(false,fechaDesde,fechaHasta)
         res.json({ data })
     } catch (error) {
         console.error(error)

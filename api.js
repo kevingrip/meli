@@ -91,10 +91,15 @@ const variantes = (valueName, mla) => {
         type = 'Alfombra'
         brev = 'NG (2mt)'
 
-    } else if ((valueName === "Beige" && mla === 'MLA2290461256') || ["MLA2289535536", "MLA2300115880", "MLA1517562895"].includes(mla)) {
+    } else if ((valueName === "Beige" && mla === 'MLA2290461256') || ["MLA2289535536", "MLA2300115880", "MLA1517562895","MLA2420073860","MLA1552135457"].includes(mla)) {
         valueVariante = 'Beige (2mt)'
         type = 'Alfombra'
         brev = 'BG (2mt)'
+    
+    } else if ((valueName === "Gris oscuro" && mla === 'MLA2290461256') || ["MLA2423225008"].includes(mla)) {
+        valueVariante = 'Gris oscuro (2mt)'
+        type = 'Alfombra'
+        brev = 'GO (2mt)'
 
 
     } else if (valueName === "Blanco" || ["MLA1507750191", "MLA2153666050"].includes(mla)) {

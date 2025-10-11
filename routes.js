@@ -7,8 +7,8 @@ export const ordersRoute = (seller) => {
     // return `https://api.mercadolibre.com/orders/search?seller=${seller}&sort=date_desc&limit=50&order.date_created.from=2025-08-21T00:00:00Z&order.date_created.to=2025-09-01T00:00:00Z`
 }
 
-export const searchOrderId = (seller,fechaDesde) =>{
-    return `https://api.mercadolibre.com/orders/search?seller=${seller}&sort=date_desc&limit=50&order.date_created.from=${fechaDesde}`
+export const searchOrderId = (seller,fechaDesde,fechaHasta) =>{
+    return `https://api.mercadolibre.com/orders/search?seller=${seller}&sort=date_desc&limit=50&order.date_created.from=${fechaDesde}&order.date_created.to=${fechaHasta}`
 }
 
 export const shippingRoute = (shipment_id) => {

@@ -281,6 +281,8 @@
                             divProduct.classList.add("bolaBeige", "colorBeige")
                         } else if (productBrev === 'NG (2mt)') {
                             divProduct.classList.add("bolaNegro", "colorNegro")
+                        } else if (productBrev === 'GO (2mt)') {
+                            divProduct.classList.add("bolaGrisOscuro", "colorGrisOscuro")
                         } else if (productBrev === 'NG') {
                             divProduct.classList.add("bolaNegro", "colorNegro")
                         } else if (productBrev === 'BL') {
@@ -304,6 +306,11 @@
                             divProduct.style.textAlign='center'
                         
                         if (productBrev === 'BG (2mt)') 
+                            quantity.innerHTML+=`<br> 2 mts`
+                            divProduct.classList.add('centrar')
+                            divProduct.style.textAlign='center'
+                        
+                        if (productBrev === 'GO (2mt)') 
                             quantity.innerHTML+=`<br> 2 mts`
                             divProduct.classList.add('centrar')
                             divProduct.style.textAlign='center'

@@ -66,25 +66,30 @@ const variantes = (valueName, mla) => {
     let brev;
 
 
-    if (valueName === "Beige" && ['MLA2420073752','MLA2006797664'].includes(mla) || ["MLA2097220908", "MLA2152579766"].includes(mla)) {
+    if (valueName === "Beige" && ['MLA2420073752','MLA2006797664','MLA1552136575'].includes(mla) || ["MLA2097220908", "MLA2152579766"].includes(mla)) {
         valueVariante = 'Beige'
         type = 'Alfombra'
         brev = 'BG'
 
-    } else if (valueName === "Gris oscuro" && ['MLA2420073752','MLA2006797664'].includes(mla) || ["MLA2097220910", "MLA2152488642", "MLA1517485317"].includes(mla)) {
+    } else if (valueName === "Gris oscuro" && ['MLA2420073752','MLA2006797664','MLA1552136575'].includes(mla) || ["MLA2097220910", "MLA2152488642", "MLA1517485317"].includes(mla)) {
         valueVariante = 'Gris oscuro'
         type = 'Alfombra'
         brev = 'OS'
 
-    } else if (valueName === "Gris Claro" && ['MLA2420073752','MLA2006797664'].includes(mla) || ["MLA2097220912", "MLA2152475848", "MLA1517498065", "MLA2285279166"].includes(mla)) {
+    } else if (valueName === "Gris Claro" && ['MLA2420073752','MLA2006797664','MLA1552136575'].includes(mla) || ["MLA2097220912", "MLA2152475848", "MLA1517498065", "MLA2285279166"].includes(mla)) {
         valueVariante = 'Gris Claro'
         type = 'Alfombra'
         brev = 'CL'
 
-    } else if ((valueName === "Negro" && ['MLA2420073752','MLA2006797664'].includes(mla)) || ["MLA2104745370", "MLA1508055601"].includes(mla)) {
+    } else if ((valueName === "Negro" && ['MLA2420073752','MLA2006797664','MLA1552136575'].includes(mla)) || ["MLA2104745370", "MLA1508055601"].includes(mla)) {
         valueVariante = 'Negro'
         type = 'Alfombra'
         brev = 'NG'
+    
+    } else if (valueName === "Blanco" && ['MLA2420073752','MLA2006797664','MLA1552136575'].includes(mla) || ["MLA1507750191", "MLA2153666050"].includes(mla)) {
+        valueVariante = 'Blanco'
+        type = 'Alfombra'
+        brev = 'BL'
 
     } else if ((valueName === "Negro" && mla === 'MLA2290461256') || ["MLA2289561384","MLA1552200067"].includes(mla)) {
         valueVariante = 'Negro (2mt)'
@@ -99,13 +104,7 @@ const variantes = (valueName, mla) => {
     } else if ((valueName === "Gris oscuro" && mla === 'MLA2290461256') || ["MLA2423225008"].includes(mla)) {
         valueVariante = 'Gris oscuro (2mt)'
         type = 'Alfombra'
-        brev = 'GO (2mt)'
-
-
-    } else if (valueName === "Blanco" && ['MLA2420073752','MLA2006797664'].includes(mla) || ["MLA1507750191", "MLA2153666050"].includes(mla)) {
-        valueVariante = 'Blanco'
-        type = 'Alfombra'
-        brev = 'BL'
+        brev = 'GO (2mt)'    
 
     } else if (["MLA1500334145", 'MLA2270106622'].includes(mla)) {
         valueVariante = 'Pajaro'

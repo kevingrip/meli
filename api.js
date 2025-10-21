@@ -66,45 +66,50 @@ const variantes = (valueName, mla) => {
     let brev;
 
 
-    if (valueName === "Beige" && ['MLA2420073752','MLA2006797664','MLA1552136575'].includes(mla) || ["MLA2097220908", "MLA2152579766"].includes(mla)) {
+    if (valueName === "Beige" && ['MLA2420073752', 'MLA2006797664', 'MLA1552136575'].includes(mla) || ["MLA2097220908", "MLA2152579766"].includes(mla)) {
         valueVariante = 'Beige'
         type = 'Alfombra'
         brev = 'BG'
 
-    } else if (valueName === "Gris oscuro" && ['MLA2420073752','MLA2006797664','MLA1552136575'].includes(mla) || ["MLA2097220910", "MLA2152488642", "MLA1517485317"].includes(mla)) {
+    } else if (valueName === "Gris oscuro" && ['MLA2420073752', 'MLA2006797664', 'MLA1552136575'].includes(mla) || ["MLA2097220910", "MLA2152488642", "MLA1517485317"].includes(mla)) {
         valueVariante = 'Gris oscuro'
         type = 'Alfombra'
         brev = 'OS'
 
-    } else if (valueName === "Gris Claro" && ['MLA2420073752','MLA2006797664','MLA1552136575'].includes(mla) || ["MLA2097220912", "MLA2152475848", "MLA1517498065", "MLA2285279166"].includes(mla)) {
+    } else if (valueName === "Gris Claro" && ['MLA2420073752', 'MLA2006797664', 'MLA1552136575'].includes(mla) || ["MLA2097220912", "MLA2152475848", "MLA1517498065", "MLA2285279166"].includes(mla)) {
         valueVariante = 'Gris Claro'
         type = 'Alfombra'
         brev = 'CL'
 
-    } else if ((valueName === "Negro" && ['MLA2420073752','MLA2006797664','MLA1552136575'].includes(mla)) || ["MLA2104745370", "MLA1508055601"].includes(mla)) {
+    } else if ((valueName === "Negro" && ['MLA2420073752', 'MLA2006797664', 'MLA1552136575'].includes(mla)) || ["MLA2104745370", "MLA1508055601"].includes(mla)) {
         valueVariante = 'Negro'
         type = 'Alfombra'
         brev = 'NG'
-    
-    } else if (valueName === "Blanco" && ['MLA2420073752','MLA2006797664','MLA1552136575'].includes(mla) || ["MLA1507750191", "MLA2153666050"].includes(mla)) {
+
+    } else if (valueName === "Blanco" && ['MLA2420073752', 'MLA2006797664', 'MLA1552136575'].includes(mla) || ["MLA1507750191", "MLA2153666050"].includes(mla)) {
         valueVariante = 'Blanco'
         type = 'Alfombra'
         brev = 'BL'
 
-    } else if ((valueName === "Negro" && mla === 'MLA2290461256') || ["MLA2289561384","MLA1552200067"].includes(mla)) {
+    } else if ((valueName === "Negro" && mla === 'MLA2290461256') || ["MLA2289561384", "MLA1552200067"].includes(mla)) {
         valueVariante = 'Negro (2mt)'
         type = 'Alfombra'
         brev = 'NG (2mt)'
 
-    } else if ((valueName === "Beige" && mla === 'MLA2290461256') || ["MLA2289535536", "MLA2300115880", "MLA1517562895","MLA2420073860","MLA1552135457"].includes(mla)) {
+    } else if ((valueName === "Beige" && mla === 'MLA2290461256') || ["MLA2289535536", "MLA2300115880", "MLA1517562895", "MLA2420073860", "MLA1552135457"].includes(mla)) {
         valueVariante = 'Beige (2mt)'
         type = 'Alfombra'
         brev = 'BG (2mt)'
-    
+
     } else if ((valueName === "Gris oscuro" && mla === 'MLA2290461256') || ["MLA2423225008"].includes(mla)) {
         valueVariante = 'Gris oscuro (2mt)'
         type = 'Alfombra'
-        brev = 'GO (2mt)'    
+        brev = 'OS (2mt)'
+
+    } else if ((valueName === "Gris" && mla === 'MLA2290461256')) {
+        valueVariante = 'Gris claro (2mt)'
+        type = 'Alfombra'
+        brev = 'CL (2mt)'
 
     } else if (["MLA1500334145", 'MLA2270106622'].includes(mla)) {
         valueVariante = 'Pajaro'
@@ -285,13 +290,13 @@ const getStockMeli = async () => {
     }
 }
 
-const getOrders = async (alfombra, fechaDesde,fechaHasta) => {
+const getOrders = async (alfombra, fechaDesde, fechaHasta) => {
     try {
         let ordersSellerC1;
         let ordersSellerC2;
         if (fechaDesde && fechaHasta) {
-            ordersSellerC1 = await axios.get(searchOrderId(seller.c1,fechaDesde,fechaHasta), { headers: headers.c1 })
-            ordersSellerC2 = await axios.get(searchOrderId(seller.c2,fechaDesde,fechaHasta), { headers: headers.c2 })
+            ordersSellerC1 = await axios.get(searchOrderId(seller.c1, fechaDesde, fechaHasta), { headers: headers.c1 })
+            ordersSellerC2 = await axios.get(searchOrderId(seller.c2, fechaDesde, fechaHasta), { headers: headers.c2 })
         } else {
             ordersSellerC1 = await axios.get(ordersRoute(seller.c1), { headers: headers.c1 })
             ordersSellerC2 = await axios.get(ordersRoute(seller.c2), { headers: headers.c2 })
@@ -329,10 +334,19 @@ const getOrders = async (alfombra, fechaDesde,fechaHasta) => {
 
 
 
-                        for (const payment of paymentsResults) {
-                            precioTotal += payment.transaction_amount;
-                            precioNeto += payment.transaction_details.net_received_amount;
-                            var fechaLiqui = payment.money_release_date
+                        if (!Array.isArray(paymentsResults) || paymentsResults.length === 0) {
+                            console.log("No hay pagos en esta orden o paymentsResults no es un array");
+                        } else {
+                            for (const payment of paymentsResults) {
+                                if (!payment) continue; // evita errores si hay elementos vacíos
+
+                                const monto = payment.transaction_amount || 0;
+                                const neto = payment.transaction_details?.net_received_amount || 0;
+                                var fechaLiqui = payment.money_release_date || null;
+
+                                precioTotal += monto;
+                                precioNeto += neto;
+                            }
                         }
 
                         if (orden.shipping_info?.logistic_type === 'self_service') {

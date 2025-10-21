@@ -139,6 +139,7 @@ app.get('/api/orders', verificarToken, async (req, res) => {
         res.json({ stock, data, counts, packs })
     } catch (error) {
         console.error(error)
+        res.status(500).json({ error: error.message || "Error interno del servidor" });
     }
 })
 

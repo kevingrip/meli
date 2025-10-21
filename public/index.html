@@ -305,6 +305,8 @@
                         const productBrev = detalle.abreviado || null
                         if (productBrev === 'CL') {
                             divProduct.classList.add("bolaGrisClaro", "colorGrisClaro")
+                        } else if (productBrev === 'CL (2mt)') {
+                            divProduct.classList.add("bolaGrisClaro", "colorGrisClaro")
                         } else if (productBrev === 'OS') {
                             divProduct.classList.add("bolaGrisOscuro", "colorGrisOscuro")
                         } else if (productBrev === 'BG') {
@@ -315,7 +317,7 @@
                             divProduct.classList.add("bolaNegro", "colorNegro")
                         } else if (productBrev === 'BG (2mt)') {
                             divProduct.classList.add("bolaBeige", "colorBeige")
-                        } else if (productBrev === 'GO (2mt)') {
+                        } else if (productBrev === 'OS (2mt)') {
                             divProduct.classList.add("bolaGrisOscuro", "colorGrisOscuro")
                         } else if (productBrev === 'NG (2mt)') {
                             divProduct.classList.add("bolaNegro", "colorNegro")
@@ -346,7 +348,12 @@
                             divProduct.classList.add('centrar')
                             divProduct.style.textAlign='center'
                         
-                        if (productBrev === 'GO (2mt)') 
+                        if (productBrev === 'OS (2mt)') 
+                            quantity.innerHTML+=`<br> 2 mts`
+                            divProduct.classList.add('centrar')
+                            divProduct.style.textAlign='center'
+                        
+                        if (productBrev === 'CL (2mt)') 
                             quantity.innerHTML+=`<br> 2 mts`
                             divProduct.classList.add('centrar')
                             divProduct.style.textAlign='center'

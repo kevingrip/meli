@@ -91,22 +91,22 @@ const variantes = (valueName, mla) => {
         type = 'Alfombra'
         brev = 'BL'
 
-    } else if ((valueName === "Negro" && mla === 'MLA2290461256') || ["MLA2289561384", "MLA1552200067"].includes(mla)) {
+    } else if ((valueName === "Negro" && ['MLA2290461256', "MLA1552200067"].includes(mla)) || ["MLA2289561384"].includes(mla)) {
         valueVariante = 'Negro (2mt)'
         type = 'Alfombra'
         brev = 'NG (2mt)'
 
-    } else if ((valueName === "Beige" && mla === 'MLA2290461256') || ["MLA2289535536", "MLA2300115880", "MLA1517562895", "MLA2420073860", "MLA1552135457"].includes(mla)) {
+    } else if ((valueName === "Beige" && ['MLA2290461256', "MLA1552200067"].includes(mla)) || ["MLA2289535536", "MLA2300115880", "MLA1517562895", "MLA2420073860", "MLA1552135457"].includes(mla)) {
         valueVariante = 'Beige (2mt)'
         type = 'Alfombra'
         brev = 'BG (2mt)'
 
-    } else if ((valueName === "Gris oscuro" && mla === 'MLA2290461256') || ["MLA2423225008"].includes(mla)) {
+    } else if ((valueName === "Gris oscuro" && ['MLA2290461256', "MLA1552200067"].includes(mla)) || ["MLA2423225008"].includes(mla)) {
         valueVariante = 'Gris oscuro (2mt)'
         type = 'Alfombra'
         brev = 'OS (2mt)'
 
-    } else if ((valueName === "Gris" && mla === 'MLA2290461256')) {
+    } else if ((valueName === "Gris" && ['MLA2290461256', "MLA1552200067"].includes(mla))) {
         valueVariante = 'Gris claro (2mt)'
         type = 'Alfombra'
         brev = 'CL (2mt)'

@@ -23,7 +23,7 @@
 
         setTimeout(() => {
             window.location.href = 'login.html';
-        }, 20*60*1000); //5 min
+        }, 20 * 60 * 1000); //5 min
 
         const token = localStorage.getItem('token');
 
@@ -55,10 +55,10 @@
                 const nav = document.createElement('nav')
 
                 const navList = document.createElement('ul')
-                navList.style.listStyle='none'
+                navList.style.listStyle = 'none'
                 navList.classList.add('navList')
 
-                const createNavBarItem = (titulo,link) => {
+                const createNavBarItem = (titulo, link) => {
                     const navItem = document.createElement('li')
                     const item = document.createElement('a')
                     item.textContent = titulo
@@ -351,7 +351,7 @@
                         } else {
                             divProduct.classList.add("bolaSC")
                         }
-                        
+
 
                         orderResumen.innerHTML += `- ${tipo || title.textContent} ${detalle.variante || ''} x${detalle.cantidad}<br>`
 
@@ -359,25 +359,25 @@
 
                         quantity.textContent = `x${detalle.cantidad}`
 
-                        if (productBrev === 'NG (2mt)') 
-                            quantity.innerHTML+=`<br> 2 mts`
-                            divProduct.classList.add('centrar')
-                            divProduct.style.textAlign='center'
-                        
-                        if (productBrev === 'BG (2mt)') 
-                            quantity.innerHTML+=`<br> 2 mts`
-                            divProduct.classList.add('centrar')
-                            divProduct.style.textAlign='center'
-                        
-                        if (productBrev === 'OS (2mt)') 
-                            quantity.innerHTML+=`<br> 2 mts`
-                            divProduct.classList.add('centrar')
-                            divProduct.style.textAlign='center'
-                        
-                        if (productBrev === 'CL (2mt)') 
-                            quantity.innerHTML+=`<br> 2 mts`
-                            divProduct.classList.add('centrar')
-                            divProduct.style.textAlign='center'
+                        if (productBrev === 'NG (2mt)')
+                            quantity.innerHTML += `<br> 2 mts`
+                        divProduct.classList.add('centrar')
+                        divProduct.style.textAlign = 'center'
+
+                        if (productBrev === 'BG (2mt)')
+                            quantity.innerHTML += `<br> 2 mts`
+                        divProduct.classList.add('centrar')
+                        divProduct.style.textAlign = 'center'
+
+                        if (productBrev === 'OS (2mt)')
+                            quantity.innerHTML += `<br> 2 mts`
+                        divProduct.classList.add('centrar')
+                        divProduct.style.textAlign = 'center'
+
+                        if (productBrev === 'CL (2mt)')
+                            quantity.innerHTML += `<br> 2 mts`
+                        divProduct.classList.add('centrar')
+                        divProduct.style.textAlign = 'center'
 
                         var detalleProduct = `${tipo} ${detalle.variante || ''}`
                         if (variantes.length > 1) {
@@ -407,11 +407,11 @@
 
 
 
-                    
+
 
                     select.addEventListener('change', async (event) => {
-                        seleccionado = event.target.value;                        
-                        
+                        seleccionado = event.target.value;
+
                         let pagoLogistica;
                         let pagoNumber = (parseFloat(element.pagos.flex.replace(/\./g, '').replace(',', '.')))
                         let pagoPositivo = pagoNumber * (-1)
@@ -437,19 +437,19 @@
                         }
 
                         const bodyMongoFlex = {
-                        seller: element.seller.nickname,
-                        ventaid: element.ventaid,
-                        shipping: element.shipping.id,
-                        fechaVenta: new Date(element.date_created).toLocaleDateString(),
-                        fechaEntrega: new Date(element.shipping_info.lastTimeToSend),
-                        diaSemana: new Date(element.shipping_info.lastTimeToSend).getDay(),
-                        dia: ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'][new Date(element.shipping_info.lastTimeToSend).getDay()],
-                        mes: new Date(element.shipping_info.lastTimeToSend).toLocaleString('es-AR', { month: 'long' }),
-                        producto: tipo || title.textContent,
-                        zona: localidad,
-                        envio: seleccionado,
-                        precio: element.pagos.flex,
-                        pago: pagoLogistica
+                            seller: element.seller.nickname,
+                            ventaid: element.ventaid,
+                            shipping: element.shipping.id,
+                            fechaVenta: new Date(element.date_created).toLocaleDateString(),
+                            fechaEntrega: new Date(element.shipping_info.lastTimeToSend),
+                            diaSemana: new Date(element.shipping_info.lastTimeToSend).getDay(),
+                            dia: ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'][new Date(element.shipping_info.lastTimeToSend).getDay()],
+                            mes: new Date(element.shipping_info.lastTimeToSend).toLocaleString('es-AR', { month: 'long' }),
+                            producto: tipo || title.textContent,
+                            zona: localidad,
+                            envio: seleccionado,
+                            precio: element.pagos.flex,
+                            pago: pagoLogistica
                         }
 
                         console.log(`Actualizado bodyMongoFlex para orden ${element.id}:`, bodyMongoFlex);
@@ -471,13 +471,24 @@
                     buttonDescarga.textContent = '>'
                     const variantesSTR = variantes.join(" | ")
                     buttonDescarga.addEventListener("click", async () => {
-                        
-                        if ((seleccionado != 'Elegir' && seleccionado != null) || envioGuardado !=null) {
-                            if (element.shipping_info.logistic_type === 'self_service' && element.shipping_info.substatus === 'ready_to_print')
-                                buttonDescarga.classList.toggle("buttonDescargaFlexPTD")
-                            if ((element.shipping_info.logistic_type === 'drop_off' || element.shipping_info.logistic_type === 'xd_drop_off') && element.shipping_info.substatus === 'ready_to_print')
-                                buttonDescarga.classList.toggle("buttonDescargaCorreoPTD")
+                        let avanzarEtiqueta = false;
 
+                        if (element.shipping_info.logistic_type === 'self_service' && element.shipping_info.substatus === 'ready_to_print')
+                            if ((seleccionado != 'Elegir' && seleccionado != null) || envioGuardado != null) {
+                                buttonDescarga.classList.toggle("buttonDescargaFlexPTD")
+                                avanzarEtiqueta = true;
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: 'Por favor, selecciona un envío.'
+                                });
+                            }
+                        if ((element.shipping_info.logistic_type === 'drop_off' || element.shipping_info.logistic_type === 'xd_drop_off') && element.shipping_info.substatus === 'ready_to_print')
+                            buttonDescarga.classList.toggle("buttonDescargaCorreoPTD")
+                        avanzarEtiqueta = true;
+
+                        if (avanzarEtiqueta) {
                             const body = {
                                 usuario: element.seller.nickname,
                                 id: element.shipping.id,
@@ -508,12 +519,6 @@
                             } catch (error) {
                                 console.error("Error al enviar solicitud al backend:", error);
                             }
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error',
-                                text: 'Por favor, selecciona un envío.'
-                            });
                         }
                     })
 
@@ -560,12 +565,12 @@
                         bloqueEnvio.appendChild(sector)
                         bloqueEnvio.appendChild(direccion)
                         bloqueEnvio.appendChild(ShippingMap)
-                        bloqueEnvio.appendChild(Pagoflex)                        
+                        bloqueEnvio.appendChild(Pagoflex)
                         bloqueEnvio.appendChild(label)
                         if (element.shipping_info.substatus) {
                             bloqueEnvio.appendChild(dataSubstatus)
                         }
-                        
+
                     }
                     bloqueEnvio.appendChild(idShipping)
 

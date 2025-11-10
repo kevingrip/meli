@@ -315,7 +315,11 @@
                     title.textContent = `${element.order_items[0].item.title}`
 
                     const variantes = []
+                    let tipo;
+
                     element.orderResumen.forEach(detalle => {
+
+                        tipo = detalle.tipo
 
                         const divProduct = document.createElement('div')
                         const quantity = document.createElement('p')
@@ -349,7 +353,7 @@
                         }
                         
 
-                        orderResumen.innerHTML += `- ${detalle.tipo || title.textContent} ${detalle.variante || ''} x${detalle.cantidad}<br>`
+                        orderResumen.innerHTML += `- ${tipo || title.textContent} ${detalle.variante || ''} x${detalle.cantidad}<br>`
 
                         variantes.push(`${productBrev} : ${detalle.cantidad}`)
 
@@ -375,11 +379,11 @@
                             divProduct.classList.add('centrar')
                             divProduct.style.textAlign='center'
 
-                        var detalleProduct = `${detalle.tipo} ${detalle.variante || ''}`
+                        var detalleProduct = `${tipo} ${detalle.variante || ''}`
                         if (variantes.length > 1) {
                             titleResumen.textContent = `PACK`
                         } else {
-                            titleResumen.textContent = `${detalle.tipo || title.textContent} ${detalle.variante || ''}`
+                            titleResumen.textContent = `${tipo || title.textContent} ${detalle.variante || ''}`
                         }
                         divProduct.appendChild(quantity)
                         bloqueProduct.appendChild(divProduct)

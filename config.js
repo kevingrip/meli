@@ -52,6 +52,7 @@ const createTokens = async () => {
     return newToken
 }
 
+
 const refreshToken = async () => {
     try {
         const token1 = await axios.post(urlToken, null, postSeller1)
@@ -59,7 +60,8 @@ const refreshToken = async () => {
         // console.log(token1.data.access_token)
         return [token1.data.access_token, token2.data.access_token]
     } catch (error) {
-        
+        // console.error("Error al refrescar token:", error.response?.data || error.message);
+        // throw error;
     }
     // try {
     //     const cantDocument = await tokenModel.countDocuments()

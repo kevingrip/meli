@@ -7,6 +7,7 @@
     <title>Document</title>
     <link rel="stylesheet" type="text/css" href="./styles.css">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 </head>
 
@@ -237,6 +238,22 @@
                     const sector = document.createElement('p')
                     const direccion = document.createElement('p')
 
+                    const label = document.createElement('label');
+                    label.textContent = 'Envio: ';
+
+                    const select = document.createElement('select');
+                    select.classList.add('select-opciones');  // NO usar id repetido
+
+                    ['Elegir', 'PLEX', 'VERGUI', 'KEVIN'].forEach(value => {
+                        const option = document.createElement('option');
+                        option.value = value;
+                        option.textContent = value;
+                        select.appendChild(option);
+                    });
+
+
+                    let seleccionado = 'Elegir';
+
                     buttonFiltroCorreo.addEventListener('click', () => {
                         if ((element.shipping_info.logistic_type === 'xd_drop_off' || element.shipping_info.logistic_type === 'drop_off')) {
                             bloquePadre.style.display = 'block';
@@ -368,43 +385,131 @@
                         bloqueProduct.appendChild(divProduct)
                     })
 
-                    buttonDescarga.textContent = '>'
-                    const variantesSTR = variantes.join(" | ")
-                    buttonDescarga.addEventListener("click", async () => {
+                    let envioGuardado = null;
 
-                        if (element.shipping_info.logistic_type === 'self_service' && element.shipping_info.substatus === 'ready_to_print')
-                            buttonDescarga.classList.toggle("buttonDescargaFlexPTD")
-                        if ((element.shipping_info.logistic_type === 'drop_off' || element.shipping_info.logistic_type === 'xd_drop_off') && element.shipping_info.substatus === 'ready_to_print')
-                            buttonDescarga.classList.toggle("buttonDescargaCorreoPTD")
+                    fetch(`api/mongo/${element.ventaid}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            console.log('Datos traídos de MongoDB:', data);
+                            if (!data || (Array.isArray(data) && data.length === 0)) {
+                                label.appendChild(select);
+                            } else {
+                                const dataEnvio = document.createElement('p')
+                                dataEnvio.textContent = data[0].envio
+                                label.appendChild(dataEnvio)
+                                envioGuardado = data[0].envio
+                            }
+                        })
 
-                        const bodyData = {
-                            usuario: element.seller.nickname,
-                            id: element.shipping.id,
-                            variantes: variantesSTR
+
+
+                    
+
+                    select.addEventListener('change', async (event) => {
+                        seleccionado = event.target.value;                        
+                        
+                        let pagoLogistica;
+                        let pagoNumber = (parseFloat(element.pagos.flex.replace(/\./g, '').replace(',', '.')))
+                        let pagoPositivo = pagoNumber * (-1)
+
+                        if (pagoPositivo === 7371) {
+                            if (seleccionado === "VERGUI") {
+                                pagoLogistica = 6792
+                            } else {
+                                pagoLogistica = 7371
+                            }
+                        } else if (pagoPositivo === 4611) {
+                            if (seleccionado === "VERGUI") {
+                                pagoLogistica = 4249
+                            } else {
+                                pagoLogistica = pagoPositivo
+                            }
+                        } else if (pagoPositivo === 10246) {
+                            if (seleccionado === "VERGUI") {
+                                pagoLogistica = 9443
+                            } else {
+                                pagoLogistica = pagoPositivo
+                            }
                         }
+
+                        const bodyMongoFlex = {
+                        seller: element.seller.nickname,
+                        ventaid: element.ventaid,
+                        shipping: element.shipping.id,
+                        fechaVenta: new Date(element.date_created).toLocaleDateString(),
+                        fechaEntrega: new Date(element.shipping_info.lastTimeToSend),
+                        diaSemana: new Date(element.shipping_info.lastTimeToSend).getDay(),
+                        dia: ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'][new Date(element.shipping_info.lastTimeToSend).getDay()],
+                        mes: new Date(element.shipping_info.lastTimeToSend).toLocaleString('es-AR', { month: 'long' }),
+                        producto: tipo || title.textContent,
+                        zona: localidad,
+                        envio: seleccionado,
+                        precio: element.pagos.flex,
+                        pago: pagoLogistica
+                        }
+
+                        console.log(`Actualizado bodyMongoFlex para orden ${element.id}:`, bodyMongoFlex);
+
                         try {
-                            const peticionEtiqueta = await fetch('/etiqueta', {
+                            const subirMongo = await fetch('/mongo', {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json'
                                 },
-                                body: JSON.stringify(bodyData)
-                            });
-
-                            if (!peticionEtiqueta.ok) throw new Error('Fallo la descarga del PDF');
-
-                            const blob = await peticionEtiqueta.blob();
-
-                            const url = window.URL.createObjectURL(blob);
-                            const a = document.createElement('a');
-                            a.href = url;
-                            a.download = `${fechaEtiqueta}-${tipoEnvio === "FLEX" ? 'FLEX' : 'CORREO'}${tipoEnvio === "FLEX" ? ': ' + localidad : ''}-${element.ventaid}.pdf`; // nombre del archivo
-                            document.body.appendChild(a);
-                            a.click();
-                            a.remove();
-                            window.URL.revokeObjectURL(url);
+                                body: JSON.stringify(bodyMongoFlex)
+                            })
                         } catch (error) {
                             console.error("Error al enviar solicitud al backend:", error);
+                        };
+                    })
+
+
+                    buttonDescarga.textContent = '>'
+                    const variantesSTR = variantes.join(" | ")
+                    buttonDescarga.addEventListener("click", async () => {
+                        
+                        if ((seleccionado != 'Elegir' && seleccionado != null) || envioGuardado !=null) {
+                            if (element.shipping_info.logistic_type === 'self_service' && element.shipping_info.substatus === 'ready_to_print')
+                                buttonDescarga.classList.toggle("buttonDescargaFlexPTD")
+                            if ((element.shipping_info.logistic_type === 'drop_off' || element.shipping_info.logistic_type === 'xd_drop_off') && element.shipping_info.substatus === 'ready_to_print')
+                                buttonDescarga.classList.toggle("buttonDescargaCorreoPTD")
+
+                            const body = {
+                                usuario: element.seller.nickname,
+                                id: element.shipping.id,
+                                variantes: variantesSTR
+                            }
+
+                            try {
+                                const peticionEtiqueta = await fetch('/etiqueta', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify(body)
+                                });
+
+                                if (!peticionEtiqueta.ok) throw new Error('Fallo la descarga del PDF');
+
+                                const blob = await peticionEtiqueta.blob();
+
+                                const url = window.URL.createObjectURL(blob);
+                                const a = document.createElement('a');
+                                a.href = url;
+                                a.download = `${fechaEtiqueta}-${tipoEnvio === "FLEX" ? 'FLEX' : 'CORREO'}${tipoEnvio === "FLEX" ? ': ' + localidad : ''}-${element.ventaid}.pdf`; // nombre del archivo
+                                document.body.appendChild(a);
+                                a.click();
+                                a.remove();
+                                window.URL.revokeObjectURL(url);
+                            } catch (error) {
+                                console.error("Error al enviar solicitud al backend:", error);
+                            }
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Por favor, selecciona un envío.'
+                            });
                         }
                     })
 
@@ -451,10 +556,12 @@
                         bloqueEnvio.appendChild(sector)
                         bloqueEnvio.appendChild(direccion)
                         bloqueEnvio.appendChild(ShippingMap)
-                        bloqueEnvio.appendChild(Pagoflex)
+                        bloqueEnvio.appendChild(Pagoflex)                        
+                        bloqueEnvio.appendChild(label)
                         if (element.shipping_info.substatus) {
                             bloqueEnvio.appendChild(dataSubstatus)
                         }
+                        
                     }
                     bloqueEnvio.appendChild(idShipping)
 

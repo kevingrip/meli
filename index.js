@@ -145,8 +145,8 @@ app.get('/api/orders', verificarToken, async (req, res) => {
 
 app.get('/api/search', verificarToken, async (req, res) => {
     try {
-        const fechaDesde=new Date("2025-09-01T00:00:00Z").toISOString();
-        const fechaHasta=new Date("2025-09-14T00:00:00Z").toISOString();
+        const fechaDesde=new Date("2025-11-01T00:00:00Z").toISOString();
+        const fechaHasta=new Date("2025-11-31T00:00:00Z").toISOString();
         const data = await getOrders(false,fechaDesde,fechaHasta)
         res.json({ data })
     } catch (error) {

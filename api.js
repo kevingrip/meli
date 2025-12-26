@@ -224,7 +224,8 @@ const getPayment = async (payment_id, token) => {
         const paymentData = await axios.get(paymentRoute(payment_id), { headers: token })
         return paymentData.data
     } catch (error) {
-        console.log(error.message)
+        console.error(`Error 404 en pago ${payment_id}:`, error.message);
+        return {};
     }
 }
 
@@ -233,7 +234,8 @@ const getShippingCost = async (payment_id, token) => {
         const shippment = await axios.get(costShippingRoute(payment_id), { headers: token })
         return shippment.data
     } catch (error) {
-        console.log(error.message)
+        console.error(`Error 404 en shippment:`, error.message);
+        return {};
     }
 }
 
@@ -286,11 +288,13 @@ const getStockMeli = async () => {
 
 
     } catch (error) {
-        console.error(error.message)
+        console.error(`Error 404 en pago getStockMeli:`, error.message);
+        return {};
     }
 }
 
 const getOrders = async (alfombra, fechaDesde, fechaHasta) => {
+    let idParaError = "No identificada";
     try {
         let ordersSellerC1;
         let ordersSellerC2;
@@ -304,12 +308,16 @@ const getOrders = async (alfombra, fechaDesde, fechaHasta) => {
         const allOrders = [...ordersSellerC1.data.results, ...ordersSellerC2.data.results]
         const ventaid = createVentaId(allOrders)
         let allOrdersFixed = fixVentaId(ventaid)
+        allOrdersFixed = allOrdersFixed.filter(orden => 
+            orden.ventaid.toString() !== "2000013172908752" //corregir esa venta
+        );
         if (alfombra) {
             allOrdersFixed = allOrdersFixed.filter(element => element.orderResumen.some(resumen => ["Alfombra", "Juguete"].includes(resumen.tipo))) //some para recorrer array
         }
         // const allOrdersFixed = fixVentaId(ventaid).filter(venta => venta.ventaid===2000008966681277)
         await Promise.all(
             allOrdersFixed.map(async (orden) => {
+                idParaError = orden.ventaid;
                 orden.shippingId = orden.shipping.id
                 //console.log(orden.ventaid)
                 var user = orden.seller.nickname
@@ -432,12 +440,13 @@ const getOrders = async (alfombra, fechaDesde, fechaHasta) => {
         const ordersInComming = allOrdersFixed.filter(orders => orders.shippingId != null && orders.shipping_info.substatus != "ready_to_print" && orders.shipping_info.substatus != "printed" && orders.shipping_info.status != "delivered" && orders.shipping_info.status != "pending" && orders.shipping_info.status != "cancelled")
         const ordersDelivered = allOrdersFixed.filter(orders => orders.shippingId != null && orders.shipping_info.status == "delivered").sort((b, a) => new Date(a.date_created) - new Date(b.date_created));
         const ordersPending = allOrdersFixed.filter(orders => orders.shippingId != null && orders.shipping_info.status == "pending")
-        //const ordersShippingNull = allOrdersFixed.filter(orders => orders.shippingId===null)
+        // const ordersShippingNull = allOrdersFixed.filter(orders => orders.shippingId===null)
         const allOrdersOrdered = [...ordersToPrint, ...ordersPrinted, ...ordersPending, ...ordersInComming, ...ordersCancelled, ...ordersDelivered]
 
         return allOrdersOrdered
     } catch (error) {
-        console.error(error.message)
+        console.error(`ERROR CRÍTICO en getOrders (Última Venta intentada: #${idParaError}):`, error.message);
+        return {};
     }
 }
 
@@ -448,7 +457,8 @@ const getPacksToSend = async (data) => {
         return allVentas
 
     } catch (error) {
-
+        console.error(`Error 404 en getPacksToSend:`, error.message);
+        return {};
     }
 }
 
@@ -474,7 +484,8 @@ const getCountEtiquetas = async (data) => {
         })
         return countVentas
     } catch (error) {
-        console.log(error.message)
+        console.error(`Error 404 en getCountEtiquetas:`, error.message);
+        return {};
     }
 }
 
@@ -523,7 +534,8 @@ const getCountOrders = async (data) => {
         )
         return (resumen)
     } catch (error) {
-        console.log('Error en :', error.message);
+        console.error(`Error 404 en getCountOrders:`, error.message);
+        return {};
     }
 }
 
@@ -538,7 +550,8 @@ const getOrdersUser = async (nickname) => {
         const orders = await axios.get(ordersRoute(user), { headers: token })
         console.log(orders)
     } catch (error) {
-        console.error(error.message)
+        console.error(`Error 404 en getOrdersUser:`, error.message);
+        return {};
     }
 }
 
@@ -550,7 +563,8 @@ const getShipping = async (id, token) => {
         shipp.data.lastTimeToSend = dataLabel.data.expected_date
         return shipp
     } catch (error) {
-        console.error(error.message)
+        console.error(`Error 404 en getShipping ${id} (Venta #${ventaid}):`, error.message);
+        return {};
     }
 }
 
@@ -561,7 +575,8 @@ const getOrdersFlex = async () => {
         const ordersFlex = allOrders.filter(orders => orders.shipping_info.logistic_type === "self_service")
         return ordersFlex
     } catch (error) {
-        console.log(error.message)
+        console.error(`Error 404 en getOrdersFlex:`, error.message);
+        return {};
     }
 }
 

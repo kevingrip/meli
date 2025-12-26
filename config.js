@@ -57,7 +57,7 @@ const refreshToken = async () => {
     try {
         const token1 = await axios.post(urlToken, null, postSeller1)
         const token2 = await axios.post(urlToken, null, postSeller2)
-        // console.log(token1.data.access_token)
+        // console.log(token2.data.access_token)
         return [token1.data.access_token, token2.data.access_token]
     } catch (error) {
         // console.error("Error al refrescar token:", error.response?.data || error.message);

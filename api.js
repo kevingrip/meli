@@ -81,7 +81,7 @@ const variantes = (valueName, mla) => {
         type = 'Alfombra'
         brev = 'CL'
 
-    } else if ((valueName === "Negro" && ['MLA2420073752', 'MLA2006797664', 'MLA1552136575'].includes(mla)) || ["MLA2104745370", "MLA1508055601","MLA1517069435"].includes(mla)) {
+    } else if ((valueName === "Negro" && ['MLA2420073752', 'MLA2006797664', 'MLA1552136575'].includes(mla)) || ["MLA2104745370", "MLA1508055601", "MLA1517069435"].includes(mla)) {
         valueVariante = 'Negro'
         type = 'Alfombra'
         brev = 'NG'
@@ -294,7 +294,7 @@ const getStockMeli = async () => {
 }
 
 const getOrders = async (alfombra, fechaDesde, fechaHasta) => {
-    let idParaError = "No identificada";
+    let ordenVentaid = "No identificada";
     try {
         let ordersSellerC1;
         let ordersSellerC2;
@@ -305,148 +305,134 @@ const getOrders = async (alfombra, fechaDesde, fechaHasta) => {
             ordersSellerC1 = await axios.get(ordersRoute(seller.c1), { headers: headers.c1 })
             ordersSellerC2 = await axios.get(ordersRoute(seller.c2), { headers: headers.c2 })
         }
+        
         const allOrders = [...ordersSellerC1.data.results, ...ordersSellerC2.data.results]
-        const ventaid = createVentaId(allOrders)
-        let allOrdersFixed = fixVentaId(ventaid)
-        allOrdersFixed = allOrdersFixed.filter(orden => 
-            orden.ventaid.toString() !== "2000013172908752" //corregir esa venta
-        );
+        const newVentaid = createVentaId(allOrders)
+        let allOrdersFixed = fixVentaId(newVentaid)
+
+        // --- CAMBIO 1: USAR FILTER EN LUGAR DE FIND ---
+        // Esto garantiza que allOrdersFixed siga siendo una LISTA (Array)
+        // allOrdersFixed=allOrdersFixed.find(orden=>orden.ventaid===2000009477248609)
+
         if (alfombra) {
-            allOrdersFixed = allOrdersFixed.filter(element => element.orderResumen.some(resumen => ["Alfombra", "Juguete"].includes(resumen.tipo))) //some para recorrer array
+            // Seguridad: verificar que sea array antes de filtrar
+            allOrdersFixed = Array.isArray(allOrdersFixed) ? allOrdersFixed.filter(element => element.orderResumen?.some(resumen => ["Alfombra", "Juguete"].includes(resumen.tipo))) : [];
         }
-        // const allOrdersFixed = fixVentaId(ventaid).filter(venta => venta.ventaid===2000008966681277)
+
+        // --- CAMBIO 2: VALIDACIÓN DE SEGURIDAD ---
+        if (!Array.isArray(allOrdersFixed)) {
+            allOrdersFixed = allOrdersFixed ? [allOrdersFixed] : [];
+        }
         await Promise.all(
             allOrdersFixed.map(async (orden) => {
-                idParaError = orden.ventaid;
-                orden.shippingId = orden.shipping.id
-                //console.log(orden.ventaid)
-                var user = orden.seller.nickname
-                var token = getToken(user)
-                if (orden.status != 'cancelled') {
+                try {
+                    ordenVentaid = orden.ventaid || "ID no detectado";
 
-                    if ((orden.shipping?.id != null)) {
-                        var shippingId = orden.shipping.id
-                        const shipping = await getShipping(shippingId, token)
-                        orden.shipping_info = shipping.data
-                        orden.maps = `https://www.google.com/maps?q=${shipping.data.receiver_address.latitude},${shipping.data.receiver_address.longitude}`
-                        orden.coordenadas = `${shipping.data.receiver_address.latitude},${shipping.data.receiver_address.longitude}`
-                    }
-                    var precioTotal = 0;
-                    var precioNeto = 0;
-                    var boniFlex = 0;
-                    var costoFlex = 0
-                    if (orden.paymentsOriginales) {
+                    orden.shippingId = orden.shipping?.id || null;
+                    const user = orden.seller?.nickname;
+                    const token = getToken(user);
 
-                        const paymentPromises = orden.paymentsOriginales.map(id => getPayment(id, token));
-                        const paymentsResults = await Promise.all(paymentPromises);
-
-
-
-                        if (!Array.isArray(paymentsResults) || paymentsResults.length === 0) {
-                            console.log("No hay pagos en esta orden o paymentsResults no es un array");
-                        } else {
-                            for (const payment of paymentsResults) {
-                                if (!payment) continue; // evita errores si hay elementos vacíos
-
-                                const monto = payment.transaction_amount || 0;
-                                const neto = payment.transaction_details?.net_received_amount || 0;
-                                var fechaLiqui = payment.money_release_date || null;
-
-                                precioTotal += monto;
-                                precioNeto += neto;
+                    if (orden.status !== 'cancelled') {
+                        if (orden.shipping?.id) {
+                            try {
+                                const shipping = await getShipping(orden.shipping.id, token);                                
+                                orden.shipping_info = shipping.data;                                
+                                const lat = shipping.data?.receiver_address?.latitude;
+                                const lon = shipping.data?.receiver_address?.longitude;
+                                orden.maps = lat && lon ? `https://www.google.com/maps?q=$${lat},${lon}` : "Sin mapa";
+                                orden.coordenadas = lat && lon ? `${lat},${lon}` : "Sin coordenadas";
+                            } catch (e) {
+                                orden.shipping_info = { status: "error_api" };
                             }
                         }
 
-                        if (orden.shipping_info?.logistic_type === 'self_service') {
-                            const shippmentCost = await getShippingCost(shippingId, token)
-                            const receiverDiscount = shippmentCost?.receiver?.discounts?.[0]?.promoted_amount ?? 0;
-                            const senderDiscount = shippmentCost?.senders?.[0]?.discounts?.[0]?.promoted_amount ?? 0;
-                            const receiverCost = shippmentCost?.receiver?.cost ?? 0;
+                        let precioTotal = 0, precioNeto = 0, boniFlex = 0, costoFlex = 0, fechaLiqui = null;
 
-                            costoFlex = Math.ceil(receiverCost + receiverDiscount) * (-1);
-                            boniFlex = senderDiscount || receiverDiscount;
+                        if (orden.paymentsOriginales && Array.isArray(orden.paymentsOriginales)) {
+                            const paymentPromises = orden.paymentsOriginales.map(id =>
+                                getPayment(id, token).catch(err => null)
+                            );
+                            const paymentsResults = await Promise.all(paymentPromises);
+
+                            for (const payment of paymentsResults) {
+                                if (!payment) continue;
+                                precioTotal += (payment.transaction_amount || 0);
+                                precioNeto += (payment.transaction_details?.net_received_amount || 0);
+                                fechaLiqui = payment.money_release_date || fechaLiqui;
+                            }
+
+                            if (orden.shipping_info?.logistic_type === 'self_service' && orden.shippingId) {
+                                try {
+                                    const shippmentCost = await getShippingCost(orden.shippingId, token);
+                                    const receiverDiscount = shippmentCost?.receiver?.discounts?.[0]?.promoted_amount ?? 0;
+                                    const senderDiscount = shippmentCost?.senders?.[0]?.discounts?.[0]?.promoted_amount ?? 0;
+                                    const receiverCost = shippmentCost?.receiver?.cost ?? 0;
+                                    costoFlex = Math.ceil(receiverCost + receiverDiscount) * (-1);
+                                    boniFlex = senderDiscount || receiverDiscount;
+                                } catch (e) {}
+                            }
                         }
 
-                    }
-                    var totaLiqui = Number(precioNeto) + Number(boniFlex);
-                    orden.pagos = {
-                        totalPubli: precioTotal.toLocaleString('es-AR', {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2
-                        }),
-                        totalNeto: precioNeto.toLocaleString('es-AR', {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2
-                        }),
-                        bonificacion: boniFlex.toLocaleString('es-AR', {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2
-                        }),
-                        totalLiquidacion: totaLiqui.toLocaleString('es-AR', {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2
-                        }),
+                        const totaLiqui = Number(precioNeto) + Number(boniFlex);
+                        const format = (val) => val.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-                        flex: costoFlex.toLocaleString('es-AR', {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2
-                        }),
-                        fechaLiquidacion: fechaLiqui
+                        orden.pagos = {
+                            totalPubli: format(precioTotal),
+                            totalNeto: format(precioNeto),
+                            bonificacion: format(boniFlex),
+                            totalLiquidacion: format(totaLiqui),
+                            flex: format(costoFlex),
+                            fechaLiquidacion: fechaLiqui
+                        };
+                    } else {
+                        orden.shipping_info = { status: "cancelled" };
+                        orden.pagos = { totalPubli: "0,00", totalNeto: "0,00", bonificacion: "0,00", totalLiquidacion: "0,00", flex: "0,00", fechaLiquidacion: null };
                     }
-                } else {
-                    orden.shipping_info = { status: "cancelled" };
-                    orden.coordenadas = "Error en envío";
-                    orden.pagos = {
-                        totalPubli: 0,
-                        totalNeto: 0,
-                        bonificacion: 0,
-                        totalLiquidacion: 0,
-                        flex: 0,
-                        fechaLiquidacion: null
-                    }
+                } catch (innerError) {
+                    console.error(`Error interno venta #${ordenVentaid}:`, innerError.message);
                 }
                 return orden;
             })
         );
-        // const findByMPID = allOrdersFixed.filter(item => item.payments[0].id === 2000012849394932)
-        // const findByMPID = allOrdersFixed.filter(item => item.ventaid === 2000012849394932)
-
-        // console.dir(findByMPID, { depth: null })
 
         const isRender = process.env.RENDER === 'true';
 
-
-        if (!isRender) {
+        if (!isRender && allOrdersFixed.length > 0) {
             const desktopPath = path.join(os.homedir(), 'Desktop', 'etiquetas');
             const filePathJson = path.join(desktopPath, 'ventas.txt')
             const allOrdersForTxt = allOrdersFixed.filter(item => item.status === 'paid').sort((a, b) => new Date(a.date_created) - new Date(b.date_created));
-            const ventasTxt = allOrdersForTxt.map(order => `${order.orderResumen[0].tipo || null}\t${order.payments[0].reason}\t${order.orderItemNuevo[0].item.id}\t${order.seller.nickname}\t#${order.ventaid}\t${new Date(order.date_created).toLocaleDateString()}\t${order.orderResumen.find(item => item.abreviado === "CE")?.cantidad || ""}\t${order.orderResumen.find(item => item.abreviado === "OS")?.cantidad || ""}\t${order.orderResumen.find(item => item.abreviado === "CL")?.cantidad || ""}\t${order.orderResumen.find(item => item.abreviado === "BG")?.cantidad || ""}\t${order.orderResumen.find(item => item.abreviado === "NG")?.cantidad || ""}\t${order.orderResumen.find(item => item.abreviado === "BL")?.cantidad || ""}\t${order.orderResumen.find(item => item.abreviado === "PJ")?.cantidad || ""}\t${order.pagos.totalPubli}\t${order.pagos.totalLiquidacion}\t${order.shipping_info?.logistic_type === "self_service" ? order.shipping_info?.receiver_address?.state?.name === "Capital Federal" ? "-7.371,00" : order.pagos.flex : ""}\t${["handling", "pending"].includes(order.shipping_info?.status) || ["ready_to_print"].includes(order.shipping_info?.substatus) ? "N" : "S"}\t${order.seller.nickname === "HUELLITAS3F" ? "C2" : ""}\t""\t${order.shipping_info?.logistic_type === "self_service" ? order.shipping_info?.receiver_address?.state?.name === "Capital Federal" ? "caba" : order.shipping_info?.receiver_address?.city?.name : ""}\t\t\t${order.pagos.fechaLiquidacion}\t#${order.shippingId}\t#${order.payments[0].id}\t${order.pagos.totalNeto}\t${order.pagos.bonificacion}`).join('\n');
+            
+            // Seguridad añadida en el mapeo del TXT para evitar "cannot read property 0 of undefined"
+            const ventasTxt = allOrdersForTxt.map(order => {
+                const tipo = order.orderResumen?.[0]?.tipo || "N/A";
+                const reason = order.payments?.[0]?.reason || "N/A";
+                const mla = order.orderItemNuevo?.[0]?.item?.id || "N/A";
+                const payId = order.payments?.[0]?.id || "N/A";
+                
+                return `${tipo}\t${reason}\t${mla}\t${order.seller?.nickname}\t#${order.ventaid}\t${new Date(order.date_created).toLocaleDateString()}\t${order.orderResumen?.find(item => item.abreviado === "CE")?.cantidad || ""}\t${order.orderResumen?.find(item => item.abreviado === "OS")?.cantidad || ""}\t${order.orderResumen?.find(item => item.abreviado === "CL")?.cantidad || ""}\t${order.orderResumen?.find(item => item.abreviado === "BG")?.cantidad || ""}\t${order.orderResumen?.find(item => item.abreviado === "NG")?.cantidad || ""}\t${order.orderResumen?.find(item => item.abreviado === "BL")?.cantidad || ""}\t${order.orderResumen?.find(item => item.abreviado === "PJ")?.cantidad || ""}\t${order.pagos?.totalPubli}\t${order.pagos?.totalLiquidacion}\t${order.shipping_info?.logistic_type === "self_service" ? order.shipping_info?.receiver_address?.state?.name === "Capital Federal" ? "-7.371,00" : order.pagos?.flex : ""}\t${["handling", "pending"].includes(order.shipping_info?.status) || ["ready_to_print"].includes(order.shipping_info?.substatus) ? "N" : "S"}\t${order.seller?.nickname === "HUELLITAS3F" ? "C2" : ""}\t""\t${order.shipping_info?.logistic_type === "self_service" ? order.shipping_info?.receiver_address?.state?.name === "Capital Federal" ? "caba" : order.shipping_info?.receiver_address?.city?.name : ""}\t\t\t${order.pagos?.fechaLiquidacion}\t#${order.shippingId}\t#${payId}\t${order.pagos?.totalNeto}\t${order.pagos?.bonificacion}`;
+            }).join('\n');
+
             const encabezado = `tipo\ttitle\tmla\tseller\tventaid\tfechaventa\tcepillo\tgris oscuro\tgris claro\tbeige\tnegro\tblanco\tpajaro\tprecio\tliquidar\tflex\tarmado\tcuenta\tlimpio\tsector\tfecha_Envio\tComentario\tfechaLiquidacion\tenvioid\tpaymentid\tp\tflex2\n`
             try {
                 fs.writeFileSync(filePathJson, encabezado + ventasTxt, 'utf-8')
             } catch (error) {
                 console.log("no hay archivo ventas.txt")
             }
-
         }
+        console.log(allOrdersFixed)
+        const ordersCancelled = allOrdersFixed.filter(orders => orders.shippingId != null && orders.shipping_info?.status === "cancelled","not_delivered")
+        const ordersToPrint = allOrdersFixed.filter(orders => orders.shippingId != null && orders.shipping_info?.substatus === "ready_to_print").sort((b, a) => new Date(a.date_created) - new Date(b.date_created));
+        const ordersPrinted = allOrdersFixed.filter(orders => orders.shippingId != null && orders.shipping_info?.substatus === "printed")
+        const ordersInComming = allOrdersFixed.filter(orders => orders.shippingId != null && ["shipped"].includes(orders.shipping_info?.status))
+        const ordersPending = allOrdersFixed.filter(orders => orders.shippingId != null && ["pending"].includes(orders.shipping_info?.status))
+        const ordersDelivered = allOrdersFixed.filter(orders => orders.shippingId != null && orders.shipping_info?.status == "delivered").sort((b, a) => new Date(a.date_created) - new Date(b.date_created));
+        
+        return [...ordersToPrint, ...ordersPrinted, ...ordersPending, ...ordersInComming, ...ordersDelivered, ...ordersCancelled]
 
-
-
-        //console.dir(allOrdersFixed,{depth:null}) //ver todas las ordenes como objetos
-
-        const ordersCancelled = allOrdersFixed.filter(orders => orders.shippingId != null && orders.shipping_info.status === "cancelled")
-        const ordersToPrint = allOrdersFixed.filter(orders => orders.shippingId != null && orders.shipping_info.substatus === "ready_to_print").sort((b, a) => new Date(a.date_created) - new Date(b.date_created));
-        const ordersPrinted = allOrdersFixed.filter(orders => orders.shippingId != null && orders.shipping_info.substatus === "printed")
-        const ordersInComming = allOrdersFixed.filter(orders => orders.shippingId != null && orders.shipping_info.substatus != "ready_to_print" && orders.shipping_info.substatus != "printed" && orders.shipping_info.status != "delivered" && orders.shipping_info.status != "pending" && orders.shipping_info.status != "cancelled")
-        const ordersDelivered = allOrdersFixed.filter(orders => orders.shippingId != null && orders.shipping_info.status == "delivered").sort((b, a) => new Date(a.date_created) - new Date(b.date_created));
-        const ordersPending = allOrdersFixed.filter(orders => orders.shippingId != null && orders.shipping_info.status == "pending")
-        // const ordersShippingNull = allOrdersFixed.filter(orders => orders.shippingId===null)
-        const allOrdersOrdered = [...ordersToPrint, ...ordersPrinted, ...ordersPending, ...ordersInComming, ...ordersCancelled, ...ordersDelivered]
-
-        return allOrdersOrdered
     } catch (error) {
-        console.error(`ERROR CRÍTICO en getOrders (Última Venta intentada: #${idParaError}):`, error.message);
-        return {};
+        console.error(`ERROR CRÍTICO en getOrders (Venta #${ordenVentaid}):`, error.message);
+        // --- CAMBIO 3: DEVOLVER ARRAY VACÍO ---
+        return []; 
     }
 }
 

@@ -339,7 +339,7 @@ const getOrders = async (alfombra, fechaDesde, fechaHasta) => {
                                 orden.shipping_info = shipping.data;                                
                                 const lat = shipping.data?.receiver_address?.latitude;
                                 const lon = shipping.data?.receiver_address?.longitude;
-                                orden.maps = lat && lon ? `https://www.google.com/maps?q=$${lat},${lon}` : "Sin mapa";
+                                orden.maps = lat && lon ? `https://www.google.com/maps?q=${lat},${lon}` : "Sin mapa";
                                 orden.coordenadas = lat && lon ? `${lat},${lon}` : "Sin coordenadas";
                             } catch (e) {
                                 orden.shipping_info = { status: "error_api" };

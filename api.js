@@ -76,7 +76,7 @@ const variantes = (valueName, mla) => {
         type = 'Alfombra'
         brev = 'OS'
 
-    } else if (valueName === "Gris Claro" && ['MLA2420073752', 'MLA2006797664', 'MLA1552136575'].includes(mla) || ["MLA2097220912", "MLA2152475848", "MLA1517498065", "MLA2285279166"].includes(mla)) {
+    } else if ((valueName === "Gris Claro" || valueName === "Gris") && ['MLA2420073752', 'MLA2006797664', 'MLA1552136575'].includes(mla) || ["MLA2097220912", "MLA2152475848", "MLA1517498065", "MLA2285279166"].includes(mla)) {
         valueVariante = 'Gris Claro'
         type = 'Alfombra'
         brev = 'CL'

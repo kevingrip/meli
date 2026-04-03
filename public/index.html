@@ -416,25 +416,25 @@
                         let pagoNumber = (parseFloat(element.pagos.flex.replace(/\./g, '').replace(',', '.')))
                         let pagoPositivo = pagoNumber * (-1)
 
-                        if (pagoPositivo === 7371) {
+                        if (pagoPositivo === 6490) {
                             if (seleccionado === "VERGUI") {
                                 pagoLogistica = 6792
                             } else {
-                                pagoLogistica = 7371
+                                pagoLogistica = 8000
                             }
-                        } else if (pagoPositivo === 4611) {
+                        } else if (pagoPositivo === 4490) {
                             if (seleccionado === "VERGUI") {
                                 pagoLogistica = 4249
                             } else {
                                 pagoLogistica = pagoPositivo
                             }
-                        } else if (pagoPositivo === 10246) {
+                        } else if (pagoPositivo === 8490) {
                             if (seleccionado === "VERGUI") {
-                                pagoLogistica = 9443
+                                pagoLogistica = 8490
                             } else {
                                 pagoLogistica = pagoPositivo
                             }
-                        }
+                        } else pagoLogistica=0
 
                         const bodyMongoFlex = {
                             seller: element.seller.nickname,
@@ -483,10 +483,10 @@
                                     title: 'Error',
                                     text: 'Por favor, selecciona un envío.'
                                 });
+                                return;
                             }
                         if ((element.shipping_info.logistic_type === 'drop_off' || element.shipping_info.logistic_type === 'xd_drop_off') && element.shipping_info.substatus === 'ready_to_print')
                             buttonDescarga.classList.toggle("buttonDescargaCorreoPTD")
-                        avanzarEtiqueta = true;
 
                         if (avanzarEtiqueta) {
                             const body = {

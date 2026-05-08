@@ -487,6 +487,7 @@
                             }
                         if ((element.shipping_info.logistic_type === 'drop_off' || element.shipping_info.logistic_type === 'xd_drop_off') && element.shipping_info.substatus === 'ready_to_print')
                             buttonDescarga.classList.toggle("buttonDescargaCorreoPTD")
+                            avanzarEtiqueta=true;
 
                         if (avanzarEtiqueta) {
                             const body = {

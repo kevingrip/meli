@@ -41,6 +41,7 @@
     display: flex;
     justify-content: flex-end;
     align-items: center;
+    padding-right : 10px ; 
     box-shadow: 0 0 5px rgba(255, 0, 179, 0.5);
     background-color: rgb(245, 167, 255);
     height: 40px;

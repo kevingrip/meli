@@ -101,7 +101,7 @@
                         })
 
                         // 👉 ordenar por fecha real
-                        result.sort((a, b) => new Date(a.fechaEntrega) - new Date(b.fechaEntrega))
+                        result.sort((a,b) => new Date(a.fechaEntrega) - new Date(b.fechaEntrega))
 
                         // 👉 lista única correcta (AÑO + SEMANA)
                         const semanas = [...new Set(result.map(e => e.clave))]

@@ -33,7 +33,7 @@ const headers = {
 const getToken = (nickname) => {
     if (nickname === 'F3FG') {
         return headers.c1
-    } else if (nickname === 'HUELLITAS3F') {
+    } else if (nickname === 'HUELLITAS3F' || nickname === 'TLD_3F') {
         return headers.c2
     }
 }
@@ -41,7 +41,7 @@ const getToken = (nickname) => {
 const getSeller = (nickname) => {
     if (nickname === 'F3FG') {
         return seller.c1
-    } else if (nickname === 'HUELLITAS3F') {
+    } else if (nickname === 'HUELLITAS3F' || nickname === 'TLD_3F') {
         return seller.c2
     }
 }
@@ -420,13 +420,14 @@ const getOrders = async (alfombra, fechaDesde, fechaHasta) => {
             }
         }
         console.log(allOrdersFixed)
-        const ordersCancelled = allOrdersFixed.filter(orders => orders.shippingId != null && orders.shipping_info?.status === "cancelled","not_delivered")
+        const ordersCancelled = allOrdersFixed.filter(orders => orders.shippingId != null && ["cancelled", "not_delivered"].includes(orders.shipping_info?.status))
         const ordersToPrint = allOrdersFixed.filter(orders => orders.shippingId != null && orders.shipping_info?.substatus === "ready_to_print").sort((b, a) => new Date(a.date_created) - new Date(b.date_created));
         const ordersPrinted = allOrdersFixed.filter(orders => orders.shippingId != null && orders.shipping_info?.substatus === "printed")
         const ordersInComming = allOrdersFixed.filter(orders => orders.shippingId != null && ["shipped"].includes(orders.shipping_info?.status))
         const ordersPending = allOrdersFixed.filter(orders => orders.shippingId != null && ["pending"].includes(orders.shipping_info?.status))
         const ordersDelivered = allOrdersFixed.filter(orders => orders.shippingId != null && orders.shipping_info?.status == "delivered").sort((b, a) => new Date(a.date_created) - new Date(b.date_created));
         
+        //return allOrdersFixed.sort((b, a) => new Date(a.date_created) - new Date(b.date_created)); DEVUELVE TODO
         return [...ordersToPrint, ...ordersPrinted, ...ordersPending, ...ordersInComming, ...ordersDelivered, ...ordersCancelled]
 
     } catch (error) {

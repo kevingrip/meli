@@ -606,6 +606,8 @@
                         buttonDescarga.classList.add("buttonDescargaCorreoRTP")
                     } else if ((element.shipping_info.logistic_type === 'drop_off' || element.shipping_info.logistic_type === 'xd_drop_off') && element.shipping_info.substatus === 'printed') {
                         buttonDescarga.classList.add("buttonDescargaCorreoPTD")
+                    }else{
+                        buttonDescarga.classList.add("buttonDescargaCorreoRTP")
                     }
 
                     buttonDescarga.classList.add("buttonDescarga")

@@ -1,5 +1,5 @@
 import express from "express";
-import { getOrders, getStockMeli, getOrdersFlex, getEtiqueta, getCountOrders, getCountEtiquetas } from "./api.js";
+//import { getOrders, getStockMeli, getOrdersFlex, getEtiqueta, getCountOrders, getCountEtiquetas } from "./api.js";
 import path from 'path';
 import { fileURLToPath } from 'url';
 import jwt from 'jsonwebtoken';
@@ -8,11 +8,20 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import flexModel from "./model/flex.model.js";
 dotenv.config();
+console.log("URI:", process.env.MONGO_URI);
 
-mongoose.connect(process.env.MONGO_URI)
+await mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log('🔗 Conexión a MongoDB exitosa'))
     .catch(err => console.error('❌ Error al conectar a MongoDB:', err));
 
+const { 
+    getOrders, 
+    getStockMeli, 
+    getOrdersFlex, 
+    getEtiqueta, 
+    getCountOrders, 
+    getCountEtiquetas 
+} = await import("./api.js");
 
 const users = [
     { user: "admin", password: process.env.password },

@@ -2,7 +2,7 @@ import axios, { all } from 'axios'
 import path from 'path';
 import fs from 'fs'
 import os from 'os';
-import { refreshToken } from './config.js'
+import {obtenerToken} from "./config.js"
 import { PDFDocument, rgb } from 'pdf-lib';
 import dotenv from 'dotenv'
 dotenv.config();
@@ -10,25 +10,22 @@ import { ordersRoute, cantidadStockPublicado, shippingRoute, paymentRoute, costS
 
 
 
-const token = await refreshToken()
-
-const access_token1 = token[0]
-const access_token2 = token[1]
-
 const seller = {
     c1: process.env.sellerC1,
     c2: process.env.sellerC2
 }
 
 
+const tokens = await obtenerToken();
+
 const headers = {
     c1: {
-        Authorization: `Bearer ${access_token1}`
+        Authorization: `Bearer ${tokens[0].access_token}`
     },
     c2: {
-        Authorization: `Bearer ${access_token2}`
+        Authorization: `Bearer ${tokens[1].access_token}`
     }
-}
+};
 
 const getToken = (nickname) => {
     if (nickname === 'F3FG') {

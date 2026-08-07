@@ -8,7 +8,7 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import flexModel from "./model/flex.model.js";
 dotenv.config();
-console.log("URI:", process.env.MONGO_URI);
+//console.log("URI:", process.env.MONGO_URI);
 
 await mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log('🔗 Conexión a MongoDB exitosa'))

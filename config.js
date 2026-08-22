@@ -2,9 +2,7 @@ import axios from "axios";
 import MercadoLibreToken from "./tokenmodel.js"
 
 export const obtenerToken = async () => {
-    //console.log(MercadoLibreToken.collection.name);
     const token = await MercadoLibreToken.find();
-    //console.log(token)
     if (!token.length) {
         throw new Error(`No se encuentra token`);
     }
